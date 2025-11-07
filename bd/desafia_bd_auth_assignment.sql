@@ -16,26 +16,29 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `tempo`
+-- Table structure for table `auth_assignment`
 --
 
-DROP TABLE IF EXISTS `tempo`;
+DROP TABLE IF EXISTS `auth_assignment`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `tempo` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `quantidadetempo` int NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE `auth_assignment` (
+  `item_name` varchar(64) COLLATE utf8mb3_unicode_ci NOT NULL,
+  `user_id` varchar(64) COLLATE utf8mb3_unicode_ci NOT NULL,
+  `created_at` int DEFAULT NULL,
+  PRIMARY KEY (`item_name`,`user_id`),
+  KEY `idx-auth_assignment-user_id` (`user_id`),
+  CONSTRAINT `auth_assignment_ibfk_1` FOREIGN KEY (`item_name`) REFERENCES `auth_item` (`name`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `tempo`
+-- Dumping data for table `auth_assignment`
 --
 
-LOCK TABLES `tempo` WRITE;
-/*!40000 ALTER TABLE `tempo` DISABLE KEYS */;
-/*!40000 ALTER TABLE `tempo` ENABLE KEYS */;
+LOCK TABLES `auth_assignment` WRITE;
+/*!40000 ALTER TABLE `auth_assignment` DISABLE KEYS */;
+/*!40000 ALTER TABLE `auth_assignment` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -47,4 +50,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-10-31 10:23:56
+-- Dump completed on 2025-11-07 14:58:17

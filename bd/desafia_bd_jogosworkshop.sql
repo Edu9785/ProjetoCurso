@@ -32,6 +32,7 @@ CREATE TABLE `jogosworkshop` (
   `descricao` varchar(500) NOT NULL,
   `id_tempo` int NOT NULL,
   `totalpontosjogo` int NOT NULL,
+  `imagem` varchar(45) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_jogosworkshop_dificuldade1_idx` (`id_dificuldade`),
   KEY `fk_jogosworkshop_jogador1_idx` (`id_gestor`),
@@ -62,4 +63,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-10-29 15:27:00
+-- Dump completed on 2025-11-07 14:58:17

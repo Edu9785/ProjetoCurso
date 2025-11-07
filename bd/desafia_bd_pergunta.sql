@@ -25,6 +25,7 @@ DROP TABLE IF EXISTS `pergunta`;
 CREATE TABLE `pergunta` (
   `id` int NOT NULL AUTO_INCREMENT,
   `pergunta` varchar(100) NOT NULL,
+  `valor` int NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -47,4 +48,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-10-29 15:26:59
+-- Dump completed on 2025-11-07 14:58:15

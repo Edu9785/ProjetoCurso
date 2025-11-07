@@ -35,7 +35,7 @@ CREATE TABLE `migration` (
 
 LOCK TABLES `migration` WRITE;
 /*!40000 ALTER TABLE `migration` DISABLE KEYS */;
-INSERT INTO `migration` VALUES ('m000000_000000_base',1761136243),('m130524_201442_init',1761136248),('m190124_110200_add_verification_token_column_to_user_table',1761136248);
+INSERT INTO `migration` VALUES ('m000000_000000_base',1761136243),('m130524_201442_init',1761136248),('m140506_102106_rbac_init',1762527054),('m170907_052038_rbac_add_index_on_auth_assignment_user_id',1762527054),('m180523_151638_rbac_updates_indexes_without_prefix',1762527054),('m190124_110200_add_verification_token_column_to_user_table',1761136248),('m200409_110543_rbac_update_mssql_trigger',1762527054);
 /*!40000 ALTER TABLE `migration` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -48,4 +48,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-10-29 15:26:59
+-- Dump completed on 2025-11-07 14:58:16

@@ -29,6 +29,7 @@ CREATE TABLE `jogosdefault` (
   `descricao` varchar(500) NOT NULL,
   `id_tempo` int NOT NULL,
   `totalpontosjogo` int NOT NULL,
+  `imagem` varchar(45) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_jogosdefault_dificuldade1_idx` (`id_dificuldade`),
   KEY `fk_jogosdefault_tempo1_idx` (`id_tempo`),
@@ -55,4 +56,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-10-29 15:26:59
+-- Dump completed on 2025-11-07 14:58:15

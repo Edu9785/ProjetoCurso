@@ -1,9 +1,9 @@
 <?php
 
-namespace aptep\controllers;
+namespace console\controllers;
 
 use Yii;
-use yii\web\Controller;
+use yii\console\Controller;
 
 class RbacController extends Controller
 {
@@ -171,7 +171,7 @@ class RbacController extends Controller
         $auth->addChild($manager, $createCategory);
         $auth->addChild($manager, $editCategory);
         $auth->addChild($manager, $deleteCategory);
-        $auth->addChild($manager, $deleteCategory);
+        $auth->addChild($manager, $deleteDifficulty);
         $auth->addChild($manager, $createDifficulty);
         $auth->addChild($manager, $editDifficulty);
 
