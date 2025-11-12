@@ -144,6 +144,10 @@ class RbacController extends Controller
         $deletePremium->description = 'Eliminar planos premium';
         $auth->add($deletePremium);
 
+        $accessBackOffice = $auth->createPermission('accessBackOffice');
+        $accessBackOffice->description = 'Aceder ao BackOffice (backend)';
+        $auth->add($accessBackOffice);
+
         // ROLE: Utilizador
         $user = $auth->createRole('user');
         $auth->add($user);
@@ -175,7 +179,7 @@ class RbacController extends Controller
         $auth->addChild($manager, $createDifficulty);
         $auth->addChild($manager, $editDifficulty);
 
-
+        // ROLE: Admin
         $admin = $auth->createRole('admin');
         $auth->add($admin);
         $auth->addChild($admin, $createDefaultQuiz);
@@ -195,6 +199,7 @@ class RbacController extends Controller
         $auth->addChild($admin, $editPremium);
         $auth->addChild($admin, $deletePremium);
         $auth->addChild($admin, $createAdmin);
+        $auth->addChild($admin, $accessBackOffice);
 
         echo "RBAC configuration successfully initialized.\n";
     }

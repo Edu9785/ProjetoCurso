@@ -10,9 +10,6 @@
           <option name="path" value="$PROJECT_DIR$/projeto/tests" />
         </Configuration>
         <Configuration>
-          <option name="path" value="$PROJECT_DIR$/projeto/tests" />
-        </Configuration>
-        <Configuration>
           <option name="namespace" value="common\tests" />
           <option name="path" value="$PROJECT_DIR$/projeto/common/tests" />
           <option name="mySuiteNamespaces">
@@ -40,12 +37,6 @@
               <entry key="unit" value="backend\tests\unit" />
             </map>
           </option>
-        </Configuration>
-        <Configuration>
-          <option name="path" value="$PROJECT_DIR$/projeto_PSI/tests" />
-        </Configuration>
-        <Configuration>
-          <option name="path" value="$PROJECT_DIR$/projeto_PSI/tests" />
         </Configuration>
         <Configuration>
           <option name="path" value="$PROJECT_DIR$/projeto_PSI/tests" />
