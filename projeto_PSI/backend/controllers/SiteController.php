@@ -73,6 +73,11 @@ class SiteController extends Controller
     public function actionLogin()
     {
         if (!Yii::$app->user->isGuest) {
+
+            if(Yii::$app->user->can('accessBackOffice')){
+                return $this->goHome();
+            }
+            Yii::$app->session->setFlash('error', "Login, permitido só a <strong>Administradores e Gestores</strong>");
             return $this->goHome();
         }
 
