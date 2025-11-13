@@ -52,12 +52,12 @@ class SiteController extends Controller
             'error' => [
                 'class' => \yii\web\ErrorAction::class,
             ],
-            /*'rules' => [
+            'rules' => [
                 [
                     'allow' => true,
                     'roles' => ['accessBackOffice'],
                 ],
-            ],*/
+            ],
         ];
     }
 
@@ -100,17 +100,5 @@ class SiteController extends Controller
         return $this->render('login', [
             'model' => $model,
         ]);
-    }
-
-    /**
-     * Logout action.
-     *
-     * @return Response
-     */
-    public function actionLogout()
-    {
-        Yii::$app->user->logout();
-
-        return $this->goHome();
     }
 }

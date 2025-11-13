@@ -145,7 +145,7 @@ class RbacController extends Controller
         $auth->add($deletePremium);
 
         $accessBackOffice = $auth->createPermission('accessBackOffice');
-        $accessBackOffice->description = 'Aceder ao BackOffice (backend)';
+        $accessBackOffice->description = 'Acessar Backoffice';
         $auth->add($accessBackOffice);
 
         // ROLE: Utilizador
@@ -178,8 +178,9 @@ class RbacController extends Controller
         $auth->addChild($manager, $deleteDifficulty);
         $auth->addChild($manager, $createDifficulty);
         $auth->addChild($manager, $editDifficulty);
+        $auth->addChild($manager, $accessBackOffice);
 
-        // ROLE: Admin
+
         $admin = $auth->createRole('admin');
         $auth->add($admin);
         $auth->addChild($admin, $createDefaultQuiz);
