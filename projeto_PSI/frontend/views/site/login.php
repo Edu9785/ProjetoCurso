@@ -1,41 +1,89 @@
 <?php
 
-/** @var yii\web\View $this */
-/** @var yii\bootstrap5\ActiveForm $form */
-/** @var \common\models\LoginForm $model */
-
 use yii\bootstrap5\Html;
 use yii\bootstrap5\ActiveForm;
 
 $this->title = 'Login';
-$this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="site-login">
-    <h1><?= Html::encode($this->title) ?></h1>
 
-    <p>Please fill out the following fields to login:</p>
+<div class="site-login d-flex flex-column align-items-center"
+     style="min-height: 100vh; background: #f4f8fb; padding-top: 80px;">
 
-    <div class="row">
-        <div class="col-lg-5">
-            <?php $form = ActiveForm::begin(['id' => 'login-form']); ?>
+    <h1 class="text-center mb-5 fw-bold"
+        style="color: #001133; font-size: 2.8rem;">
+        <?= Html::encode($this->title) ?>
+    </h1>
 
-                <?= $form->field($model, 'username')->textInput(['autofocus' => true]) ?>
+    <div style="width: 680px;">
 
-                <?= $form->field($model, 'password')->passwordInput() ?>
+        <?php $form = ActiveForm::begin(['id' => 'login-form']); ?>
 
-                <?= $form->field($model, 'rememberMe')->checkbox() ?>
+        <?= $form->field($model, 'username')
+                ->textInput([
+                        'autofocus' => true,
+                        'placeholder' => 'Nome de usuário',
+                        'style' => '
+                        font-size: 1.3rem;
+                        padding: 18px 16px;
+                        height: 68px;
+                        border-radius: 10px;
+                    '
+                ])
+                ->label('Nome de usuário', [
+                        'class' => 'fw-semibold mb-2',
+                        'style' => 'font-size: 1.3rem;'
+                ]) ?>
 
-                <div class="my-1 mx-0" style="color:#999;">
-                    If you forgot your password you can <?= Html::a('reset it', ['site/request-password-reset']) ?>.
-                    <br>
-                    Need new verification email? <?= Html::a('Resend', ['site/resend-verification-email']) ?>
-                </div>
+        <?= $form->field($model, 'password')
+                ->passwordInput([
+                        'placeholder' => 'Senha',
+                        'style' => '
+                        font-size: 1.3rem;
+                        padding: 18px 16px;
+                        height: 68px;
+                        border-radius: 10px;
+                    '
+                ])
+                ->label('Senha', [
+                        'class' => 'fw-semibold mb-2',
+                        'style' => 'font-size: 1.3rem;'
+                ]) ?>
 
-                <div class="form-group">
-                    <?= Html::submitButton('Login', ['class' => 'btn btn-primary', 'name' => 'login-button']) ?>
-                </div>
+        <div class="form-group text-center mt-5">
+            <?= Html::submitButton('Conecte-se', [
+                    'class' => 'btn w-100 py-4',
+                    'name' => 'login-button',
+                    'style' => '
+                        background-color: #00bcd4;
+                        color: #fff;
+                        border-radius: 12px;
+                        font-weight: 700;
+                        font-size: 1.5rem;
+                        height: 72px;
+                        transition: 0.3s;
+                        letter-spacing: 0.5px;
+                    '
+            ]) ?>
+        </div>
 
-            <?php ActiveForm::end(); ?>
+        <?php ActiveForm::end(); ?>
+
+        <div class="text-center mt-5"
+             style="color: #555; font-size: 1.3rem;">
+            Ainda não tens conta?
+            <?= Html::a('<strong>Junta-te a nós!</strong>', ['site/signup'], [
+                    'class' => 'text-decoration-none',
+                    'style' => 'color: #00bcd4; font-weight: 700;'
+            ]) ?>
         </div>
     </div>
 </div>
+
+<?php
+$this->registerCss("
+    .btn:hover {
+        background-color: #00acc1 !important;
+        transform: scale(1.04);
+    }
+");
+?>
