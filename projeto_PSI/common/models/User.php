@@ -26,6 +26,9 @@ use yii\web\IdentityInterface;
 class User extends ActiveRecord implements IdentityInterface
 {
     const STATUS_DELETED = 0;
+
+    public $password;
+
     const STATUS_INACTIVE = 9;
     const STATUS_ACTIVE = 10;
 
@@ -56,7 +59,26 @@ class User extends ActiveRecord implements IdentityInterface
         return [
             ['status', 'default', 'value' => self::STATUS_INACTIVE],
             ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_INACTIVE, self::STATUS_DELETED]],
+            ['password', 'required', 'on' => 'create'], // password só obrigatório ao criar
+            ['email', 'email'],
+            [['username', 'email'], 'string', 'max' => 255],
+            [['password'], 'string', 'min' => 6],
         ];
+    }
+
+    public function beforeSave($insert)
+    {
+        if ($insert && !empty($this->password)) {
+            // só cria hash ao inserir
+            $this->password_hash = Yii::$app->security->generatePasswordHash($this->password);
+        }
+
+        if (!$insert && !empty($this->password)) {
+            // se quiseres permitir alterar password
+            $this->password_hash = Yii::$app->security->generatePasswordHash($this->password);
+        }
+
+        return parent::beforeSave($insert);
     }
 
     /**

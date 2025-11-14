@@ -10,7 +10,7 @@ $username = $user ? Html::encode($user->username) : 'Visitante';
     <!-- Brand Logo -->
     <a href="index3.html" class="brand-link">
         <img src="<?=$assetDir?>/img/AdminLTELogo.png" alt="Desafia te Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-        <span class="brand-text font-weight-light">Desafia te</span>
+        <span class="brand-text font-weight-light">Desafia-te</span>
     </a>
 
     <!-- Sidebar -->
@@ -44,39 +44,39 @@ $username = $user ? Html::encode($user->username) : 'Visitante';
             echo \hail812\adminlte\widgets\Menu::widget([
                 'items' => [
                     [
-                        'label' => 'Gestores',
+                        'label' => 'Administradores',
                         'icon' => 'users-cog',
-                        'url' => ['/gestores/index'],
+                        'url' => ['/user/index'],
                     ],
                         [
                                 'label' => 'Jogadores',
                                 'icon' => 'user',
-                                'url' => ['/jogadors/index'],
+                                'url' => ['/jogador/index'],
                         ],
                         [
                                 'label' => 'Jogos',
                                 'icon' => 'gamepad',
-                                'url' => ['/jogos/index'],
+                                'url' => ['/jogo/index'],
                         ],
                         [
                                 'label' => 'Categorias',
                                 'icon' => 'tags',
-                                'url' => ['/categorias/index'],
+                                'url' => ['/categoria/index'],
                         ],
                         [
                                 'label' => 'Dificuldades',
                                 'icon' => 'tachometer-alt',
-                                'url' => ['/dificuldades/index'],
+                                'url' => ['/dificuldade/index'],
                         ],
                         [
                                 'label' => 'Premiums',
                                 'icon' => 'gem',
-                                'url' => ['/premiums/index'],
+                                'url' => ['/premium/index'],
                         ],
                         [
                                 'label' => 'Temporizadores',
                                 'icon' => 'clock',
-                                'url' => ['/temporizadores/index'],
+                                'url' => ['/temporizador/index'],
                         ],
                 ],
             ]);
