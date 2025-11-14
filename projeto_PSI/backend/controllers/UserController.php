@@ -100,6 +100,9 @@ class UserController extends Controller
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
+        // garantir campo password vazio apenas quando form de edição é mostrado
+        $model->password = '';
+
         return $this->render('update', [
             'model' => $model,
         ]);

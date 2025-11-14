@@ -7,7 +7,7 @@ use yii\widgets\DetailView;
 /** @var common\models\User $model */
 
 
-$this->title = 'Administrador - ' . $model->id;         // <-- definir o título que o layout usa
+$this->title = 'Administrador - ' . $model->id;
 $this->params['breadcrumbs'][] = ['label' => 'Administradores', 'url' => ['index']];
 \yii\web\YiiAsset::register($this);
 ?>
