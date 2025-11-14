@@ -68,14 +68,15 @@ class User extends ActiveRecord implements IdentityInterface
 
     public function beforeSave($insert)
     {
-        if ($insert && !empty($this->password)) {
-            // só cria hash ao inserir
-            $this->password_hash = Yii::$app->security->generatePasswordHash($this->password);
-        }
-
-        if (!$insert && !empty($this->password)) {
-            // se quiseres permitir alterar password
-            $this->password_hash = Yii::$app->security->generatePasswordHash($this->password);
+        if ($insert) {
+            if (!empty($this->password)) {
+                $this->password_hash = Yii::$app->security->generatePasswordHash($this->password);
+            }
+        } else {
+            // se estiver a editar o user e mudar password
+            if (!empty($this->password)) {
+                $this->password_hash = Yii::$app->security->generatePasswordHash($this->password);
+            }
         }
 
         return parent::beforeSave($insert);
