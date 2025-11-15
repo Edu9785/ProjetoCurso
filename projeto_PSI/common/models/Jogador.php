@@ -11,9 +11,8 @@ use Yii;
  * @property int $id_user
  * @property string $nome
  * @property int $idade
- * @property int $id_premium
+ * @property int|null $id_premium
  *
- * @property Categoria[] $categorias
  * @property Jogosworkshop[] $jogosworkshops
  * @property Jogosworkshop[] $jogosworkshops0
  * @property Premium $premium
@@ -37,10 +36,10 @@ class Jogador extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id', 'id_user', 'nome', 'idade', 'id_premium'], 'required'],
-            [['id', 'id_user', 'idade', 'id_premium'], 'integer'],
+            [['id_premium'], 'default', 'value' => null],
+            [['id_user', 'nome', 'idade'], 'required'],
+            [['id_user', 'idade', 'id_premium'], 'integer'],
             [['nome'], 'string', 'max' => 150],
-            [['id'], 'unique'],
             [['id_premium'], 'exist', 'skipOnError' => true, 'targetClass' => Premium::class, 'targetAttribute' => ['id_premium' => 'id']],
             [['id_user'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['id_user' => 'id']],
         ];
@@ -58,16 +57,6 @@ class Jogador extends \yii\db\ActiveRecord
             'idade' => 'Idade',
             'id_premium' => 'Id Premium',
         ];
-    }
-
-    /**
-     * Gets query for [[Categorias]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getCategorias()
-    {
-        return $this->hasMany(Categoria::class, ['id_gestor' => 'id']);
     }
 
     /**

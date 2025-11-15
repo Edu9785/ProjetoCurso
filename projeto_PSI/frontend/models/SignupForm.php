@@ -5,6 +5,7 @@ namespace frontend\models;
 use Yii;
 use yii\base\Model;
 use common\models\User;
+use common\models\Jogador;
 
 /**
  * Signup form
@@ -15,6 +16,8 @@ class SignupForm extends Model
     public $email;
     public $password;
 
+    public $nome;
+    public $idade;
 
     /**
      * {@inheritdoc}
@@ -35,6 +38,12 @@ class SignupForm extends Model
 
             ['password', 'required'],
             ['password', 'string', 'min' => Yii::$app->params['user.passwordMinLength']],
+
+            ['nome', 'required'],
+            ['nome', 'string', 'max' => 150],
+
+            ['idade', 'required'],
+            ['idade', 'integer', 'min' => 1, 'max' => 120],
         ];
     }
 
@@ -48,21 +57,35 @@ class SignupForm extends Model
         if (!$this->validate()) {
             return null;
         }
-        
+
         $user = new User();
         $user->username = $this->username;
         $user->email = $this->email;
         $user->setPassword($this->password);
         $user->generateAuthKey();
-        $user->generateEmailVerificationToken();
-        if($user->save())
-        {
-            $auth = \Yii::$app->authManager;
-            $utilizadorRole = $auth->getRole('user');
-            $auth->assign($utilizadorRole, $user->getId());
-            return true;
+        $user->status = User::STATUS_ACTIVE;
+        if ($user->save()) {
+
+            $jogador = new Jogador();
+            $jogador->id_user = $user->id;
+            $jogador->nome = $this->nome;
+            $jogador->idade = $this->idade;
+            $jogador->id_premium = null;
+
+            if (!$jogador->save()) {
+                Yii::error($jogador->getErrors(), 'jogadorSave');
+            }
+
+            $auth = Yii::$app->authManager;
+            $role = $auth->getRole('user');
+            if ($role) {
+                $auth->assign($role, $user->id);
+            }
+
+            return $user;
         }
-        return false;
+
+        return null;
     }
 
     /**

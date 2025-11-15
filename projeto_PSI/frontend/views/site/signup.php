@@ -71,6 +71,40 @@ $this->title = 'Signup';
                         'style' => 'font-size: 1.3rem;'
                 ]) ?>
 
+        <!-- NOME -->
+        <?= $form->field($model, 'nome')
+            ->textInput([
+                'placeholder' => 'Nome do jogador',
+                'style' => '
+            font-size: 1.3rem;
+            padding: 18px 16px;
+            height: 68px;
+            border-radius: 10px;
+        '
+            ])
+            ->label('Nome', [
+                'class' => 'fw-semibold mb-2',
+                'style' => 'font-size: 1.3rem;'
+            ]) ?>
+
+        <!-- IDADE -->
+        <?= $form->field($model, 'idade')
+            ->textInput([
+                'type' => 'number',
+                'placeholder' => 'Idade',
+                'style' => '
+            font-size: 1.3rem;
+            padding: 18px 16px;
+            height: 68px;
+            border-radius: 10px;
+        '
+            ])
+            ->label('Idade', [
+                'class' => 'fw-semibold mb-2',
+                'style' => 'font-size: 1.3rem;'
+            ]) ?>
+
+
         <!-- BUTTON -->
         <div class="form-group text-center mt-5">
             <?= Html::submitButton('Criar Conta', [
