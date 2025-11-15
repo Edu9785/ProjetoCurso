@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use yii;
 use common\models\Jogador;
 use common\models\JogadorSearch;
 use yii\web\Controller;
@@ -55,8 +56,17 @@ class JogadorController extends Controller
      */
     public function actionView($id)
     {
+        $model = $this->findModel($id);
+        $userId = $model->user->id;
+
+        $role = key(Yii::$app->authManager->getRolesByUser($userId));
+
+        $isAdmin = Yii::$app->user->can('admin');
+
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'model' => $model,
+            'role' => $role,
+            'isAdmin' => $isAdmin,
         ]);
     }
 
@@ -92,9 +102,20 @@ class JogadorController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+        $user = $model->user;
 
-        if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($this->request->isPost) {
+            $model->load($this->request->post());
+            $user->load($this->request->post());
+
+            $isValid = $model->validate();
+            $isValid = $user->validate() && $isValid;
+
+            if ($isValid) {
+                $model->save(false);
+                $user->save(false);
+                return $this->redirect(['view', 'id' => $model->id]);
+            }
         }
 
         return $this->render('update', [
@@ -111,7 +132,20 @@ class JogadorController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $model = $this->findModel($id);
+
+        $userId = $model->id_user;
+
+        Yii::$app->db->createCommand()
+            ->delete('auth_assignment', ['user_id' => $userId])
+            ->execute();
+
+        $model->delete();
+
+        Yii::$app->db->createCommand()
+            ->delete('user', ['id' => $userId])
+            ->execute();
+
 
         return $this->redirect(['index']);
     }
@@ -130,5 +164,47 @@ class JogadorController extends Controller
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    public function actionPromote($id)
+    {
+        $model = $this->findModel($id);
+        $userId = $model->user->id;
+
+        if (!Yii::$app->user->can('admin')) {
+            throw new \yii\web\ForbiddenHttpException('Only admin can promote users.');
+        }
+
+        $auth = Yii::$app->authManager;
+
+        // Remove todas as roles atuais do usuário
+        $auth->revokeAll($userId);
+
+        // Atribui a role 'gestor'
+        $gestorRole = $auth->getRole('manager');
+        $auth->assign($gestorRole, $userId);
+
+        return $this->redirect(['view', 'id' => $id]);
+    }
+
+    public function actionDemote($id)
+    {
+        $model = $this->findModel($id);
+        $userId = $model->user->id;
+
+        if (!Yii::$app->user->can('admin')) {
+            throw new \yii\web\ForbiddenHttpException('Only admin can demote users.');
+        }
+
+        $auth = Yii::$app->authManager;
+
+        // Remove todas as roles atuais do usuário
+        $auth->revokeAll($userId);
+
+        // Atribui a role 'user'
+        $userRole = $auth->getRole('user');
+        $auth->assign($userRole, $userId);
+
+        return $this->redirect(['view', 'id' => $id]);
     }
 }

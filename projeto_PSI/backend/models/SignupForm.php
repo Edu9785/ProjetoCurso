@@ -52,14 +52,13 @@ class SignupForm extends Model
             $user->email = $this->email;
             $user->setPassword($this->password);
             $user->generateAuthKey();
-            if($user->save())
-            {
-                $auth = \Yii::$app->authManager;
-                $utilizadorRole = $auth->getRole('admin');
-                $auth->assign($utilizadorRole, $user->getId());
+
+
+            if($user->save()){
                 return $user;
             }
         }
+
         return null;
     }
 

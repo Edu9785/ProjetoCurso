@@ -42,6 +42,13 @@ class UserController extends Controller
         $searchModel = new UserSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
+        // pegar apenas IDs de admins
+        $auth = Yii::$app->authManager;
+        $adminUsers = $auth->getUserIdsByRole('admin');
+
+        // aplicar filtro no dataProvider
+        $dataProvider->query->andWhere(['id' => $adminUsers]);
+
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
@@ -76,6 +83,10 @@ class UserController extends Controller
         $model->status = User::STATUS_ACTIVE;
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            $auth = Yii::$app->authManager;
+            $adminRole = $auth->getRole('admin');
+            $auth->assign($adminRole, $model->id);
+
             Yii::$app->session->setFlash('success', 'Utilizador criado com sucesso!');
             return $this->redirect(['view', 'id' => $model->id]);
         }

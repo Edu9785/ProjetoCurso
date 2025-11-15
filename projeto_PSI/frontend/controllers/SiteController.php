@@ -88,9 +88,23 @@ class SiteController extends Controller
         if (!Yii::$app->user->isGuest) {
             return $this->goHome();
         }
+        if (!Yii::$app->user->isGuest) {
+            return $this->goHome();
+        }
 
         $model = new LoginForm();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
+            // Verificar roles permitidos
+            $userId = Yii::$app->user->id;
+            $auth = Yii::$app->authManager;
+
+            if (!$auth->getAssignment('user', $userId) && !$auth->getAssignment('manager', $userId)) {
+                // Logout imediato se o utilizador não for gestor ou jogador
+                Yii::$app->user->logout();
+                Yii::$app->session->setFlash('error', 'Não tem permissão para aceder ao frontend.');
+                return $this->goHome();
+            }
+
             return $this->goBack();
         }
 

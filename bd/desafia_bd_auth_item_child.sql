@@ -38,7 +38,7 @@ CREATE TABLE `auth_item_child` (
 
 LOCK TABLES `auth_item_child` WRITE;
 /*!40000 ALTER TABLE `auth_item_child` DISABLE KEYS */;
-INSERT INTO `auth_item_child` VALUES ('user','buyPremium'),('user','chooseCategory'),('user','chooseDifficulty'),('admin','createAdmin'),('admin','createCategory'),('manager','createCategory'),('admin','createDefaultQuiz'),('admin','createDifficulty'),('manager','createDifficulty'),('admin','createPremium'),('user','createQuiz'),('user','deleteAccount'),('admin','deleteAnyUser'),('admin','deleteCategory'),('manager','deleteCategory'),('admin','deleteDefaultQuiz'),('admin','deleteDifficulty'),('manager','deleteDifficulty'),('admin','deletePremium'),('user','deleteQuiz'),('manager','deleteUser'),('admin','demoteManager'),('user','editAccount'),('admin','editAnyUser'),('admin','editCategory'),('manager','editCategory'),('admin','editDefaultQuiz'),('admin','editDifficulty'),('manager','editDifficulty'),('admin','editPremium'),('user','editQuiz'),('manager','editUser'),('user','playDefaultQuiz'),('user','playUserQuiz'),('admin','promoteUser'),('user','recoverPassword'),('manager','rejectQuiz'),('user','searchQuiz'),('manager','user'),('manager','validateQuiz');
+INSERT INTO `auth_item_child` VALUES ('admin','accessBackOffice'),('manager','accessBackOffice'),('user','buyPremium'),('user','chooseCategory'),('user','chooseDifficulty'),('admin','createAdmin'),('admin','createCategory'),('manager','createCategory'),('admin','createDefaultQuiz'),('admin','createDifficulty'),('manager','createDifficulty'),('admin','createPremium'),('user','createQuiz'),('user','deleteAccount'),('admin','deleteAnyUser'),('admin','deleteCategory'),('manager','deleteCategory'),('admin','deleteDefaultQuiz'),('admin','deleteDifficulty'),('manager','deleteDifficulty'),('admin','deletePremium'),('user','deleteQuiz'),('manager','deleteUser'),('admin','demoteManager'),('user','editAccount'),('admin','editAnyUser'),('admin','editCategory'),('manager','editCategory'),('admin','editDefaultQuiz'),('admin','editDifficulty'),('manager','editDifficulty'),('admin','editPremium'),('user','editQuiz'),('manager','editUser'),('user','playDefaultQuiz'),('user','playUserQuiz'),('admin','promoteUser'),('user','recoverPassword'),('manager','rejectQuiz'),('user','searchQuiz'),('manager','user'),('manager','validateQuiz');
 /*!40000 ALTER TABLE `auth_item_child` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -51,4 +51,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-11-07 14:58:16
+-- Dump completed on 2025-11-15 17:37:22

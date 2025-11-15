@@ -24,11 +24,11 @@ DROP TABLE IF EXISTS `categoria`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `categoria` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `id_gestor` int NOT NULL,
   `categoria` varchar(100) NOT NULL,
+  `id_gestor` int NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `fk_categoria_jogador1_idx` (`id_gestor`),
-  CONSTRAINT `fk_categoria_jogador1` FOREIGN KEY (`id_gestor`) REFERENCES `jogador` (`id`)
+  KEY `fk_categoria_user1_idx` (`id_gestor`),
+  CONSTRAINT `fk_categoria_user1` FOREIGN KEY (`id_gestor`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -50,4 +50,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-11-07 14:58:16
+-- Dump completed on 2025-11-15 17:37:23

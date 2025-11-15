@@ -20,23 +20,33 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <?= GridView::widget([
-        'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
-        'columns' => [
-
-            'id',
-            'id_user',
-            'nome',
-            'idade',
-            'id_premium',
-            [
-                'class' => ActionColumn::className(),
-                'urlCreator' => function ($action, Jogador $model, $key, $index, $column) {
-                    return Url::toRoute([$action, 'id' => $model->id]);
-                 }
+            'dataProvider' => $dataProvider,
+            'filterModel' => $searchModel,
+            'columns' => [
+                    'id',
+                    [
+                            'attribute' => 'username',
+                            'value' => 'user.username',
+                    ],
+                    [
+                            'attribute' => 'email',
+                            'value' => 'user.email',
+                    ],
+                    [
+                            'attribute' => 'nome',
+                            'filter' => false,
+                    ],
+                    [
+                            'attribute' => 'idade',
+                            'filter' => false,
+                    ],
+                    [
+                            'class' => ActionColumn::className(),
+                            'urlCreator' => function ($action, Jogador $model, $key, $index, $column) {
+                                return Url::toRoute([$action, 'id' => $model->id]);
+                            }
+                    ],
             ],
-        ],
     ]); ?>
-
 
 </div>

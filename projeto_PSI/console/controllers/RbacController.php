@@ -180,7 +180,7 @@ class RbacController extends Controller
         $auth->addChild($manager, $editDifficulty);
         $auth->addChild($manager, $accessBackOffice);
 
-
+        // ROLE: Admin
         $admin = $auth->createRole('admin');
         $auth->add($admin);
         $auth->addChild($admin, $createDefaultQuiz);

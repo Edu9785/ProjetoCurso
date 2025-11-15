@@ -37,7 +37,7 @@ CREATE TABLE `user` (
   UNIQUE KEY `username` (`username`),
   UNIQUE KEY `email` (`email`),
   UNIQUE KEY `password_reset_token` (`password_reset_token`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -46,6 +46,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
+INSERT INTO `user` VALUES (3,'admin','ISxrTmsTCrPKEpvgkyIEOVNvzRNcbexK','$2y$13$Tfr4Toi79ZqMhn2iZlr2lufpgzmpAqAlAvWO4/G597Pko2bMwlOPm',NULL,'admin@gmail.com',10,1763045772,1763045772,'5-YwroZuG5LFhBiLxcWHQpCjrggtHvyH_1763045772'),(8,'Dudu','yOtH__LxLjs5josBR-i9ujQEla1tBDn-','$2y$13$oVW3tQq3evWbGGj3Fc5Iu.yoN460gQ9vcANyf8hzb19hBC7IGy23O',NULL,'email@gmail.com',10,1763222920,1763222920,NULL);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -58,4 +59,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-11-07 14:58:17
+-- Dump completed on 2025-11-15 17:37:22

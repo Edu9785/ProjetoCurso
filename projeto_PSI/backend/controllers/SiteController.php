@@ -78,13 +78,7 @@ class SiteController extends Controller
      */
     public function actionLogin()
     {
-
         if (!Yii::$app->user->isGuest) {
-
-            if(Yii::$app->user->can('accessBackOffice')){
-                return $this->goHome();
-            }
-            Yii::$app->session->setFlash('error', "Login, permitido só a <strong>Administradores e Gestores</strong>");
             return $this->goHome();
         }
 
@@ -92,6 +86,15 @@ class SiteController extends Controller
 
         $model = new LoginForm();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
+
+            if (!Yii::$app->user->can('accessBackOffice')) {
+                Yii::$app->user->logout();
+                Yii::$app->session->setFlash(
+                    'error',
+                    "Apenas <strong>Administradores</strong> e <strong>Gestores</strong> podem iniciar sessão no Backoffice."
+                );
+                return $this->goHome();
+            }
             return $this->goBack();
         }
 
@@ -101,6 +104,7 @@ class SiteController extends Controller
             'model' => $model,
         ]);
     }
+
 
     /**
      * Logout action.
