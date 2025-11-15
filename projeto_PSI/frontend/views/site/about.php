@@ -20,7 +20,7 @@
                 <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
                     <div class="course-item bg-light text-center h-100">
                         <div class="position-relative overflow-hidden">
-                            <img class="img-fluid premium-img" src="img/course-1.jpg" alt="">
+                            <img class="img-fluid premium-img" src="<?= Yii::getAlias('@web'). '/img/course-1.jpg';?>" alt="">
                         </div>
                         <div class="p-4 pb-4">
                             <h3 class="mb-2">€95.00</h3>
@@ -34,7 +34,7 @@
                 <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
                     <div class="course-item bg-light text-center h-100">
                         <div class="position-relative overflow-hidden">
-                            <img class="img-fluid premium-img" src="img/course-2.jpg" alt="">
+                            <img class="img-fluid premium-img" src="<?= Yii::getAlias('@web'). '/img/course-2.jpg';?>" alt="">
                         </div>
                         <div class="p-4 pb-4">
                             <h3 class="mb-2">€110.00</h3>
@@ -48,7 +48,7 @@
                 <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.5s">
                     <div class="course-item bg-light text-center h-100">
                         <div class="position-relative overflow-hidden">
-                            <img class="img-fluid premium-img" src="web/img/premdiamond.jpg" alt="">
+                            <img class="img-fluid premium-img" src="<?= Yii::getAlias('@web'). '/img/premdiamond.jpg';?>" alt="">
                         </div>
                         <div class="p-4 pb-4">
                             <h3 class="mb-2">€149.00</h3>
