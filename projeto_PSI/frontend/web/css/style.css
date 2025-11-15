@@ -490,3 +490,8 @@
     border-radius: 8px;
     font-weight: 500;
 }
+.carousel-img {
+    width: 100%;
+    height: 50px;   /* diminuído */
+    object-fit: cover;
+}

@@ -62,7 +62,7 @@ AppAsset::register($this);
     NavBar::begin([
             'brandLabel' => Html::img('@web/img/logodesafia.jpg', [
                     'alt' => Yii::$app->name,
-                    'width' => '110',  // define a largura em pixels
+                    'width' => '90',  // define a largura em pixels
                     'height' => '70px' // mantém a proporção
             ]),
         //'brandLabel' => Yii::$app->name,
@@ -87,7 +87,7 @@ AppAsset::register($this);
         'items' => $menuItems,
     ]);
     if (Yii::$app->user->isGuest) {
-        echo Html::tag('div',Html::a('Login',['/site/login'],['class' => ['btn btn-link login text-decoration-none']]),['class' => ['d-flex']]);
+        echo Html::tag('div',Html::a('Login',['/site/login'],['class' => ['btn btn-primary py-4 px-lg-5 d-none d-lg-block']]),['class' => ['d-flex']]);
     } else {
         echo Html::beginForm(['/site/logout'], 'post', ['class' => 'd-flex'])
             . Html::submitButton(
@@ -101,13 +101,11 @@ AppAsset::register($this);
 </header>
 
 <main role="main" class="flex-shrink-0">
-    <div class="container">
         <?= Breadcrumbs::widget([
             'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
         ]) ?>
         <?= Alert::widget() ?>
         <?= $content ?>
-    </div>
 </main>
 
 <!-- Footer Start -->
@@ -199,10 +197,10 @@ AppAsset::register($this);
 <!-- JavaScript Libraries -->
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="lib/wow/wow.min.js"></script>
-<script src="lib/easing/easing.min.js"></script>
-<script src="lib/waypoints/waypoints.min.js"></script>
-<script src="lib/owlcarousel/owl.carousel.min.js"></script>
+<script src="<?= Yii::getAlias('@web'). '/lib/wow/wow.min.js';?>"></script>
+<script src="<?= Yii::getAlias('@web'). '/lib/easing/easing.min.js';?>"></script>
+<script src="<?= Yii::getAlias('@web'). '/lib/waypoints/waypoints.min.js';?>"></script>
+<script src="<?= Yii::getAlias('@web'). '/lib/owlcarousel/owl.carousel.min.js';?>"></script>
 
 <!-- Template Javascript -->
 <script src="js/main.js"></script>
