@@ -39,6 +39,22 @@ $this->title = 'Signup';
                         'style' => 'font-size: 1.3rem;'
                 ]) ?>
 
+        <!-- NOME -->
+        <?= $form->field($model, 'nome')
+                ->textInput([
+                        'placeholder' => 'Nome do jogador',
+                        'style' => '
+            font-size: 1.3rem;
+            padding: 18px 16px;
+            height: 68px;
+            border-radius: 10px;
+        '
+                ])
+                ->label('Nome', [
+                        'class' => 'fw-semibold mb-2',
+                        'style' => 'font-size: 1.3rem;'
+                ]) ?>
+
         <!-- EMAIL -->
         <?= $form->field($model, 'email')
                 ->textInput([
@@ -70,22 +86,6 @@ $this->title = 'Signup';
                         'class' => 'fw-semibold mb-2',
                         'style' => 'font-size: 1.3rem;'
                 ]) ?>
-
-        <!-- NOME -->
-        <?= $form->field($model, 'nome')
-            ->textInput([
-                'placeholder' => 'Nome do jogador',
-                'style' => '
-            font-size: 1.3rem;
-            padding: 18px 16px;
-            height: 68px;
-            border-radius: 10px;
-        '
-            ])
-            ->label('Nome', [
-                'class' => 'fw-semibold mb-2',
-                'style' => 'font-size: 1.3rem;'
-            ]) ?>
 
         <!-- IDADE -->
         <?= $form->field($model, 'idade')
