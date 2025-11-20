@@ -17,7 +17,9 @@ $this->params['breadcrumbs'][] = $this->title;
 
 
     <p>
-        <?= Html::a('Create Administrador', ['create'], ['class' => 'btn btn-success']) ?>
+        <?php if (Yii::$app->user->can('admin')): ?>
+            <?= Html::a('Create Administrador', ['create'], ['class' => 'btn btn-success']) ?>
+        <?php endif; ?>
     </p>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
@@ -31,12 +33,20 @@ $this->params['breadcrumbs'][] = $this->title;
             'username',
             'email:email',
 
-            [
-                'class' => ActionColumn::className(),
-                'urlCreator' => function ($action, User $model, $key, $index, $column) {
-                    return Url::toRoute([$action, 'id' => $model->id]);
-                 }
-            ],
+                [
+                        'class' => 'yii\grid\ActionColumn',
+                        'visibleButtons' => [
+                                'update' => function ($model) {
+                                    return Yii::$app->user->can('admin');
+                                },
+                                'delete' => function ($model) {
+                                    return Yii::$app->user->can('admin');
+                                },
+                                'view' => function ($model) {
+                                    return true; // todos podem ver (opcional)
+                                },
+                        ],
+                ],
         ],
     ]); ?>
 
