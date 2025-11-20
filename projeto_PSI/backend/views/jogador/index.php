@@ -41,10 +41,41 @@ $this->params['breadcrumbs'][] = $this->title;
                             'filter' => false,
                     ],
                     [
-                            'class' => ActionColumn::className(),
-                            'urlCreator' => function ($action, Jogador $model, $key, $index, $column) {
-                                return Url::toRoute([$action, 'id' => $model->id]);
-                            }
+                            'class' => 'yii\grid\ActionColumn',
+                            'visibleButtons' => [
+
+                                    'update' => function ($model) {
+
+                                        // Admin pode editar tudo
+                                        if (Yii::$app->user->can('admin')) {
+                                            return true;
+                                        }
+
+                                        // Manager só pode editar a própria conta
+                                        if (Yii::$app->user->can('manager')) {
+                                            return (int)$model->id_user === (int)Yii::$app->user->id;
+                                        }
+
+                                        return false;
+                                    },
+
+                                    'delete' => function ($model) {
+
+                                        // Admin pode eliminar tudo
+                                        if (Yii::$app->user->can('admin')) {
+                                            return true;
+                                        }
+
+                                        // Manager só pode eliminar a própria conta
+                                        if (Yii::$app->user->can('manager')) {
+                                            return (int)$model->id_user === (int)Yii::$app->user->id;
+                                        }
+
+                                        return false;
+                                    },
+
+                                    'view' => fn() => true,
+                            ],
                     ],
             ],
     ]); ?>
