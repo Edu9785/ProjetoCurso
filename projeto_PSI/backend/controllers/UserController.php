@@ -128,10 +128,15 @@ class UserController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $auth = Yii::$app->authManager;
+        $auth->revokeAll($id); // remove todas as roles deste utilizador
 
+        $this->findModel($id)->delete(); // apaga o user
+
+        Yii::$app->session->setFlash('success', 'Utilizador removido e permissões limpas!');
         return $this->redirect(['index']);
     }
+
 
     /**
      * Finds the User model based on its primary key value.

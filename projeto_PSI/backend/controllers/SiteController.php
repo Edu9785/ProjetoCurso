@@ -68,8 +68,29 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        return $this->render('index');
+        $auth = Yii::$app->authManager;
+
+        // ---- CONTAR ADMINS ----
+        $adminIds = $auth->getUserIdsByRole('admin');
+        $totalAdmins = count($adminIds);
+
+        // ---- CONTAR JOGADORES (users + managers) ----
+        // users normais
+        $userIds = $auth->getUserIdsByRole('user');
+        // managers
+        $managerIds = $auth->getUserIdsByRole('manager');
+
+        // juntar os dois e remover duplicados (caso role herdada)
+        $players = array_unique(array_merge($userIds, $managerIds));
+
+        $totalPlayers = count($players);
+
+        return $this->render('index', [
+            'totalAdmins' => $totalAdmins,
+            'totalPlayers' => $totalPlayers,
+        ]);
     }
+
 
     /**
      * Login action.
