@@ -42,48 +42,48 @@ $username = $user ? Html::encode($user->username) : 'Visitante';
         <nav class="mt-2">
             <?php
             echo \hail812\adminlte\widgets\Menu::widget([
-                'items' => [
-                    [
-                        'label' => 'Administradores',
-                        'icon' => 'users-cog',
-                        'url' => ['/user/index'],
+                    'items' => [
+                            [
+                                    'label' => 'Administradores',
+                                    'icon' => 'users-cog',
+                                    'url' => ['/user/index'],
+                            ],
+                            [
+                                    'label' => 'Jogadores',
+                                    'icon' => 'user',
+                                    'url' => ['/jogador/index'],
+                            ],
+                            [
+                                    'label' => 'Jogos Default',
+                                    'icon' => 'gamepad',
+                                    'url' => ['/jogodefault/index'],
+                            ],
+                            [
+                                    'label' => 'Jogos Workshop',
+                                    'icon' => 'gamepad',
+                                    'url' => ['/jogoworkshop/index'],
+                            ],
+                            [
+                                    'label' => 'Categorias',
+                                    'icon' => 'tags',
+                                    'url' => ['/categoria/index'],
+                            ],
+                            [
+                                    'label' => 'Dificuldades',
+                                    'icon' => 'tachometer-alt',
+                                    'url' => ['/dificuldade/index'],
+                            ],
+                            [
+                                    'label' => 'Premiums',
+                                    'icon' => 'gem',
+                                    'url' => ['/premium/index'],
+                            ],
+                            [
+                                    'label' => 'Temporizadores',
+                                    'icon' => 'clock',
+                                    'url' => ['/tempo/index'],
+                            ],
                     ],
-                        [
-                                'label' => 'Jogadores',
-                                'icon' => 'user',
-                                'url' => ['/jogador/index'],
-                        ],
-                        [
-                                'label' => 'Jogos Default',
-                                'icon' => 'gamepad',
-                                'url' => ['/jogodefault/index'],
-                        ],
-                        [
-                                'label' => 'Jogos Workshop',
-                                'icon' => 'gamepad',
-                                'url' => ['/jogoworkshop/index'],
-                        ],
-                        [
-                                'label' => 'Categorias',
-                                'icon' => 'tags',
-                                'url' => ['/categoria/index'],
-                        ],
-                        [
-                                'label' => 'Dificuldades',
-                                'icon' => 'tachometer-alt',
-                                'url' => ['/dificuldade/index'],
-                        ],
-                        [
-                                'label' => 'Premiums',
-                                'icon' => 'gem',
-                                'url' => ['/premium/index'],
-                        ],
-                        [
-                                'label' => 'Temporizadores',
-                                'icon' => 'clock',
-                                'url' => ['/tempo/index'],
-                        ],
-                ],
             ]);
             ?>
         </nav>

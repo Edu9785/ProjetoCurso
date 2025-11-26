@@ -10,12 +10,10 @@ use yii\grid\GridView;
 /** @var common\models\PremiumSearch $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
 
-$this->title = 'Premia';
+$this->title = 'Premium';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="premium-index">
-
-    <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
         <?= Html::a('Create Premium', ['create'], ['class' => 'btn btn-success']) ?>

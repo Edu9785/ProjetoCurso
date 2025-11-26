@@ -54,12 +54,14 @@ class UserController extends Controller
         $searchModel = new UserSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
-        // pegar apenas IDs de admins
         $auth = Yii::$app->authManager;
         $adminUsers = $auth->getUserIdsByRole('admin');
 
-        // aplicar filtro no dataProvider
-        $dataProvider->query->andWhere(['id' => $adminUsers]);
+        $dataProvider->query->andWhere([
+            'id' => $adminUsers,
+            'status' => User::STATUS_ACTIVE,
+        ]);
+
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -144,7 +146,9 @@ class UserController extends Controller
 
         $user->status = User::STATUS_INACTIVE;
 
-        Yii::$app->session->setFlash('success', 'Utilizador removido e permissões limpas!');
+        $user->save(false);
+
+        Yii::$app->session->setFlash('success', 'Utilizador removido');
         return $this->redirect(['index']);
     }
 
