@@ -14,19 +14,30 @@ use yii\widgets\ActiveForm;
     <?php $form = ActiveForm::begin(); ?>
 
     <?= $form->field($model, 'id_dificuldade')->dropDownList(
-            ArrayHelper::map($dificuldades, 'id', 'dificuldade'),
-            ['prompt' => 'Selecione a dificuldade...']
+            ['' => 'Selecione a dificuldade...'] + ArrayHelper::map($dificuldades, 'id', 'dificuldade'),
+            [
+                    'options' => [
+                            '' => ['disabled' => true, 'selected' => true]
+                    ]
+            ]
     ) ?>
 
     <?= $form->field($model, 'titulo')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'descricao')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'id_tempo')->textInput() ?>
+    <?= $form->field($model, 'id_tempo')->dropDownList(
+            ['' => 'Selecione o tempo...'] + ArrayHelper::map($tempos, 'id', 'quantidadetempo'),
+            [
+                    'options' => [
+                            '' => ['disabled' => true, 'selected' => true]
+                    ]
+            ]
+    )?>
 
     <?= $form->field($model, 'totalpontosjogo')->textInput() ?>
 
-    <?= $form->field($model, 'imagem')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'imagem')->fileInput() ?>
 
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>

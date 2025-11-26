@@ -72,6 +72,10 @@ class JogodefaultController extends Controller
 
         // Buscar dificuldades
         $dificuldades = \common\models\Dificuldade::find()->all();
+
+        // Buscar tempos
+        $tempos = \common\models\Tempo::find()->all();
+
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         }
@@ -79,6 +83,7 @@ class JogodefaultController extends Controller
         return $this->render('create', [
             'model' => $model,
             'dificuldades' => $dificuldades,
+            'tempos' => $tempos,
         ]);
     }
 
@@ -93,7 +98,11 @@ class JogodefaultController extends Controller
     {
         $model = $this->findModel($id);
 
+        // Buscar dificuldades
         $dificuldades = \common\models\Dificuldade::find()->all();
+
+        // Buscar tempos
+        $tempos = \common\models\Tempo::find()->all();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
@@ -102,6 +111,7 @@ class JogodefaultController extends Controller
         return $this->render('update', [
             'model' => $model,
             'dificuldades' => $dificuldades,
+            'tempos' => $tempos,
         ]);
     }
 

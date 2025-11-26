@@ -12,8 +12,9 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="jogodefault-create">
 
     <?= $this->render('_form', [
-        'model' => $model,
-        'dificuldades' => $dificuldades,
+            'model' => $model,
+            'dificuldades' => $dificuldades,
+            'tempos' => $tempos,
     ]) ?>
 
 </div>
