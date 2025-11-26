@@ -2,9 +2,11 @@
 
 namespace backend\controllers;
 
+use Codeception\Template\Acceptance;
 use Yii;
 use common\models\User;
 use backend\models\UserSearch;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -22,8 +24,18 @@ class UserController extends Controller
         return array_merge(
             parent::behaviors(),
             [
+                'access' => [
+                    'class' => AccessControl::class,
+                    'only' => ['index', 'view', 'create', 'update', 'delete'],
+                    'rules' => [
+                        [
+                            'allow' => true,
+                            'roles' => ['admin'],
+                        ],
+                    ],
+                ],
                 'verbs' => [
-                    'class' => VerbFilter::className(),
+                    'class' => VerbFilter::class,
                     'actions' => [
                         'delete' => ['POST'],
                     ],
@@ -128,10 +140,9 @@ class UserController extends Controller
      */
     public function actionDelete($id)
     {
-        $auth = Yii::$app->authManager;
-        $auth->revokeAll($id); // remove todas as roles deste utilizador
+        $user = $this->findModel($id);
 
-        $this->findModel($id)->delete(); // apaga o user
+        $user->status = User::STATUS_INACTIVE;
 
         Yii::$app->session->setFlash('success', 'Utilizador removido e permissões limpas!');
         return $this->redirect(['index']);
