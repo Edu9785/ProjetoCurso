@@ -20,7 +20,7 @@ use Yii;
  * @property JogosdefaultPergunta[] $jogosdefaultPerguntas
  * @property Tempo $tempo
  */
-class Jogosdefault extends \yii\db\ActiveRecord
+class Jogodefault extends \yii\db\ActiveRecord
 {
 
 

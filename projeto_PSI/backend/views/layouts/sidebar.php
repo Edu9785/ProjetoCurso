@@ -54,9 +54,14 @@ $username = $user ? Html::encode($user->username) : 'Visitante';
                                 'url' => ['/jogador/index'],
                         ],
                         [
-                                'label' => 'Jogos',
+                                'label' => 'Jogos Default',
                                 'icon' => 'gamepad',
-                                'url' => ['/jogo/index'],
+                                'url' => ['/jogodefault/index'],
+                        ],
+                        [
+                                'label' => 'Jogos Workshop',
+                                'icon' => 'gamepad',
+                                'url' => ['/jogoworkshop/index'],
                         ],
                         [
                                 'label' => 'Categorias',
@@ -76,7 +81,7 @@ $username = $user ? Html::encode($user->username) : 'Visitante';
                         [
                                 'label' => 'Temporizadores',
                                 'icon' => 'clock',
-                                'url' => ['/temporizador/index'],
+                                'url' => ['/tempo/index'],
                         ],
                 ],
             ]);

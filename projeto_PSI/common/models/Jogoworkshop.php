@@ -25,7 +25,7 @@ use Yii;
  * @property JogosworkshopPergunta[] $jogosworkshopPerguntas
  * @property Tempo $tempo
  */
-class Jogosworkshop extends \yii\db\ActiveRecord
+class Jogoworkshop extends \yii\db\ActiveRecord
 {
 
 
