@@ -1,5 +1,4 @@
 <?php
-use yii\helpers\Url;
 use yii\helpers\Html;
 
 $user = Yii::$app->user->identity;
@@ -13,9 +12,7 @@ $username = $user ? Html::encode($user->username) : 'Visitante';
         <span class="brand-text font-weight-light">Desafia-te</span>
     </a>
 
-    <!-- Sidebar -->
     <div class="sidebar">
-        <!-- Sidebar user panel (optional) -->
         <div class="user-panel mt-3 pb-3 mb-3 d-flex">
             <div class="image">
                 <img src="<?=$assetDir?>/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
@@ -38,51 +35,57 @@ $username = $user ? Html::encode($user->username) : 'Visitante';
             </div>
         </div> -->
 
-        <!-- Sidebar Menu -->
         <nav class="mt-2">
             <?php
-            echo \hail812\adminlte\widgets\Menu::widget([
-                'items' => [
-                    [
+            $menuItems = [];
+
+            // Mostrar "Administradores" apenas se for admin
+            if (Yii::$app->user->can('admin')) {
+                $menuItems[] = [
                         'label' => 'Administradores',
                         'icon' => 'users-cog',
                         'url' => ['/user/index'],
+                ];
+            }
+
+            // Esses itens todos podem ser visíveis para manager e admin
+            $menuItems = array_merge($menuItems, [
+                    [
+                            'label' => 'Jogadores',
+                            'icon' => 'user',
+                            'url' => ['/jogador/index'],
                     ],
-                        [
-                                'label' => 'Jogadores',
-                                'icon' => 'user',
-                                'url' => ['/jogador/index'],
-                        ],
-                        [
-                                'label' => 'Jogos',
-                                'icon' => 'gamepad',
-                                'url' => ['/jogo/index'],
-                        ],
-                        [
-                                'label' => 'Categorias',
-                                'icon' => 'tags',
-                                'url' => ['/categoria/index'],
-                        ],
-                        [
-                                'label' => 'Dificuldades',
-                                'icon' => 'tachometer-alt',
-                                'url' => ['/dificuldade/index'],
-                        ],
-                        [
-                                'label' => 'Premiums',
-                                'icon' => 'gem',
-                                'url' => ['/premium/index'],
-                        ],
-                        [
-                                'label' => 'Temporizadores',
-                                'icon' => 'clock',
-                                'url' => ['/temporizador/index'],
-                        ],
-                ],
+                    [
+                            'label' => 'Jogos',
+                            'icon' => 'gamepad',
+                            'url' => ['/jogo/index'],
+                    ],
+                    [
+                            'label' => 'Categorias',
+                            'icon' => 'tags',
+                            'url' => ['/categoria/index'],
+                    ],
+                    [
+                            'label' => 'Dificuldades',
+                            'icon' => 'tachometer-alt',
+                            'url' => ['/dificuldade/index'],
+                    ],
+                    [
+                            'label' => 'Premiums',
+                            'icon' => 'gem',
+                            'url' => ['/premium/index'],
+                    ],
+                    [
+                            'label' => 'Temporizadores',
+                            'icon' => 'clock',
+                            'url' => ['/tempo/index'],
+                    ],
+            ]);
+
+            echo \hail812\adminlte\widgets\Menu::widget([
+                    'items' => $menuItems,
             ]);
             ?>
         </nav>
-        <!-- /.sidebar-menu -->
     </div>
-    <!-- /.sidebar -->
 </aside>
