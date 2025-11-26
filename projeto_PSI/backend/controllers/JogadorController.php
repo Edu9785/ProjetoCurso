@@ -5,6 +5,8 @@ namespace backend\controllers;
 use yii;
 use common\models\Jogador;
 use common\models\JogadorSearch;
+use common\models\User;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -22,6 +24,16 @@ class JogadorController extends Controller
         return array_merge(
             parent::behaviors(),
             [
+                'access' => [
+                    'class' => AccessControl::class,
+                    'only' => ['index', 'view', 'create', 'update', 'delete'],
+                    'rules' => [
+                        [
+                            'allow' => true,
+                            'roles' => ['admin'],
+                        ],
+                    ],
+                ],
                 'verbs' => [
                     'class' => VerbFilter::className(),
                     'actions' => [
@@ -134,18 +146,10 @@ class JogadorController extends Controller
     {
         $model = $this->findModel($id);
 
-        $userId = $model->id_user;
+        $user = $model->user;
 
-        Yii::$app->db->createCommand()
-            ->delete('auth_assignment', ['user_id' => $userId])
-            ->execute();
-
-        $model->delete();
-
-        Yii::$app->db->createCommand()
-            ->delete('user', ['id' => $userId])
-            ->execute();
-
+        $user->status = User::STATUS_INACTIVE;
+        $user->save(false);
 
         return $this->redirect(['index']);
     }

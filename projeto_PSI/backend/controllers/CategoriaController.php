@@ -4,6 +4,8 @@ namespace backend\controllers;
 
 use common\models\Categoria;
 use common\models\CategoriaSearch;
+use Yii;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -21,6 +23,16 @@ class CategoriaController extends Controller
         return array_merge(
             parent::behaviors(),
             [
+                'access' => [
+                    'class' => AccessControl::class,
+                    'only' => ['index', 'view', 'create', 'update', 'delete'],
+                    'rules' => [
+                        [
+                            'allow' => true,
+                            'roles' => ['admin'],
+                        ],
+                    ],
+                ],
                 'verbs' => [
                     'class' => VerbFilter::className(),
                     'actions' => [
@@ -68,6 +80,8 @@ class CategoriaController extends Controller
     public function actionCreate()
     {
         $model = new Categoria();
+
+        $model->id_gestor = Yii::$app->user->getId();
 
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {
