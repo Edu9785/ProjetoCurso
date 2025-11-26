@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use Yii;
 use common\models\Jogodefault;
 use common\models\JogodefaultSearch;
 use yii\web\Controller;
@@ -69,16 +70,15 @@ class JogodefaultController extends Controller
     {
         $model = new Jogodefault();
 
-        if ($this->request->isPost) {
-            if ($model->load($this->request->post()) && $model->save()) {
-                return $this->redirect(['view', 'id' => $model->id]);
-            }
-        } else {
-            $model->loadDefaultValues();
+        // Buscar dificuldades
+        $dificuldades = \common\models\Dificuldade::find()->all();
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['view', 'id' => $model->id]);
         }
 
         return $this->render('create', [
             'model' => $model,
+            'dificuldades' => $dificuldades,
         ]);
     }
 
@@ -93,12 +93,15 @@ class JogodefaultController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
+        $dificuldades = \common\models\Dificuldade::find()->all();
+
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
         return $this->render('update', [
             'model' => $model,
+            'dificuldades' => $dificuldades,
         ]);
     }
 

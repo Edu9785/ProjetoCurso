@@ -1,5 +1,6 @@
 <?php
 
+use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
@@ -12,7 +13,10 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'id_dificuldade')->textInput() ?>
+    <?= $form->field($model, 'id_dificuldade')->dropDownList(
+            ArrayHelper::map($dificuldades, 'id', 'dificuldade'),
+            ['prompt' => 'Selecione a dificuldade...']
+    ) ?>
 
     <?= $form->field($model, 'titulo')->textInput(['maxlength' => true]) ?>
 
