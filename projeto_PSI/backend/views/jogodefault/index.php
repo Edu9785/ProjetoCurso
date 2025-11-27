@@ -15,8 +15,6 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="jogodefault-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
-
     <p>
         <?= Html::a('Create Jogodefault', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
@@ -27,15 +25,13 @@ $this->params['breadcrumbs'][] = $this->title;
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
-
             'id',
             'id_dificuldade',
             'titulo',
             'descricao',
             'id_tempo',
-            //'totalpontosjogo',
-            //'imagem',
+            'totalpontosjogo',
+            'imagem',
             [
                 'class' => ActionColumn::className(),
                 'urlCreator' => function ($action, Jogodefault $model, $key, $index, $column) {

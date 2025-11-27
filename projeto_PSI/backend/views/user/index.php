@@ -15,40 +15,83 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="user-index">
 
-
-    <p>
+    <div class="d-flex justify-content-between align-items-center mb-4">
         <?php if (Yii::$app->user->can('admin')): ?>
-            <?= Html::a('Create Administrador', ['create'], ['class' => 'btn btn-success']) ?>
+            <?= Html::a('<i class="fas fa-plus"></i> Criar Administrador', ['create'], [
+                    'class' => 'btn btn-success btn-sm shadow-sm',
+            ]) ?>
         <?php endif; ?>
-    </p>
-
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+    </div>
 
     <?= GridView::widget([
-        'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
-        'columns' => [
+            'dataProvider' => $dataProvider,
+            'filterModel' => $searchModel,
+            'tableOptions' => ['class' => 'table table-hover align-middle'],
+            'summaryOptions' => ['class' => 'text-muted mb-3'],
+            'columns' => [
 
-            'id',
-            'username',
-            'email:email',
+                    [
+                            'attribute' => 'id',
+                            'headerOptions' => ['style' => 'width:80px'],
+                            'contentOptions' => ['class' => 'text-center text-muted'],
+                    ],
 
-                [
-                        'class' => 'yii\grid\ActionColumn',
-                        'visibleButtons' => [
-                                'update' => function ($model) {
-                                    return Yii::$app->user->can('admin');
-                                },
-                                'delete' => function ($model) {
-                                    return Yii::$app->user->can('admin');
-                                },
-                                'view' => function ($model) {
-                                    return true; // todos podem ver (opcional)
-                                },
-                        ],
-                ],
-        ],
+                    [
+                            'attribute' => 'username',
+                            'format' => 'text',
+                            'contentOptions' => ['style' => 'font-weight:500; font-size:1rem;'],
+                    ],
+
+                    [
+                            'attribute' => 'email',
+                            'format' => 'email',
+                            'contentOptions' => ['style' => 'font-size:0.95rem;'],
+                    ],
+
+                    [
+                            'class' => \yii\grid\ActionColumn::className(),
+                            'header' => 'Ações',
+                            'headerOptions' => ['class' => 'text-center'],
+                            'contentOptions' => ['class' => 'text-center'],
+                            'template' => '{view} {update} {delete}',
+                            'visibleButtons' => [
+                                    'update' => function ($model) {
+                                        return Yii::$app->user->can('admin');
+                                    },
+                                    'delete' => function ($model) {
+                                        return Yii::$app->user->can('admin');
+                                    },
+                                    'view' => function ($model) {
+                                        return true;
+                                    },
+                            ],
+                            'buttons' => [
+                                    'view' => function($url, $model) {
+                                        return Html::a('<i class="fas fa-eye"></i>', $url, [
+                                                'class' => 'btn btn-sm btn-outline-info me-1',
+                                                'title' => 'Ver',
+                                        ]);
+                                    },
+                                    'update' => function($url, $model) {
+                                        return Html::a('<i class="fas fa-edit"></i>', $url, [
+                                                'class' => 'btn btn-sm btn-outline-warning me-1',
+                                                'title' => 'Editar',
+                                        ]);
+                                    },
+                                    'delete' => function($url, $model) {
+                                        return Html::a('<i class="fas fa-trash"></i>', $url, [
+                                                'class' => 'btn btn-sm btn-outline-danger',
+                                                'title' => 'Apagar',
+                                                'data-confirm' => 'Tens a certeza que queres apagar este utilizador?',
+                                                'data-method' => 'post',
+                                        ]);
+                                    },
+                            ],
+                            'urlCreator' => function($action, $model, $key, $index) {
+                                return Url::to([$action, 'id' => $model->id]);
+                            }
+                    ],
+            ],
     ]); ?>
-
-
 </div>
+
