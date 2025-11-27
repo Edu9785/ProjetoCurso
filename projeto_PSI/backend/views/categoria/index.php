@@ -15,28 +15,74 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="categoria-index">
 
-    <p>
-        <?= Html::a('Create Categoria', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
-
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <?= Html::a('<i class="fas fa-plus"></i> Criar Categoria', ['create'], [
+                'class' => 'btn btn-success btn-sm shadow-sm',
+        ]) ?>
+    </div>
 
     <?= GridView::widget([
-        'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
-        'columns' => [
+            'dataProvider' => $dataProvider,
+            'filterModel' => $searchModel,
+            'tableOptions' => ['class' => 'table table-hover align-middle'],
+            'summaryOptions' => ['class' => 'text-muted mb-3'],
+            'columns' => [
 
-            'id',
-            'categoria',
-            'id_gestor',
-            [
-                'class' => ActionColumn::className(),
-                'urlCreator' => function ($action, Categoria $model, $key, $index, $column) {
-                    return Url::toRoute([$action, 'id' => $model->id]);
-                 }
+                    [
+                            'attribute' => 'id',
+                            'headerOptions' => ['style' => 'width:80px'],
+                            'contentOptions' => ['class' => 'text-center text-muted'],
+                    ],
+
+                    [
+                            'attribute' => 'categoria',
+                            'contentOptions' => ['style' => 'font-weight:500; font-size:1rem;'],
+                    ],
+
+                    [
+                            'attribute' => 'id_gestor',
+                            'label' => 'Gestor',
+                            'value' => function($model){
+                                return $model->gestor->username ?? '—';
+                            },
+                            'contentOptions' => ['class' => 'text-muted'],
+                    ],
+
+                    [
+                            'class' => \yii\grid\ActionColumn::className(),
+                            'header' => 'Ações',
+                            'headerOptions' => ['class' => 'text-center'],
+                            'contentOptions' => ['class' => 'text-center'],
+                            'template' => '{view} {update} {delete}',
+                            'buttons' => [
+                                    'view' => function($url) {
+                                        return Html::a('<i class="fas fa-eye"></i>', $url, [
+                                                'class' => 'btn btn-sm btn-outline-info me-1',
+                                                'title' => 'Ver',
+                                        ]);
+                                    },
+                                    'update' => function($url) {
+                                        return Html::a('<i class="fas fa-edit"></i>', $url, [
+                                                'class' => 'btn btn-sm btn-outline-warning me-1',
+                                                'title' => 'Editar',
+                                        ]);
+                                    },
+                                    'delete' => function($url) {
+                                        return Html::a('<i class="fas fa-trash"></i>', $url, [
+                                                'class' => 'btn btn-sm btn-outline-danger',
+                                                'title' => 'Apagar',
+                                                'data-confirm' => 'Tens a certeza que queres eliminar esta categoria?',
+                                                'data-method' => 'post',
+                                        ]);
+                                    },
+                            ],
+                            'urlCreator' => function($action, $model, $key) {
+                                return Url::to([$action, 'id' => $model->id]);
+                            }
+                    ],
+
             ],
-        ],
     ]); ?>
 
-
 </div>
+
