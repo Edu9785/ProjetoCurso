@@ -6,14 +6,12 @@ use yii\widgets\DetailView;
 /** @var yii\web\View $this */
 /** @var common\models\Premium $model */
 
-$this->title = $model->id;
-$this->params['breadcrumbs'][] = ['label' => 'Premia', 'url' => ['index']];
+$this->title = 'Premium - ' . $model->id;
+$this->params['breadcrumbs'][] = ['label' => 'Premium', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
 <div class="premium-view">
-
-    <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
         <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>

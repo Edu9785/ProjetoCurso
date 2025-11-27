@@ -6,14 +6,12 @@ use yii\widgets\DetailView;
 /** @var yii\web\View $this */
 /** @var common\models\Tempo $model */
 
-$this->title = $model->id;
-$this->params['breadcrumbs'][] = ['label' => 'Tempos', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+$this->title ='Temporizador - ' . $model->id;
+$this->params['breadcrumbs'][] = ['label' => 'Temporizadores', 'url' => ['index']];
+$this->params['breadcrumbs'][] = $model->id;
 \yii\web\YiiAsset::register($this);
 ?>
 <div class="tempo-view">
-
-    <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
         <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>

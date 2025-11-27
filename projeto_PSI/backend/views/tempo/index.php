@@ -10,13 +10,14 @@ use yii\grid\GridView;
 /** @var common\models\TempoSearch $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
 
-$this->title = 'Tempos';
+$this->title = 'Temporizadores';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="tempo-index">
 
+
     <p>
-        <?= Html::a('Create Tempo', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Criar Temporizador', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
@@ -25,7 +26,6 @@ $this->params['breadcrumbs'][] = $this->title;
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
 
             'id',
             'quantidadetempo',

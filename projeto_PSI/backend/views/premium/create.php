@@ -6,12 +6,10 @@ use yii\helpers\Html;
 /** @var common\models\Premium $model */
 
 $this->title = 'Create Premium';
-$this->params['breadcrumbs'][] = ['label' => 'Premia', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Premium', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="premium-create">
-
-    <h1><?= Html::encode($this->title) ?></h1>
 
     <?= $this->render('_form', [
         'model' => $model,

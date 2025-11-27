@@ -10,7 +10,7 @@ use yii\grid\GridView;
 /** @var common\models\PremiumSearch $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
 
-$this->title = 'Premium';
+$this->title = 'Premiums';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="premium-index">
