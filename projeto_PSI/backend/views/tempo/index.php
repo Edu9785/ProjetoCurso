@@ -36,6 +36,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
                     [
                             'attribute' => 'quantidadetempo',
+                            'label' => 'Quantidade de Tempo',
                             'format' => 'text',
                             'contentOptions' => ['style' => 'font-weight:500; font-size:1rem;'],
                     ],
@@ -43,7 +44,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     [
                             'class' => \yii\grid\ActionColumn::className(),
                             'header' => 'Ações',
-                            'headerOptions' => ['class' => 'text-center'],
+                            'headerOptions' => ['class' => 'text-center text-primary'],
                             'contentOptions' => ['class' => 'text-center'],
                             'template' => '{view} {update} {delete}',
                             'buttons' => [

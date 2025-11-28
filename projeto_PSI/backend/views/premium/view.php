@@ -7,15 +7,15 @@ use yii\widgets\DetailView;
 /** @var common\models\Premium $model */
 
 $this->title = 'Premium - ' . $model->id;
-$this->params['breadcrumbs'][] = ['label' => 'Premium', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+$this->params['breadcrumbs'][] = ['label' => 'Premiums', 'url' => ['index']];
+$this->params['breadcrumbs'][] = $model->id;
 \yii\web\YiiAsset::register($this);
 ?>
 <div class="premium-view">
 
     <p>
-        <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Delete', ['delete', 'id' => $model->id], [
+        <?= Html::a('Editar', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Apagar', ['delete', 'id' => $model->id], [
             'class' => 'btn btn-danger',
             'data' => [
                 'confirm' => 'Are you sure you want to delete this item?',
@@ -29,7 +29,11 @@ $this->params['breadcrumbs'][] = $this->title;
         'attributes' => [
             'id',
             'nome',
-            'preco',
+            [
+                    'attribute' => 'preco',
+                    'label' => 'Preço',
+            ],
+
         ],
     ]) ?>
 
