@@ -20,7 +20,7 @@ use Yii;
  * @property JogosdefaultPergunta[] $jogosdefaultPerguntas
  * @property Tempo $tempo
  */
-class Jogodefault extends \yii\db\ActiveRecord
+class JogosDefault extends \yii\db\ActiveRecord
 {
 
 
@@ -40,7 +40,7 @@ class Jogodefault extends \yii\db\ActiveRecord
         return [
             [['id_dificuldade', 'titulo', 'descricao', 'id_tempo', 'totalpontosjogo', 'imagem'], 'required'],
             [['id_dificuldade', 'id_tempo', 'totalpontosjogo'], 'integer'],
-            [['titulo', 'imagem'], 'string', 'max' => 255],
+            [['titulo', 'imagem'], 'string', 'max' => 45],
             [['descricao'], 'string', 'max' => 500],
             [['id_dificuldade'], 'exist', 'skipOnError' => true, 'targetClass' => Dificuldade::class, 'targetAttribute' => ['id_dificuldade' => 'id']],
             [['id_tempo'], 'exist', 'skipOnError' => true, 'targetClass' => Tempo::class, 'targetAttribute' => ['id_tempo' => 'id']],

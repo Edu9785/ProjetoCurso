@@ -1,6 +1,6 @@
 <?php
 
-namespace app\controllers;
+namespace frontend\controllers;
 
 use common\models\Premium;
 use yii\data\ActiveDataProvider;
@@ -40,7 +40,6 @@ class PremiumController extends Controller
     {
         $dataProvider = new ActiveDataProvider([
             'query' => Premium::find(),
-            /*
             'pagination' => [
                 'pageSize' => 50
             ],
@@ -49,7 +48,6 @@ class PremiumController extends Controller
                     'id' => SORT_DESC,
                 ]
             ],
-            */
         ]);
 
         return $this->render('index', [
