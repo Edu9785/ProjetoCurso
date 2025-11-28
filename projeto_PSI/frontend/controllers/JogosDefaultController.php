@@ -9,7 +9,7 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
- * JogosDefaultController implements the CRUD actions for JogosDefault model.
+ * JogosdefaultController implements the CRUD actions for JogosDefault model.
  */
 class JogosDefaultController extends Controller
 {

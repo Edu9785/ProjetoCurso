@@ -1,18 +1,22 @@
 <?php
 
+use common\models\JogosDefault;
 use yii\helpers\Html;
+use yii\helpers\Url;
+use yii\grid\ActionColumn;
+use yii\grid\GridView;
 
 /** @var yii\web\View $this */
+/** @var common\models\JogosDefaultSearch $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
 
-$this->title = 'Jogos Default';
+$this->title = 'Jogos Defaults';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-
-<div class="jogodefault-index">
+<div class="jogosdefault-index">
 
     <div class="d-flex justify-content-between align-items-center mb-4">
-            <?= Html::a('Criar Jogo', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Criar Jogo', ['create'], ['class' => 'btn btn-success']) ?>
     </div>
 
     <div class="row">

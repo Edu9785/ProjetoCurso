@@ -3,13 +3,13 @@
 use yii\helpers\Html;
 
 /** @var yii\web\View $this */
-/** @var common\models\Jogodefault $model */
+/** @var common\models\JogosDefault $model */
 
-$this->title = 'Create Jogodefault';
-$this->params['breadcrumbs'][] = ['label' => 'Jogodefaults', 'url' => ['index']];
+$this->title = 'Create Jogos Default';
+$this->params['breadcrumbs'][] = ['label' => 'Jogos Defaults', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="jogodefault-create">
+<div class="jogos-default-create">
 
     <?= $this->render('_form', [
             'model' => $model,

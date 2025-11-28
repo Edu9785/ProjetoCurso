@@ -1,19 +1,19 @@
 <?php
 
-namespace frontend\controllers;
+namespace backend\controllers;
 
+use common\models\JogosDefault;
+use common\models\JogosDefaultSearch;
 use Yii;
-use common\models\Jogodefault;
-use common\models\JogodefaultSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\UploadedFile;
 
 /**
- * JogodefaultController implements the CRUD actions for Jogodefault model.
+ * JogosdefaultController implements the CRUD actions for JogosDefault model.
  */
-class JogodefaultController extends Controller
+class JogosdefaultController extends Controller
 {
     /**
      * @inheritDoc
@@ -34,13 +34,13 @@ class JogodefaultController extends Controller
     }
 
     /**
-     * Lists all Jogodefault models.
+     * Lists all JogosDefault models.
      *
      * @return string
      */
     public function actionIndex()
     {
-        $searchModel = new JogodefaultSearch();
+        $searchModel = new JogosDefaultSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
         return $this->render('index', [
@@ -50,7 +50,7 @@ class JogodefaultController extends Controller
     }
 
     /**
-     * Displays a single Jogodefault model.
+     * Displays a single JogosDefault model.
      * @param int $id ID
      * @return string
      * @throws NotFoundHttpException if the model cannot be found
@@ -63,13 +63,13 @@ class JogodefaultController extends Controller
     }
 
     /**
-     * Creates a new Jogodefault model.
+     * Creates a new JogosDefault model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return string|\yii\web\Response
      */
     public function actionCreate()
     {
-        $model = new Jogodefault();
+        $model = new JogosDefault();
 
         $dificuldades = \common\models\Dificuldade::find()->all();
         $tempos = \common\models\Tempo::find()->all();
@@ -142,7 +142,7 @@ class JogodefaultController extends Controller
     }
 
     /**
-     * Deletes an existing Jogodefault model.
+     * Deletes an existing JogosDefault model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param int $id ID
      * @return \yii\web\Response
@@ -156,15 +156,15 @@ class JogodefaultController extends Controller
     }
 
     /**
-     * Finds the Jogodefault model based on its primary key value.
+     * Finds the JogosDefault model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param int $id ID
-     * @return Jogodefault the loaded model
+     * @return JogosDefault the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Jogodefault::findOne(['id' => $id])) !== null) {
+        if (($model = JogosDefault::findOne(['id' => $id])) !== null) {
             return $model;
         }
 

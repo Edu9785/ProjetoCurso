@@ -3,14 +3,14 @@
 use yii\helpers\Html;
 
 /** @var yii\web\View $this */
-/** @var common\models\Jogodefault $model */
+/** @var common\models\JogosDefault $model */
 
-$this->title = 'Update Jogodefault: ' . $model->id;
-$this->params['breadcrumbs'][] = ['label' => 'Jogodefaults', 'url' => ['index']];
+$this->title = 'Update Jogos Default: ' . $model->id;
+$this->params['breadcrumbs'][] = ['label' => 'Jogos Defaults', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'Update';
 ?>
-<div class="jogodefault-update">
+<div class="jogos-default-update">
 
     <h1><?= Html::encode($this->title) ?></h1>
 

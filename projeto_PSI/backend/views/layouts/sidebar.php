@@ -56,7 +56,7 @@ $username = $user ? Html::encode($user->username) : 'Visitante';
                             [
                                     'label' => 'Jogos Default',
                                     'icon' => 'gamepad',
-                                    'url' => ['/jogodefault/index'],
+                                    'url' => ['/jogosdefault/index'],
                             ],
                             [
                                     'label' => 'Categorias',

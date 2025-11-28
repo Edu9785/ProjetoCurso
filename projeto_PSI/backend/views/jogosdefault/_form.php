@@ -5,11 +5,11 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /** @var yii\web\View $this */
-/** @var common\models\Jogodefault $model */
+/** @var common\models\JogosDefault $model */
 /** @var yii\widgets\ActiveForm $form */
 ?>
 
-<div class="jogodefault-form">
+<div class="jogos-default-form">
 
     <?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]); ?>
 
