@@ -1,64 +1,36 @@
+<?php
+/** @var yii\web\View $this */
+/** @var yii\data\ActiveDataProvider $dataProvider */
 
-<!-- Header Start -->
-<div class="container-fluid bg-primary py-5 mb-5">
-    <div class="container py-5">
-        <div class="row justify-content-center">
-            <div class="col-lg-10 text-center">
-                <h1 class="display-3 text-white animated slideInDown">Premium</h1>
+use yii\helpers\Html;
+
+$premiums = $dataProvider->getModels();
+?>
+
+<div class="container py-5">
+    <h1 class="mb-4 text-center">Planos Premium</h1>
+
+    <div class="row g-4">
+        <?php foreach ($premiums as $premium): ?>
+            <div class="col-lg-4 col-md-6">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-body text-center">
+                        <h4 class="card-title"><?= Html::encode($premium->nome) ?></h4>
+
+                        <h2 class="text-primary my-3">
+                            € <?= number_format($premium->preco, 2, ',', '.') ?>
+                        </h2>
+
+                        <p class="card-text">
+                            Descrição do plano premium pode ser adicionada aqui.
+                        </p>
+
+                        <a href="#" class="btn btn-primary px-4 py-2 mt-2">
+                            Comprar
+                        </a>
+                    </div>
+                </div>
             </div>
-        </div>
+        <?php endforeach; ?>
     </div>
 </div>
-<!-- Header End -->
-
-<!-- Premium Start -->
-<div class="container-xxl py-5">
-    <div class="container">
-        <div class="row g-4 justify-content-center">
-
-            <!-- Card 1 -->
-            <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
-                <div class="course-item bg-light text-center h-100">
-                    <div class="position-relative overflow-hidden">
-                        <img class="img-fluid premium-img" src="img/course-1.jpg" alt="">
-                    </div>
-                    <div class="p-4 pb-4">
-                        <h3 class="mb-2">€95.00</h3>
-                        <h5 class="mb-3">Premium Bronze</h5>
-                        <a href="#" class="btn btn-buy px-4 py-2">Buy Now</a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card 2 -->
-            <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
-                <div class="course-item bg-light text-center h-100">
-                    <div class="position-relative overflow-hidden">
-                        <img class="img-fluid premium-img" src="img/course-2.jpg" alt="">
-                    </div>
-                    <div class="p-4 pb-4">
-                        <h3 class="mb-2">€110.00</h3>
-                        <h5 class="mb-3">Premium Gold</h5>
-                        <a href="#" class="btn btn-buy px-4 py-2">Buy Now</a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card 3 -->
-            <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.5s">
-                <div class="course-item bg-light text-center h-100">
-                    <div class="position-relative overflow-hidden">
-                        <img class="img-fluid premium-img" src="web/img/premdiamond.jpg" alt="">
-                    </div>
-                    <div class="p-4 pb-4">
-                        <h3 class="mb-2">€149.00</h3>
-                        <h5 class="mb-3">Premium Diamond</h5>
-                        <a href="#" class="btn btn-buy px-4 py-2">Buy Now</a>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-    </div>
-</div>
-<!-- Premium End -->

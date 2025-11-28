@@ -4,11 +4,11 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /** @var yii\web\View $this */
-/** @var common\models\JogoworkshopSearch $model */
+/** @var common\models $model */
 /** @var yii\widgets\ActiveForm $form */
 ?>
 
-<div class="jogoworkshop-search">
+<div class="jogos-default-search">
 
     <?php $form = ActiveForm::begin([
         'action' => ['index'],
@@ -17,19 +17,13 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'id') ?>
 
-    <?= $form->field($model, 'id_jogador') ?>
-
-    <?= $form->field($model, 'id_gestor') ?>
-
     <?= $form->field($model, 'id_dificuldade') ?>
 
-    <?= $form->field($model, 'aprovacao') ?>
+    <?= $form->field($model, 'titulo') ?>
 
-    <?php // echo $form->field($model, 'titulo') ?>
+    <?= $form->field($model, 'descricao') ?>
 
-    <?php // echo $form->field($model, 'descricao') ?>
-
-    <?php // echo $form->field($model, 'id_tempo') ?>
+    <?= $form->field($model, 'id_tempo') ?>
 
     <?php // echo $form->field($model, 'totalpontosjogo') ?>
 

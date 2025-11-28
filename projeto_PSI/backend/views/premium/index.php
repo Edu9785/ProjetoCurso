@@ -15,9 +15,11 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="premium-index">
 
-    <p>
-        <?= Html::a('Create Premium', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <?= Html::a('<i class="fas fa-plus"></i> Criar Premium', ['create'], [
+                'class' => 'btn btn-success btn-sm shadow-sm',
+        ]) ?>
+    </div>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
@@ -29,12 +31,38 @@ $this->params['breadcrumbs'][] = $this->title;
             'id',
             'nome',
             'preco',
-            [
-                'class' => ActionColumn::className(),
-                'urlCreator' => function ($action, Premium $model, $key, $index, $column) {
-                    return Url::toRoute([$action, 'id' => $model->id]);
-                 }
-            ],
+                [
+                        'class' => \yii\grid\ActionColumn::className(),
+                        'header' => 'Ações',
+                        'headerOptions' => ['class' => 'text-center text-primary'],
+                        'contentOptions' => ['class' => 'text-center'],
+                        'template' => '{view} {update} {delete}',
+                        'buttons' => [
+                                'view' => function($url) {
+                                    return Html::a('<i class="fas fa-eye"></i>', $url, [
+                                            'class' => 'btn btn-sm btn-outline-info me-1',
+                                            'title' => 'Ver',
+                                    ]);
+                                },
+                                'update' => function($url) {
+                                    return Html::a('<i class="fas fa-edit"></i>', $url, [
+                                            'class' => 'btn btn-sm btn-outline-warning me-1',
+                                            'title' => 'Editar',
+                                    ]);
+                                },
+                                'delete' => function($url) {
+                                    return Html::a('<i class="fas fa-trash"></i>', $url, [
+                                            'class' => 'btn btn-sm btn-outline-danger',
+                                            'title' => 'Apagar',
+                                            'data-confirm' => 'Tens a certeza que queres eliminar este temporizador?',
+                                            'data-method' => 'post',
+                                    ]);
+                                },
+                        ],
+                        'urlCreator' => function($action, $model, $key) {
+                            return Url::to([$action, 'id' => $model->id]);
+                        }
+                ],
         ],
     ]); ?>
 

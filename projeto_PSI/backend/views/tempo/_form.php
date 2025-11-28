@@ -12,7 +12,7 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'quantidadetempo')->textInput() ?>
+    <?= $form->field($model, 'quantidadetempo')->label('Quantidade de Tempo (em segundos)')->textInput() ?>
 
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>

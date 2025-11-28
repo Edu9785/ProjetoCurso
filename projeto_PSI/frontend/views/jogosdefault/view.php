@@ -4,14 +4,14 @@ use yii\helpers\Html;
 use yii\widgets\DetailView;
 
 /** @var yii\web\View $this */
-/** @var common\models\Jogoworkshop $model */
+/** @var common\models\JogosDefault $model */
 
 $this->title = $model->id;
-$this->params['breadcrumbs'][] = ['label' => 'Jogoworkshops', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Jogos Defaults', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
-<div class="jogoworkshop-view">
+<div class="jogos-default-view">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
@@ -30,10 +30,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $model,
         'attributes' => [
             'id',
-            'id_jogador',
-            'id_gestor',
             'id_dificuldade',
-            'aprovacao',
             'titulo',
             'descricao',
             'id_tempo',

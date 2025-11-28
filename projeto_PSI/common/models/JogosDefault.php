@@ -21,7 +21,7 @@ use yii\web\UploadedFile;
  * @property JogosdefaultPergunta[] $jogosdefaultPerguntas
  * @property Tempo $tempo
  */
-class Jogodefault extends \yii\db\ActiveRecord
+class JogosDefault extends \yii\db\ActiveRecord
 {
     public $imageFile;
     /**
@@ -43,7 +43,7 @@ class Jogodefault extends \yii\db\ActiveRecord
         return [
             [['id_dificuldade', 'titulo', 'descricao', 'id_tempo', 'totalpontosjogo', 'imagem'], 'required'],
             [['id_dificuldade', 'id_tempo', 'totalpontosjogo'], 'integer'],
-            [['titulo', 'imagem'], 'string', 'max' => 255],
+            [['titulo', 'imagem'], 'string', 'max' => 45],
             [['descricao'], 'string', 'max' => 500],
 
             [['imageFile'], 'file', 'skipOnEmpty' => true, 'extensions' => 'png, jpg, jpeg'],

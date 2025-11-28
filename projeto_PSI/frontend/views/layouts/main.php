@@ -74,8 +74,8 @@ AppAsset::register($this);
     ]);
     $menuItems = [
             ['label' => 'Home', 'url' => Yii::$app->homeUrl],
-        ['label' => 'Premium', 'url' => ['/site/about']],
-        ['label' => 'Jogos', 'url' => ['/site/contact']],
+        ['label' => 'Premium', 'url' => ['/premium/index']],
+        ['label' => 'Jogos', 'url' => ['/jogosdefault/index']],
     ];
     /*
     if (Yii::$app->user->isGuest) {
