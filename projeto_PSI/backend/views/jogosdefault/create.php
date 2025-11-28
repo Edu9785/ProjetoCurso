@@ -5,7 +5,7 @@ use yii\helpers\Html;
 /** @var yii\web\View $this */
 /** @var common\models\JogosDefault $model */
 
-$this->title = 'Create Jogos Default';
+$this->title = 'Criar Jogos Default';
 $this->params['breadcrumbs'][] = ['label' => 'Jogos Defaults', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
@@ -15,6 +15,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'model' => $model,
             'dificuldades' => $dificuldades,
             'tempos' => $tempos,
+            'categorias' => $categorias,
     ]) ?>
 
 </div>

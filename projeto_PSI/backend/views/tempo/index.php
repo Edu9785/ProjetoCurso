@@ -16,9 +16,8 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="tempo-index">
 
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <?= Html::a('<i class="fas fa-plus"></i> Criar Temporizador', ['create'], [
-                'class' => 'btn btn-success btn-sm shadow-sm',
-        ]) ?>
+        <?= Html::a('<i class="fas fa-plus"></i> Criar Temporizador', ['create'],
+                ['class' => 'btn btn-success btn-sm shadow-sm',]) ?>
     </div>
 
     <?= GridView::widget([

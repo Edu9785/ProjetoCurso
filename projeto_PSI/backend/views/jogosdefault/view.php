@@ -13,8 +13,6 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="jogos-default-view">
 
-    <h1><?= Html::encode($this->title) ?></h1>
-
     <p>
         <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
         <?= Html::a('Delete', ['delete', 'id' => $model->id], [
@@ -35,6 +33,30 @@ $this->params['breadcrumbs'][] = $this->title;
             'descricao',
             'id_tempo',
             'totalpontosjogo',
+                [
+                        'label' => 'Categorias',
+                        'value' => function ($model) use ($categorias) {
+
+                            if (empty($model->categorias)) {
+                                return 'Nenhuma categoria atribuída';
+                            }
+
+                            // converter "1,3,5" → [1,3,5]
+                            $ids = explode(',', $model->categorias);
+
+                            // mapear nomes
+                            $nomes = [];
+
+                            foreach ($categorias as $cat) {
+                                if (in_array($cat->id, $ids)) {
+                                    $nomes[] = $cat->categoria;
+                                }
+                            }
+
+                            return implode(', ', $nomes);
+                        },
+                        'format' => 'raw',
+                ],
             'imagem',
         ],
     ]) ?>

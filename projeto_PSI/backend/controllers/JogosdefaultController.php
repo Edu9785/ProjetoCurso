@@ -57,11 +57,16 @@ class JogosdefaultController extends Controller
      */
     public function actionView($id)
     {
+        $model = $this->findModel($id);
+
+        // buscar todas as categorias da BD
+        $categorias = \common\models\Categoria::find()->all();
+
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'model' => $model,
+            'categorias' => $categorias
         ]);
     }
-
     /**
      * Creates a new JogosDefault model.
      * If creation is successful, the browser will be redirected to the 'view' page.
@@ -73,6 +78,7 @@ class JogosdefaultController extends Controller
 
         $dificuldades = \common\models\Dificuldade::find()->all();
         $tempos = \common\models\Tempo::find()->all();
+        $categorias = \common\models\Categoria::find()->all();
 
         if ($model->load(Yii::$app->request->post())) {
 
@@ -94,6 +100,7 @@ class JogosdefaultController extends Controller
             'model' => $model,
             'dificuldades' => $dificuldades,
             'tempos' => $tempos,
+            'categorias' => $categorias,
         ]);
     }
 
@@ -110,6 +117,7 @@ class JogosdefaultController extends Controller
 
         $dificuldades = \common\models\Dificuldade::find()->all();
         $tempos = \common\models\Tempo::find()->all();
+        $categorias = \common\models\Categoria::find()->all();
 
         // guardar nome da imagem antiga
         $oldImage = $model->imagem;
@@ -138,6 +146,7 @@ class JogosdefaultController extends Controller
             'model' => $model,
             'dificuldades' => $dificuldades,
             'tempos' => $tempos,
+            'categorias' => $categorias,
         ]);
     }
 

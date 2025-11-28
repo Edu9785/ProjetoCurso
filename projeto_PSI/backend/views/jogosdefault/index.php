@@ -1,22 +1,25 @@
 <?php
-
-use common\models\JogosDefault;
+use common\models\Categoria;
 use yii\helpers\Html;
-use yii\helpers\Url;
-use yii\grid\ActionColumn;
-use yii\grid\GridView;
 
 /** @var yii\web\View $this */
-/** @var common\models\JogosDefaultSearch $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
 
 $this->title = 'Jogos Defaults';
 $this->params['breadcrumbs'][] = $this->title;
+
+// buscar todas as categorias de uma vez
+$categorias = Categoria::find()->all();
+$categoriasMap = [];
+foreach ($categorias as $c) {
+    $categoriasMap[$c->id] = $c->categoria;
+}
 ?>
 <div class="jogosdefault-index">
 
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <?= Html::a('Criar Jogo', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('<i class="fas fa-plus"></i> Criar Jogo', ['create'],
+                ['class' => 'btn btn-success btn-sm shadow-sm']) ?>
     </div>
 
     <div class="row">
@@ -32,11 +35,30 @@ $this->params['breadcrumbs'][] = $this->title;
                     <div class="card-body">
                         <h5 class="card-title"><?= Html::encode($model->titulo) ?></h5>
                         <p class="card-text"><?= Html::encode($model->descricao) ?></p>
+
                         <ul class="list-group list-group-flush mb-3">
                             <li class="list-group-item"><strong>Dificuldade:</strong> <?= Html::encode($model->dificuldade->dificuldade ?? '-') ?></li>
                             <li class="list-group-item"><strong>Tempo:</strong> <?= Html::encode($model->tempo->quantidadetempo ?? '-') ?> seg</li>
                             <li class="list-group-item"><strong>Total Pontos:</strong> <?= Html::encode($model->totalpontosjogo) ?></li>
+
+                            <?php
+                            // categorias
+                            if (!empty($model->categorias)) {
+                                $ids = explode(',', $model->categorias);
+                                $nomes = [];
+                                foreach ($ids as $id) {
+                                    if (isset($categoriasMap[$id])) {
+                                        $nomes[] = $categoriasMap[$id];
+                                    }
+                                }
+                                $categoriasTexto = implode(', ', $nomes);
+                            } else {
+                                $categoriasTexto = 'Nenhuma categoria atribuída';
+                            }
+                            ?>
+                            <li class="list-group-item"><strong>Categorias:</strong> <?= Html::encode($categoriasTexto) ?></li>
                         </ul>
+
                         <div class="d-flex justify-content-between">
                             <?= Html::a('<i class="fas fa-eye"></i> Ver', ['view', 'id' => $model->id], ['class' => 'btn btn-sm btn-outline-info']) ?>
                             <?= Html::a('<i class="fas fa-edit"></i> Editar', ['update', 'id' => $model->id], ['class' => 'btn btn-sm btn-outline-warning']) ?>
