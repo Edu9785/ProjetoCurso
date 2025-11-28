@@ -3,6 +3,7 @@
 namespace common\models;
 
 use Yii;
+use yii\web\UploadedFile;
 
 /**
  * This is the model class for table "jogosdefault".
@@ -14,7 +15,7 @@ use Yii;
  * @property int $id_tempo
  * @property int $totalpontosjogo
  * @property string $imagem
- *
+ * @property UploadedFile $imageFile
  * @property Dificuldade $dificuldade
  * @property JogosdefaultCategoria[] $jogosdefaultCategorias
  * @property JogosdefaultPergunta[] $jogosdefaultPerguntas
@@ -22,8 +23,10 @@ use Yii;
  */
 class Jogodefault extends \yii\db\ActiveRecord
 {
-
-
+    public $imageFile;
+    /**
+     * @var UploadedFile
+     */
     /**
      * {@inheritdoc}
      */
@@ -42,6 +45,9 @@ class Jogodefault extends \yii\db\ActiveRecord
             [['id_dificuldade', 'id_tempo', 'totalpontosjogo'], 'integer'],
             [['titulo', 'imagem'], 'string', 'max' => 255],
             [['descricao'], 'string', 'max' => 500],
+
+            [['imageFile'], 'file', 'skipOnEmpty' => true, 'extensions' => 'png, jpg, jpeg'],
+
             [['id_dificuldade'], 'exist', 'skipOnError' => true, 'targetClass' => Dificuldade::class, 'targetAttribute' => ['id_dificuldade' => 'id']],
             [['id_tempo'], 'exist', 'skipOnError' => true, 'targetClass' => Tempo::class, 'targetAttribute' => ['id_tempo' => 'id']],
         ];
@@ -60,8 +66,38 @@ class Jogodefault extends \yii\db\ActiveRecord
             'id_tempo' => 'Id Tempo',
             'totalpontosjogo' => 'Totalpontosjogo',
             'imagem' => 'Imagem',
+            'imageFile' => 'Upload da Imagem',
         ];
     }
+
+    /**
+     * Guarda a imagem na pasta e grava o nome na BD
+     */
+    public function upload()
+    {
+        if ($this->imageFile) {
+
+            // gerar nome único
+            $filename = uniqid('img_') . '.' . $this->imageFile->extension;
+
+            // definir caminho correto para frontend/web/uploads/
+            $path = Yii::getAlias('@frontend/web/uploads/') . $filename;
+
+            // guardar ficheiro físico
+            if ($this->imageFile->saveAs($path)) {
+
+                // guardar nome da imagem na BD
+                $this->imagem = $filename;
+
+                return true;
+            }
+
+            return false;
+        }
+
+        return true; // caso não envie imagem
+    }
+
 
     /**
      * Gets query for [[Dificuldade]].

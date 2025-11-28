@@ -8,6 +8,7 @@ use common\models\JogodefaultSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\UploadedFile;
 
 /**
  * JogodefaultController implements the CRUD actions for Jogodefault model.
@@ -70,13 +71,22 @@ class JogodefaultController extends Controller
     {
         $model = new Jogodefault();
 
-        // Buscar dificuldades
         $dificuldades = \common\models\Dificuldade::find()->all();
-
-        // Buscar tempos
         $tempos = \common\models\Tempo::find()->all();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post())) {
+
+            // pegar o ficheiro enviado
+            $model->imageFile = UploadedFile::getInstance($model, 'imageFile');
+
+            // SE existir ficheiro → fazer uploads
+            if ($model->imageFile) {
+                if ($model->upload()) {
+                    // uploads OK: agora guarda o nome da imagem na BD
+                    $model->save(false);
+                }
+            }
+
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -98,13 +108,29 @@ class JogodefaultController extends Controller
     {
         $model = $this->findModel($id);
 
-        // Buscar dificuldades
         $dificuldades = \common\models\Dificuldade::find()->all();
-
-        // Buscar tempos
         $tempos = \common\models\Tempo::find()->all();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        // guardar nome da imagem antiga
+        $oldImage = $model->imagem;
+
+        if ($model->load(Yii::$app->request->post())) {
+
+            // obter nova imagem (se houver)
+            $model->imageFile = UploadedFile::getInstance($model, 'imageFile');
+
+            if ($model->imageFile) {
+                // fazer uploads da nova imagem
+                if ($model->upload()) {
+                    // uploads OK → nova imagem substitui
+                    $model->save(false);
+                }
+            } else {
+                // sem nova imagem → manter antiga
+                $model->imagem = $oldImage;
+                $model->save(false);
+            }
+
             return $this->redirect(['view', 'id' => $model->id]);
         }
 

@@ -6,6 +6,8 @@ $params = array_merge(
     require __DIR__ . '/params-local.php'
 );
 
+Yii::setAlias('@frontendUrl', 'http://localhost/ProjetoCurso/projeto_PSI/frontend/web');
+
 return [
     'id' => 'app-backend',
     'basePath' => dirname(__DIR__),

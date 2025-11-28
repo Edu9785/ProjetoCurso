@@ -47,6 +47,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     ],
                     'nome',
                     'idade',
+                    'id_premium',
                     [
                             'label' => 'Role',
                             'value' => $role,

@@ -11,7 +11,7 @@ use yii\widgets\ActiveForm;
 
 <div class="jogodefault-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]); ?>
 
     <?= $form->field($model, 'id_dificuldade')->dropDownList(
             ['' => 'Selecione a dificuldade...'] + ArrayHelper::map($dificuldades, 'id', 'dificuldade'),
@@ -37,7 +37,7 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'totalpontosjogo')->textInput() ?>
 
-    <?= $form->field($model, 'imagem')->fileInput() ?>
+    <?= $form->field($model, 'imageFile')->fileInput() ?>
 
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
