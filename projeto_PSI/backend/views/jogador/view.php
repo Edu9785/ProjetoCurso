@@ -15,11 +15,11 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="jogador-view">
 
     <p>
-        <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Delete', ['delete', 'id' => $model->id], [
+        <?= Html::a('Editar', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Apagar', ['delete', 'id' => $model->id], [
                 'class' => 'btn btn-danger',
                 'data' => [
-                        'confirm' => 'Are you sure you want to delete this jogador?',
+                        'confirm' => 'Tem acerteza que quer apagar este jogador?',
                         'method' => 'post',
                 ],
         ]) ?>

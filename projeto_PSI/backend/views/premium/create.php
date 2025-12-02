@@ -5,9 +5,9 @@ use yii\helpers\Html;
 /** @var yii\web\View $this */
 /** @var common\models\Premium $model */
 
-$this->title = 'Create Premium';
+$this->title = 'Criar Premium';
 $this->params['breadcrumbs'][] = ['label' => 'Premium', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+$this->params['breadcrumbs'][] = 'Criar';
 ?>
 <div class="premium-create">
 

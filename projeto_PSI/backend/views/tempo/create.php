@@ -7,7 +7,7 @@ use yii\helpers\Html;
 
 $this->title = 'Criar Temporizador';
 $this->params['breadcrumbs'][] = ['label' => 'Temporizadores', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+$this->params['breadcrumbs'][] = 'Criar';
 ?>
 <div class="tempo-create">
 

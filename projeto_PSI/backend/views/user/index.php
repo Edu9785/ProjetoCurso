@@ -26,8 +26,9 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= GridView::widget([
             'dataProvider' => $dataProvider,
             'filterModel' => $searchModel,
+            'summary' => 'A mostrar <span style="font-weight:700">{begin}</span> - <span style="font-weight:700">{end}</span> de <span style="font-weight:700">{totalCount}</span> item(s)',
+            'summaryOptions' => ['class' => 'text-muted mb-3', 'encode' => false],
             'tableOptions' => ['class' => 'table table-hover align-middle'],
-            'summaryOptions' => ['class' => 'text-muted mb-3'],
             'columns' => [
 
                     [
@@ -51,7 +52,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     [
                             'class' => \yii\grid\ActionColumn::className(),
                             'header' => 'Ações',
-                            'headerOptions' => ['class' => 'text-center'],
+                            'headerOptions' => ['class' => 'text-center text-primary'],
                             'contentOptions' => ['class' => 'text-center'],
                             'template' => '{view} {update} {delete}',
                             'visibleButtons' => [
