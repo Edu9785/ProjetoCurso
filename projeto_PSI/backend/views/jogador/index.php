@@ -91,7 +91,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                         return Html::a('<i class="fas fa-trash"></i>', $url, [
                                                 'class' => 'btn btn-sm btn-outline-danger',
                                                 'title' => 'Apagar',
-                                                'data-confirm' => 'Tem a certeza que deseja eliminar este jogador?',
+                                                'data-confirm' => 'Tem a certeza que queres apagar este Utilizador?',
                                                 'data-method' => 'post',
                                         ]);
                                     },

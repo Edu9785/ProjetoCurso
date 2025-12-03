@@ -72,7 +72,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                         return Html::a('<i class="fas fa-trash"></i>', $url, [
                                                 'class' => 'btn btn-sm btn-outline-danger',
                                                 'title' => 'Apagar',
-                                                'data-confirm' => 'Tens a certeza que queres eliminar esta categoria?',
+                                                'data-confirm' => 'Tens a certeza que deseja apagar esta Categoria?',
                                                 'data-method' => 'post',
                                         ]);
                                     },
