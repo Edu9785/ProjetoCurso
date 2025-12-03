@@ -83,7 +83,7 @@ class JogosdefaultController extends Controller
 
         if ($model->load(Yii::$app->request->post())) {
 
-<<<<<<< HEAD
+
             $model->imageFile = UploadedFile::getInstance($model, 'imageFile');
 
             if ($model->imageFile) {
@@ -96,40 +96,39 @@ class JogosdefaultController extends Controller
                         'categorias' => $categorias,
                     ]);
                 }
-=======
-            // RECEBER CATEGORIAS SELECIONADAS
-            $selectedCategorias = Yii::$app->request->post('categorias', []);
-            $model->categorias = implode(',', $selectedCategorias);
 
-            // FICHEIRO IMAGEM
-            $model->imageFile = UploadedFile::getInstance($model, 'imageFile');
+                // RECEBER CATEGORIAS SELECIONADAS
+                $selectedCategorias = Yii::$app->request->post('categorias', []);
+                $model->categorias = implode(',', $selectedCategorias);
 
-            if ($model->imageFile && $model->upload()) {
-                $model->save(false);
-            } else {
-                $model->save(false);
->>>>>>> bf8368372b841eb6b8e027559fe9bced46ecdd7c
-            }
+                // FICHEIRO IMAGEM
+                $model->imageFile = UploadedFile::getInstance($model, 'imageFile');
 
-            if ($model->save(false)) {
-
-                $categoriasSelecionadas = Yii::$app->request->post('categorias', []);
-                if (is_array($categoriasSelecionadas)) {
-                    foreach ($categoriasSelecionadas as $catId) {
-                        $catId = (int)$catId;
-                        if ($catId > 0) {
-                            $categoriasJogo = new JogosdefaultCategoria();
-                            $categoriasJogo->id_jogo = $model->id;
-                            $categoriasJogo->id_categoria = $catId;
-                            $categoriasJogo->save(false);
-                        }
-                    }
+                if ($model->imageFile && $model->upload()) {
+                    $model->save(false);
+                } else {
+                    $model->save(false);
                 }
 
-                return $this->redirect(['view', 'id' => $model->id]);
+                if ($model->save(false)) {
+
+                    $categoriasSelecionadas = Yii::$app->request->post('categorias', []);
+                    if (is_array($categoriasSelecionadas)) {
+                        foreach ($categoriasSelecionadas as $catId) {
+                            $catId = (int)$catId;
+                            if ($catId > 0) {
+                                $categoriasJogo = new JogosdefaultCategoria();
+                                $categoriasJogo->id_jogo = $model->id;
+                                $categoriasJogo->id_categoria = $catId;
+                                $categoriasJogo->save(false);
+                            }
+                        }
+                    }
+
+                    return $this->redirect(['view', 'id' => $model->id]);
+                }
             }
         }
-
         return $this->render('create', [
             'model' => $model,
             'dificuldades' => $dificuldades,
