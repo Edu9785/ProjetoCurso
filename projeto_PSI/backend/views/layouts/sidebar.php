@@ -6,81 +6,77 @@ $user = Yii::$app->user->identity;
 $username = $user ? Html::encode($user->username) : 'Visitante';
 ?>
 
-<aside class="main-sidebar sidebar-dark-primary elevation-4">
+<aside class="main-sidebar elevation-4" style="background-color: #00BFFF;"> <!-- Azul claro -->
+
     <!-- Brand Logo -->
-    <a href="<?=\yii\helpers\Url::home()?>" class="brand-link">
-        <img src="<?=$assetDir?>/img/AdminLTELogo.png" alt="Desafia te Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+    <a href="<?= Url::home() ?>" class="brand-link" style="background-color: #00BFFF; color: #fff;">
+        <img src="<?= $assetDir ?>/img/AdminLTELogo.png" alt="Desafia-te Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
         <span class="brand-text font-weight-light">Desafia-te</span>
     </a>
 
     <!-- Sidebar -->
     <div class="sidebar">
+
         <!-- Sidebar user panel (optional) -->
         <div class="user-panel mt-3 pb-3 mb-3 d-flex">
             <div class="image">
-                <img src="<?=$assetDir?>/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
+                <img src="<?= $assetDir ?>/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
             </div>
             <div class="info">
-                <a class="d-block"><?= $username ?></a>
+                <a class="d-block" style="color: #fff; font-weight: 500;"><?= $username ?></a>
             </div>
         </div>
 
-        <!-- SidebarSearch Form -->
-        <!-- href be escaped -->
-        <!-- <div class="form-inline">
-            <div class="input-group" data-widget="sidebar-search">
-                <input class="form-control form-control-sidebar" type="search" placeholder="Search" aria-label="Search">
-                <div class="input-group-append">
-                    <button class="btn btn-sidebar">
-                        <i class="fas fa-search fa-fw"></i>
-                    </button>
-                </div>
-            </div>
-        </div> -->
-
         <!-- Sidebar Menu -->
         <nav class="mt-2">
-            <?php
-            echo \hail812\adminlte\widgets\Menu::widget([
+            <?= \hail812\adminlte\widgets\Menu::widget([
                     'items' => [
-                            [
-                                    'label' => 'Administradores',
+                            ['label' =>
+                                    'Administradores',
                                     'icon' => 'users-cog',
-                                    'url' => ['/user/index'],
+                                    'url' => ['/user/index']
                             ],
-                            [
-                                    'label' => 'Jogadores',
+
+                            ['label' =>
+                                    'Jogadores',
                                     'icon' => 'user',
-                                    'url' => ['/jogador/index'],
+                                    'url' => ['/jogador/index']
                             ],
-                            [
-                                    'label' => 'Jogos Default',
+
+                            ['label' =>
+                                    'Jogos Default',
                                     'icon' => 'gamepad',
-                                    'url' => ['/jogosdefault/index'],
+                                    'url' => ['/jogosdefault/index']
                             ],
-                            [
-                                    'label' => 'Categorias',
+
+                            ['label' =>
+                                    'Categorias',
                                     'icon' => 'tags',
-                                    'url' => ['/categoria/index'],
+                                    'url' => ['/categoria/index']
                             ],
-                            [
-                                    'label' => 'Dificuldades',
+
+                            ['label' =>
+                                    'Dificuldades',
                                     'icon' => 'tachometer-alt',
-                                    'url' => ['/dificuldade/index'],
+                                    'url' => ['/dificuldade/index']
                             ],
-                            [
-                                    'label' => 'Premiums',
+
+                            ['label' =>
+                                    'Premiums',
                                     'icon' => 'gem',
-                                    'url' => ['/premium/index'],
+                                    'url' => ['/premium/index']
                             ],
-                            [
-                                    'label' => 'Temporizadores',
+
+                            ['label' =>
+                                    'Temporizadores',
                                     'icon' => 'clock',
-                                    'url' => ['/tempo/index'],
+                                    'url' => ['/tempo/index']
                             ],
                     ],
-            ]);
-            ?>
+                    'options' => ['class' => 'nav nav-pills nav-sidebar flex-column', 'data-widget' => 'treeview', 'role' => 'menu', 'data-accordion' => 'false'],
+                    'itemOptions' => ['class' => 'nav-item'],
+                    'linkTemplate' => '<a href="{url}" class="nav-link" style="color: #000;">{icon} {label}</a>',
+            ]) ?>
         </nav>
         <!-- /.sidebar-menu -->
     </div>

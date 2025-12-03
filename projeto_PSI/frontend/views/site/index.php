@@ -119,7 +119,7 @@ use yii\helpers\Url;
                          <img class="img-fluid" src="img/team-1.jpg" alt="">
                      </div>
                      <div class="text-center p-4">
-                         <h5 class="mb-0">Instructor Name</h5>
+                         <h5 class="mb-0">Eduardo</h5>
                      </div>
                  </div>
              </div>
@@ -130,7 +130,7 @@ use yii\helpers\Url;
                          <img class="img-fluid" src="img/team-2.jpg" alt="">
                      </div>
                      <div class="text-center p-4">
-                         <h5 class="mb-0">Instructor Name</h5>
+                         <h5 class="mb-0">Dinis Ruivo</h5>
                      </div>
                  </div>
              </div>
@@ -141,7 +141,7 @@ use yii\helpers\Url;
                          <img class="img-fluid" src="img/team-4.jpg" alt="">
                      </div>
                      <div class="text-center p-4">
-                         <h5 class="mb-0">Instructor Name</h5>
+                         <h5 class="mb-0">Rafael Rodrigues</h5>
                      </div>
                  </div>
              </div>

@@ -24,13 +24,13 @@ use yii\widgets\ActiveForm;
     <?= $form->field($model, 'totalpontosjogo')->label('Total de Pontos')->textInput() ?>
 
     <!-- Dificuldade -->
-    <?= $form->field($model, 'id_dificuldade')->dropDownList(
+    <?= $form->field($model, 'id_dificuldade')->label('Grau de Dificuldade')->dropDownList(
         ArrayHelper::map($dificuldades, 'id', 'dificuldade'),
         ['prompt' => 'Selecione a dificuldade...']
     ) ?>
 
     <!-- Tempo -->
-    <?= $form->field($model, 'id_tempo')->dropDownList(
+    <?= $form->field($model, 'id_tempo')->label('Tempo')->dropDownList(
         ArrayHelper::map($tempos, 'id', 'quantidadetempo'),
         ['prompt' => 'Selecione o tempo...']
     ) ?>
