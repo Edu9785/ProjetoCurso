@@ -4,6 +4,8 @@ namespace frontend\controllers;
 
 use frontend\models\ResendVerificationEmailForm;
 use frontend\models\VerifyEmailForm;
+use common\models\Categoria;
+use common\models\Premium;
 use Yii;
 use yii\base\InvalidArgumentException;
 use yii\web\BadRequestHttpException;
@@ -75,7 +77,14 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        return $this->render('index');
+        // Buscar todas as categorias e premiums
+        $categorias = \common\models\Categoria::find()->all();
+        $premiums = Premium::find()->all();
+
+        return $this->render('index', [
+            'categorias' => $categorias,
+            'premiums' => $premiums,
+        ]);
     }
 
     /**

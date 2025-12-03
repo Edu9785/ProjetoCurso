@@ -1,4 +1,13 @@
 
+<?php
+use yii\helpers\Html;
+use yii\helpers\Url;
+
+/** @var yii\web\View $this */
+/** @var common\models\Categoria[] $categorias */
+/** @var common\models\Premium[] $premiums */
+?>
+
 
  <!-- Carousel Start -->
     <div class="container p-0 mb-5">
@@ -49,47 +58,17 @@
          </div>
 
          <div class="row g-4 justify-content-center">
-             <!-- Categoria 1 -->
-             <div class="col-lg-4 col-md-6 wow zoomIn" data-wow-delay="0.1s">
-                 <div class="card border-0 shadow-sm text-center h-100">
-                     <a href="#" class="overflow-hidden">
-                         <img class="img-fluid rounded-top" src="img/matematica.png" alt="Web Design">
-                     </a>
-                     <div class="card-body">
-                         <h5 class="card-title">Matemática</h5>
-                         <br>
-                         <a href="#" class="btn btn-outline-primary px-4 py-2">Ver Detalhes</a>
+             <?php foreach ($categorias as $categoria): ?>
+                 <div class="col-lg-4 col-md-6 wow zoomIn" data-wow-delay="0.1s">
+                     <div class="card border-0 shadow-sm text-center h-100">
+                         <div class="card-body">
+                             <h5 class="card-title"><?= Html::encode($categoria->categoria) ?></h5>
+                             <br>
+                             <a href="<?= \yii\helpers\Url::to(['categoria/view', 'id' => $categoria->id]) ?>" class="btn btn-outline-primary px-4 py-2">Ver Detalhes</a>
+                         </div>
                      </div>
                  </div>
-             </div>
-
-             <!-- Categoria 2 -->
-             <div class="col-lg-4 col-md-6 wow zoomIn" data-wow-delay="0.3s">
-                 <div class="card border-0 shadow-sm text-center h-100">
-                     <a href="#" class="overflow-hidden">
-                         <img class="img-fluid rounded-top" src="img/geografia.jpg" alt="Graphic Design">
-                     </a>
-                     <div class="card-body">
-                         <h5 class="card-title">Geografia</h5>
-                         <br>
-                         <a href="#" class="btn btn-outline-primary px-4 py-2">Ver Detalhes</a>
-                     </div>
-                 </div>
-             </div>
-
-             <!-- Categoria 3 -->
-             <div class="col-lg-4 col-md-6 wow zoomIn" data-wow-delay="0.5s">
-                 <div class="card border-0 shadow-sm text-center h-100">
-                     <a href="#" class="overflow-hidden">
-                         <img class="img-fluid rounded-top" src="img/historia.jpg" alt="História">
-                     </a>
-                     <div class="card-body">
-                         <h5 class="card-title">História</h5>
-                         <br>
-                         <a href="#" class="btn btn-outline-primary px-4 py-2">Ver Detalhes</a>
-                     </div>
-                 </div>
-             </div>
+             <?php endforeach; ?>
          </div>
      </div>
  </div>
@@ -105,53 +84,22 @@
              <h1 class="mb-5">Nossos Premiums</h1>
          </div>
          <div class="row g-4 justify-content-center">
-
-             <!-- Card 1 -->
-             <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
-                 <div class="course-item bg-light text-center h-100">
-                     <div class="position-relative overflow-hidden">
-                         <img class="img-fluid premium-img" src="img/course-1.jpg" alt="">
-                     </div>
-                     <div class="p-4 pb-4">
-                         <h3 class="mb-2">€95.00</h3>
-                         <h5 class="mb-3">Premium Bronze</h5>
-                         <a href="#" class="btn btn-buy px-4 py-2">Buy Now</a>
+             <?php foreach ($premiums as $premium): ?>
+                 <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
+                     <div class="course-item bg-light text-center h-100">
+                         <div class="p-4 pb-4">
+                             <h3 class="mb-2">€ <?= number_format($premium->preco, 2, ',', '.') ?></h3>
+                             <h5 class="mb-3"><?= Html::encode($premium->nome) ?></h5>
+                             <a href="#" class="btn btn-buy px-4 py-2">Comprar</a>
+                         </div>
                      </div>
                  </div>
-             </div>
-
-             <!-- Card 2 -->
-             <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
-                 <div class="course-item bg-light text-center h-100">
-                     <div class="position-relative overflow-hidden">
-                         <img class="img-fluid premium-img" src="img/course-2.jpg" alt="">
-                     </div>
-                     <div class="p-4 pb-4">
-                         <h3 class="mb-2">€110.00</h3>
-                         <h5 class="mb-3">Premium Gold</h5>
-                         <a href="#" class="btn btn-buy px-4 py-2">Buy Now</a>
-                     </div>
-                 </div>
-             </div>
-
-             <!-- Card 3 -->
-             <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.5s">
-                 <div class="course-item bg-light text-center h-100">
-                     <div class="position-relative overflow-hidden">
-                         <img class="img-fluid premium-img" src="img/premdiamond.jpg" alt="">
-                     </div>
-                     <div class="p-4 pb-4">
-                         <h3 class="mb-2">€149.00</h3>
-                         <h5 class="mb-3">Premium Diamond</h5>
-                         <a href="#" class="btn btn-buy px-4 py-2">Buy Now</a>
-                     </div>
-                 </div>
-             </div>
-
+             <?php endforeach; ?>
          </div>
      </div>
  </div>
  <!-- Premium End -->
+
 
 
  <!-- Team Start -->

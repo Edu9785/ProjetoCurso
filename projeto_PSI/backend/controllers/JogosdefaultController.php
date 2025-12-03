@@ -83,6 +83,7 @@ class JogosdefaultController extends Controller
 
         if ($model->load(Yii::$app->request->post())) {
 
+<<<<<<< HEAD
             $model->imageFile = UploadedFile::getInstance($model, 'imageFile');
 
             if ($model->imageFile) {
@@ -95,6 +96,19 @@ class JogosdefaultController extends Controller
                         'categorias' => $categorias,
                     ]);
                 }
+=======
+            // RECEBER CATEGORIAS SELECIONADAS
+            $selectedCategorias = Yii::$app->request->post('categorias', []);
+            $model->categorias = implode(',', $selectedCategorias);
+
+            // FICHEIRO IMAGEM
+            $model->imageFile = UploadedFile::getInstance($model, 'imageFile');
+
+            if ($model->imageFile && $model->upload()) {
+                $model->save(false);
+            } else {
+                $model->save(false);
+>>>>>>> bf8368372b841eb6b8e027559fe9bced46ecdd7c
             }
 
             if ($model->save(false)) {

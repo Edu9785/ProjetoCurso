@@ -1,19 +1,18 @@
 <?php
 
-namespace frontend\controllers;
+namespace backend\controllers;
 
-use common\models\JogosDefault;
-use common\models;
+use common\models\Resposta;
+use common\models\RespostaSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
- * JogosdefaultController implements the CRUD actions for JogosDefault model.
+ * RespostaController implements the CRUD actions for Resposta model.
  */
-class JogosDefaultController extends Controller
+class RespostaController extends Controller
 {
-    public $viewPath = '@frontend/views/jogosdefault';
     /**
      * @inheritDoc
      */
@@ -33,13 +32,13 @@ class JogosDefaultController extends Controller
     }
 
     /**
-     * Lists all JogosDefault models.
+     * Lists all Resposta models.
      *
      * @return string
      */
     public function actionIndex()
     {
-        $searchModel = new models();
+        $searchModel = new RespostaSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
         return $this->render('index', [
@@ -49,7 +48,7 @@ class JogosDefaultController extends Controller
     }
 
     /**
-     * Displays a single JogosDefault model.
+     * Displays a single Resposta model.
      * @param int $id ID
      * @return string
      * @throws NotFoundHttpException if the model cannot be found
@@ -62,13 +61,13 @@ class JogosDefaultController extends Controller
     }
 
     /**
-     * Creates a new JogosDefault model.
+     * Creates a new Resposta model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return string|\yii\web\Response
      */
     public function actionCreate()
     {
-        $model = new JogosDefault();
+        $model = new Resposta();
 
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {
@@ -84,7 +83,7 @@ class JogosDefaultController extends Controller
     }
 
     /**
-     * Updates an existing JogosDefault model.
+     * Updates an existing Resposta model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param int $id ID
      * @return string|\yii\web\Response
@@ -104,7 +103,7 @@ class JogosDefaultController extends Controller
     }
 
     /**
-     * Deletes an existing JogosDefault model.
+     * Deletes an existing Resposta model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param int $id ID
      * @return \yii\web\Response
@@ -118,15 +117,15 @@ class JogosDefaultController extends Controller
     }
 
     /**
-     * Finds the JogosDefault model based on its primary key value.
+     * Finds the Resposta model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param int $id ID
-     * @return JogosDefault the loaded model
+     * @return Resposta the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = JogosDefault::findOne(['id' => $id])) !== null) {
+        if (($model = Resposta::findOne(['id' => $id])) !== null) {
             return $model;
         }
 
