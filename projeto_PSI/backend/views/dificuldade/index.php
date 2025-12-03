@@ -61,7 +61,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                         return Html::a('<i class="fas fa-trash"></i>', $url, [
                                                 'class' => 'btn btn-sm btn-outline-danger',
                                                 'title' => 'Apagar',
-                                                'data-confirm' => 'Tens a certeza?',
+                                                'data-confirm' => 'Tens a certeza que deseja apagar esta Dificuldade ?',
                                                 'data-method' => 'post',
                                         ]);
                                     },

@@ -4,21 +4,23 @@ use yii\helpers\Html;
 use yii\widgets\DetailView;
 
 /** @var yii\web\View $this */
-/** @var common\models\Premium $model */
+/** @var common\models\Resposta $model */
 
-$this->title = 'Premium - ' . $model->id;
-$this->params['breadcrumbs'][] = ['label' => 'Premiums', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $model->id;
+$this->title = $model->id;
+$this->params['breadcrumbs'][] = ['label' => 'Respostas', 'url' => ['index']];
+$this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
-<div class="premium-view">
+<div class="resposta-view">
+
+    <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
         <?= Html::a('Editar', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
         <?= Html::a('Apagar', ['delete', 'id' => $model->id], [
             'class' => 'btn btn-danger',
             'data' => [
-                'confirm' => 'Tem a certeza que deseja apagar este Premium?',
+                'confirm' => 'Tem a certeza que deseja apagar esta Resposta?',
                 'method' => 'post',
             ],
         ]) ?>
@@ -28,12 +30,9 @@ $this->params['breadcrumbs'][] = $model->id;
         'model' => $model,
         'attributes' => [
             'id',
-            'nome',
-            [
-                    'attribute' => 'preco',
-                    'label' => 'Preço',
-            ],
-
+            'resposta',
+            'correta',
+            'id_pergunta',
         ],
     ]) ?>
 
