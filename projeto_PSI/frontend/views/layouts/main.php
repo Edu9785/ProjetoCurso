@@ -87,14 +87,39 @@ AppAsset::register($this);
         'items' => $menuItems,
     ]);
     if (Yii::$app->user->isGuest) {
-        echo Html::tag('div',Html::a('Login',['/site/login'],['class' => ['btn btn-primary py-4 px-lg-5 d-none d-lg-block']]),['class' => ['d-flex']]);
+
+        // --- USER DESLOGADO → mostra Login ---
+        echo Html::tag(
+                'div',
+                Html::a('Login', ['/site/login'], [
+                        'class' => 'btn btn-primary py-4 px-lg-5 d-none d-lg-block'
+                ]),
+                ['class' => 'd-flex']
+        );
+
     } else {
+
+        // --- USER LOGADO → mostra o nome do user e link para jogador/index ---
+        echo Html::tag(
+                'div',
+                Html::a(
+                        Yii::$app->user->identity->username,
+                        ['/jogador/index'],
+                        [
+                                'class' => 'btn btn-primary d-inline-flex align-items-center',
+                                'style' => 'border-radius:5px; padding: 8px 36px;'  // padding horizontal aumentado
+                        ]
+                ),
+                ['class' => 'd-flex me-3 align-items-center']
+        );
+
+        // Botão Logout
         echo Html::beginForm(['/site/logout'], 'post', ['class' => 'd-flex'])
-            . Html::submitButton(
-                'Logout (' . Yii::$app->user->identity->username . ')',
-                ['class' => 'btn btn-link logout text-decoration-none']
-            )
-            . Html::endForm();
+                . Html::submitButton(
+                        'Logout',
+                        ['class' => 'btn btn-link logout text-decoration-none']
+                )
+                . Html::endForm();
     }
     NavBar::end();
     ?>
