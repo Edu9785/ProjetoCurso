@@ -9,11 +9,9 @@ use yii\grid\GridView;
 /** @var yii\web\View $this */
 /** @var common\models $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
-
-$this->title = 'Jogos Defaults';
-$this->params['breadcrumbs'][] = $this->title;
 ?>
-<<!-- Header Start -->
+
+<!-- Header Start -->
 <div class="container-fluid bg-primary py-5 mb-5 page-header">
     <div class="container py-5">
         <div class="row justify-content-center">
@@ -32,15 +30,15 @@ $this->params['breadcrumbs'][] = $this->title;
 
             <!-- Sidebar Filters -->
             <div class="col-lg-3 col-md-4">
-                <h4 class="mb-4 fw-bold">Filter</h4>
+                <h4 class="mb-4 fw-bold">Filtrar</h4>
 
                 <div class="mb-3">
                     <label class="form-label">Categoria</label>
                     <select class="form-select">
                         <option selected>Escolha...</option>
-                        <option>Desporto</option>
-                        <option>Ciência</option>
-                        <option>História</option>
+                        <?php foreach ($categorias as $cat): ?>
+                            <option value="<?= $cat->id ?>"><?= Html::encode($cat->categoria) ?></option>
+                        <?php endforeach; ?>
                     </select>
                 </div>
 
@@ -48,9 +46,9 @@ $this->params['breadcrumbs'][] = $this->title;
                     <label class="form-label">Dificuldade</label>
                     <select class="form-select">
                         <option selected>Escolha...</option>
-                        <option>Fácil</option>
-                        <option>Médio</option>
-                        <option>Difícil</option>
+                        <?php foreach ($dificuldades as $dif): ?>
+                            <option value="<?= $dif->id ?>"><?= Html::encode($dif->dificuldade) ?></option>
+                        <?php endforeach; ?>
                     </select>
                 </div>
 
@@ -58,47 +56,58 @@ $this->params['breadcrumbs'][] = $this->title;
                     <label class="form-label d-block">Tipo de Jogo</label>
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" id="tipo1">
-                        <label class="form-check-label" for="tipo1">Customizado</label>
+                        <label class="form-check-label" for="tipo1">Workshop</label>
                     </div>
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" id="tipo2">
                         <label class="form-check-label" for="tipo2">Default</label>
                     </div>
                 </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Source</label>
-                    <select class="form-select">
-                        <option selected>Escolha...</option>
-                        <option>Interno</option>
-                        <option>Externo</option>
-                    </select>
-                </div>
-
                 <div class="d-grid mt-4">
-                    <a href="#" class="btn btn-outline-primary">Criar jogo</a>
+                    <a href="#" class="btn btn-outline-primary">Procurar</a>
                 </div>
             </div>
 
             <!-- Games Grid -->
             <div class="col-lg-9 col-md-8">
                 <div class="row g-4">
-                    <?php for ($i = 0; $i < 10; $i++): ?>
+
+                    <?php foreach ($dataProvider->models as $jogo): ?>
                         <div class="col-lg-3 col-md-4 col-sm-6">
                             <div class="card h-100 border">
+
+                                <!-- Imagem -->
                                 <div class="ratio ratio-1x1 bg-light d-flex align-items-center justify-content-center">
-                                    <span class="text-muted">Imagem</span>
+                                    <?php if ($jogo->imagem): ?>
+                                        <img src="<?= Yii::getAlias('@web/uploads/' . $jogo->imagem) ?>"
+                                             alt="<?= Html::encode($jogo->titulo) ?>"
+                                             class="img-fluid object-fit-cover w-100 h-100">
+                                    <?php else: ?>
+                                        <span class="text-muted">Sem imagem</span>
+                                    <?php endif; ?>
                                 </div>
+
+                                <!-- Info -->
                                 <div class="card-body text-center">
-                                    <h6 class="card-title mb-2">Título do Jogo</h6>
+                                    <h6 class="card-title mb-2"><?= Html::encode($jogo->titulo) ?></h6>
+
                                     <div class="d-flex justify-content-center gap-2">
-                                        <a href="#" class="btn btn-primary btn-sm">Iniciar</a>
-                                        <a href="#" class="btn btn-outline-secondary btn-sm">Ver Detalhes</a>
+                                        <a href="<?= \yii\helpers\Url::to(['jogar', 'id' => $jogo->id]) ?>"
+                                           class="btn btn-primary btn-sm">
+                                            Iniciar
+                                        </a>
+
+                                        <a href="<?= \yii\helpers\Url::to(['view', 'id' => $jogo->id]) ?>"
+                                           class="btn btn-outline-secondary btn-sm">
+                                            Ver Detalhes
+                                        </a>
                                     </div>
                                 </div>
+
                             </div>
                         </div>
-                    <?php endfor; ?>
+                    <?php endforeach; ?>
+
                 </div>
             </div>
 
