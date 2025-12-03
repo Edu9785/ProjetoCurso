@@ -4,6 +4,7 @@ namespace backend\controllers;
 
 use common\models\JogosDefault;
 use common\models\JogosDefaultSearch;
+use common\models\JogosdefaultCategoria;
 use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -82,18 +83,37 @@ class JogosdefaultController extends Controller
 
         if ($model->load(Yii::$app->request->post())) {
 
-            // pegar o ficheiro enviado
             $model->imageFile = UploadedFile::getInstance($model, 'imageFile');
 
-            // SE existir ficheiro → fazer uploads
             if ($model->imageFile) {
-                if ($model->upload()) {
-                    // uploads OK: agora guarda o nome da imagem na BD
-                    $model->save(false);
+                if (!$model->upload()) {
+                    Yii::$app->session->setFlash('error', 'Erro ao enviar a imagem.');
+                    return $this->render('create', [
+                        'model' => $model,
+                        'dificuldades' => $dificuldades,
+                        'tempos' => $tempos,
+                        'categorias' => $categorias,
+                    ]);
                 }
             }
 
-            return $this->redirect(['view', 'id' => $model->id]);
+            if ($model->save(false)) {
+
+                $categoriasSelecionadas = Yii::$app->request->post('categorias', []);
+                if (is_array($categoriasSelecionadas)) {
+                    foreach ($categoriasSelecionadas as $catId) {
+                        $catId = (int)$catId;
+                        if ($catId > 0) {
+                            $categoriasJogo = new JogosdefaultCategoria();
+                            $categoriasJogo->id_jogo = $model->id;
+                            $categoriasJogo->id_categoria = $catId;
+                            $categoriasJogo->save(false);
+                        }
+                    }
+                }
+
+                return $this->redirect(['view', 'id' => $model->id]);
+            }
         }
 
         return $this->render('create', [
@@ -103,6 +123,7 @@ class JogosdefaultController extends Controller
             'categorias' => $categorias,
         ]);
     }
+
 
     /**
      * Updates an existing Jogodefault model.
@@ -119,27 +140,48 @@ class JogosdefaultController extends Controller
         $tempos = \common\models\Tempo::find()->all();
         $categorias = \common\models\Categoria::find()->all();
 
-        // guardar nome da imagem antiga
         $oldImage = $model->imagem;
+
+        $categoriasSelecionadas = array_map(function($cat) {
+            return $cat->id_categoria;
+        }, $model->jogosdefaultCategorias);
 
         if ($model->load(Yii::$app->request->post())) {
 
-            // obter nova imagem (se houver)
             $model->imageFile = UploadedFile::getInstance($model, 'imageFile');
 
             if ($model->imageFile) {
-                // fazer uploads da nova imagem
                 if ($model->upload()) {
-                    // uploads OK → nova imagem substitui
-                    $model->save(false);
+                    $model->imagem = $model->imageFile->name;
+                } else {
+                    Yii::$app->session->setFlash('error', 'Erro ao enviar a imagem.');
+                    return $this->render('update', [
+                        'model' => $model,
+                        'dificuldades' => $dificuldades,
+                        'tempos' => $tempos,
+                        'categorias' => $categorias,
+                        'categoriasSelecionadas' => $categoriasSelecionadas,
+                    ]);
                 }
             } else {
-                // sem nova imagem → manter antiga
                 $model->imagem = $oldImage;
-                $model->save(false);
             }
 
-            return $this->redirect(['view', 'id' => $model->id]);
+            if ($model->save(false)) {
+                JogosdefaultCategoria::deleteAll(['id_jogo' => $model->id]);
+
+                $novasCategorias = Yii::$app->request->post('categorias', []);
+                if (is_array($novasCategorias)) {
+                    foreach ($novasCategorias as $catId) {
+                        $jc = new JogosdefaultCategoria();
+                        $jc->id_jogo = $model->id;
+                        $jc->id_categoria = (int)$catId;
+                        $jc->save(false);
+                    }
+                }
+
+                return $this->redirect(['view', 'id' => $model->id]);
+            }
         }
 
         return $this->render('update', [
@@ -147,6 +189,7 @@ class JogosdefaultController extends Controller
             'dificuldades' => $dificuldades,
             'tempos' => $tempos,
             'categorias' => $categorias,
+            'categoriasSelecionadas' => $categoriasSelecionadas,
         ]);
     }
 
@@ -159,7 +202,11 @@ class JogosdefaultController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $model = $this->findModel($id);
+
+        JogosdefaultCategoria::deleteAll(['id_jogo' => $model->id]);
+
+        $model->delete();
 
         return $this->redirect(['index']);
     }

@@ -77,16 +77,12 @@ class JogosDefault extends \yii\db\ActiveRecord
     {
         if ($this->imageFile) {
 
-            // gerar nome único
             $filename = uniqid('img_') . '.' . $this->imageFile->extension;
 
-            // definir caminho correto para frontend/web/uploads/
             $path = Yii::getAlias('@frontend/web/uploads/') . $filename;
 
-            // guardar ficheiro físico
             if ($this->imageFile->saveAs($path)) {
 
-                // guardar nome da imagem na BD
                 $this->imagem = $filename;
 
                 return true;
@@ -117,6 +113,12 @@ class JogosDefault extends \yii\db\ActiveRecord
     public function getJogosdefaultCategorias()
     {
         return $this->hasMany(JogosdefaultCategoria::class, ['id_jogo' => 'id']);
+    }
+
+    public function getCategorias()
+    {
+        return $this->hasMany(\common\models\Categoria::class, ['id' => 'id_categoria'])
+            ->via('jogosdefaultCategorias');
     }
 
     /**

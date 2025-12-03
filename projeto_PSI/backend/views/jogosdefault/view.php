@@ -1,64 +1,46 @@
 <?php
-
 use yii\helpers\Html;
-use yii\widgets\DetailView;
 
 /** @var yii\web\View $this */
 /** @var common\models\JogosDefault $model */
 
-$this->title = $model->id;
+$this->title = $model->titulo;
 $this->params['breadcrumbs'][] = ['label' => 'Jogos Defaults', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
-\yii\web\YiiAsset::register($this);
 ?>
-<div class="jogos-default-view">
+<div class="jogosdefault-view">
+
+    <h1><?= Html::encode($model->titulo) ?></h1>
 
     <p>
-        <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Delete', ['delete', 'id' => $model->id], [
+        <?= Html::a('Editar', ['update', 'id' => $model->id], ['class' => 'btn btn-warning']) ?>
+        <?= Html::a('Apagar', ['delete', 'id' => $model->id], [
             'class' => 'btn btn-danger',
-            'data' => [
-                'confirm' => 'Are you sure you want to delete this item?',
-                'method' => 'post',
-            ],
+            'data-confirm' => 'Tem certeza que deseja apagar este jogo?',
+            'data-method' => 'post',
         ]) ?>
     </p>
 
-    <?= DetailView::widget([
-        'model' => $model,
-        'attributes' => [
-            'id',
-            'id_dificuldade',
-            'titulo',
-            'descricao',
-            'id_tempo',
-            'totalpontosjogo',
-                [
-                        'label' => 'Categorias',
-                        'value' => function ($model) use ($categorias) {
+    <div class="card mb-4 shadow-sm">
+        <div class="card-body">
+            <p><strong>Título:</strong> <?= Html::encode($model->titulo) ?></p>
+            <p><strong>Descrição:</strong> <?= Html::encode($model->descricao) ?></p>
 
-                            if (empty($model->categorias)) {
-                                return 'Nenhuma categoria atribuída';
-                            }
-
-                            // converter "1,3,5" → [1,3,5]
-                            $ids = explode(',', $model->categorias);
-
-                            // mapear nomes
-                            $nomes = [];
-
-                            foreach ($categorias as $cat) {
-                                if (in_array($cat->id, $ids)) {
-                                    $nomes[] = $cat->categoria;
-                                }
-                            }
-
-                            return implode(', ', $nomes);
-                        },
-                        'format' => 'raw',
-                ],
-            'imagem',
-        ],
-    ]) ?>
+            <ul class="list-group list-group-flush mb-3">
+                <li class="list-group-item"><strong>Dificuldade:</strong> <?= Html::encode($model->dificuldade->dificuldade ?? '-') ?></li>
+                <li class="list-group-item"><strong>Tempo:</strong> <?= Html::encode($model->tempo->quantidadetempo ?? '-') ?> seg</li>
+                <li class="list-group-item"><strong>Total Pontos:</strong> <?= Html::encode($model->totalpontosjogo) ?></li>
+                <li class="list-group-item"><strong>Categorias:</strong>
+                    <?php
+                    $nomesCategorias = [];
+                    foreach ($model->categorias as $categoria) {
+                        $nomesCategorias[] = $categoria->categoria;
+                    }
+                    echo Html::encode(!empty($nomesCategorias) ? implode(', ', $nomesCategorias) : 'Nenhuma categoria atribuída');
+                    ?>
+                </li>
+            </ul>
+        </div>
+    </div>
 
 </div>
