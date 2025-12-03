@@ -82,15 +82,17 @@ class JogosdefaultController extends Controller
 
         if ($model->load(Yii::$app->request->post())) {
 
-            // pegar o ficheiro enviado
+            // RECEBER CATEGORIAS SELECIONADAS
+            $selectedCategorias = Yii::$app->request->post('categorias', []);
+            $model->categorias = implode(',', $selectedCategorias);
+
+            // FICHEIRO IMAGEM
             $model->imageFile = UploadedFile::getInstance($model, 'imageFile');
 
-            // SE existir ficheiro → fazer uploads
-            if ($model->imageFile) {
-                if ($model->upload()) {
-                    // uploads OK: agora guarda o nome da imagem na BD
-                    $model->save(false);
-                }
+            if ($model->imageFile && $model->upload()) {
+                $model->save(false);
+            } else {
+                $model->save(false);
             }
 
             return $this->redirect(['view', 'id' => $model->id]);

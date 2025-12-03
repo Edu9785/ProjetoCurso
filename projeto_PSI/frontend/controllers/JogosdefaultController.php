@@ -2,7 +2,10 @@
 
 namespace frontend\controllers;
 
+use common\models\Categoria;
+use common\models\Dificuldade;
 use common\models\JogosDefault;
+use common\models\JogosDefaultSearch;
 use common\models;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -11,7 +14,7 @@ use yii\filters\VerbFilter;
 /**
  * JogosdefaultController implements the CRUD actions for JogosDefault model.
  */
-class JogosDefaultController extends Controller
+class JogosdefaultController extends Controller
 {
     public $viewPath = '@frontend/views/jogosdefault';
     /**
@@ -39,12 +42,18 @@ class JogosDefaultController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new models();
-        $dataProvider = $searchModel->search($this->request->queryParams);
+        $searchModel = new JogosDefaultSearch();
+        $dataProvider = $searchModel->search(\Yii::$app->request->queryParams);
+
+        // Buscar dados da BD
+        $categorias = Categoria::find()->all();
+        $dificuldades = Dificuldade::find()->all();
 
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'categorias' => $categorias,
+            'dificuldades' => $dificuldades,
         ]);
     }
 

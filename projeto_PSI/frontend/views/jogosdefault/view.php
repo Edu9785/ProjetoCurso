@@ -1,42 +1,55 @@
 <?php
 
 use yii\helpers\Html;
-use yii\widgets\DetailView;
+use common\models\Categoria;
 
 /** @var yii\web\View $this */
 /** @var common\models\JogosDefault $model */
 
-$this->title = $model->id;
-$this->params['breadcrumbs'][] = ['label' => 'Jogos Defaults', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+$this->title = $model->titulo;
 \yii\web\YiiAsset::register($this);
+
+// Caminho da imagem
+$imagem = $model->imagem
+        ? Yii::getAlias("@web/uploads/{$model->imagem}")
+        : "https://via.placeholder.com/600x600?text=Sem+Imagem";
 ?>
-<div class="jogos-default-view">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+<div class="container py-5">
 
-    <p>
-        <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Delete', ['delete', 'id' => $model->id], [
-            'class' => 'btn btn-danger',
-            'data' => [
-                'confirm' => 'Are you sure you want to delete this item?',
-                'method' => 'post',
-            ],
-        ]) ?>
-    </p>
+    <div class="row align-items-start">
 
-    <?= DetailView::widget([
-        'model' => $model,
-        'attributes' => [
-            'id',
-            'id_dificuldade',
-            'titulo',
-            'descricao',
-            'id_tempo',
-            'totalpontosjogo',
-            'imagem',
-        ],
-    ]) ?>
+        <!-- IMAGEM -->
+        <div class="col-lg-5">
+            <div class="bg-light rounded shadow-sm" style="height: 350px; overflow: hidden;">
+                <img src="<?= $imagem ?>" class="w-100 h-100" style="object-fit: cover;">
+            </div>
+        </div>
+
+        <!-- INFO DO JOGO -->
+        <div class="col-lg-7 ps-lg-5">
+
+            <h1 class="fw-bold mb-3"><?= Html::encode($model->titulo) ?></h1>
+
+            <p class="fw-semi-bold text-dark mb-1">Dificuldade</p>
+            <p class="mb-3"><?= $model->dificuldade->dificuldade ?? '-' ?></p>
+
+            <p class="fw-semi-bold text-dark mb-1">Total de Pontos</p>
+            <p class="mb-3"><?= Html::encode($model->totalpontosjogo) ?></p>
+
+            <p class="fw-semi-bold text-dark mb-1">Tempo</p>
+            <p class="mb-3"><?= $model->tempo->quantidadetempo ?? '-' ?> segundos</p>
+
+            <p class="mt-4 text-dark" style="max-width: 500px;">
+                <?= Html::encode($model->descricao) ?>
+            </p>
+
+            <!-- Botão PLAY -->
+            <a href="#" class="btn btn-primary px-5 py-2 mt-4 fw-semi-bold" style="border-radius: 8px;">
+                Play
+            </a>
+        </div>
+
+    </div>
 
 </div>
