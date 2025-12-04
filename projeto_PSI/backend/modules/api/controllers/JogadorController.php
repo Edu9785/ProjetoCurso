@@ -7,8 +7,9 @@ use yii\rest\ActiveController;
 /**
  * Default controller for the `api` module
  */
-class DefaultController extends ActiveController
+class JogadorController extends ActiveController
 {
+    public $modelClass = 'common\models\Jogador';
     /**
      * Renders the index view for the module
      * @return string
@@ -16,5 +17,12 @@ class DefaultController extends ActiveController
     public function actionIndex()
     {
         return $this->render('index');
+    }
+
+    public function actionNomes()
+    {
+        $jogadoresmodel = new $this->modelClass;
+        $recs = $jogadoresmodel::find()->select(['nome'])->all();
+        return $recs;
     }
 }

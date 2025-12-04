@@ -38,22 +38,24 @@ class JogadorController extends Controller
      */
     public function actionIndex()
     {
-        $dataProvider = new ActiveDataProvider([
-            'query' => Jogador::find(),
-            /*
-            'pagination' => [
-                'pageSize' => 50
-            ],
-            'sort' => [
-                'defaultOrder' => [
-                    'id' => SORT_DESC,
-                ]
-            ],
-            */
-        ]);
+        $userId = \Yii::$app->user->id;
+        $model = Jogador::findOne(['id_user' => $userId]);
+        $userModel = $model->user; // pega o modelo User relacionado
+
+        if ($this->request->isPost) {
+            $post = $this->request->post();
+            $loadJogador = $model->load($post);
+            $loadUser = $userModel->load($post);
+
+            if ($loadJogador && $loadUser && $model->save() && $userModel->save()) {
+                \Yii::$app->session->setFlash('success', 'Perfil atualizado com sucesso!');
+                return $this->refresh();
+            }
+        }
 
         return $this->render('index', [
-            'dataProvider' => $dataProvider,
+            'model' => $model,
+            'userModel' => $userModel,
         ]);
     }
 
