@@ -24,11 +24,17 @@ $this->params['breadcrumbs'][] = $this->title;
                     <?php endif; ?>
 
                     <div class="card-body">
-                        <h5 class="card-title"><strong>Título:</strong> <?= Html::encode($model->titulo) ?></h5>
-                        <p class="card-text"><strong>Descrição:</strong> <?= Html::encode($model->descricao) ?></p>
+                        <h5 class="card-title mb-2">
+                            <strong>Título:</strong> <?= Html::encode($model->titulo) ?>
+                        </h5>
+
+                        <p class="card-text">
+                            <strong>Descrição:</strong> <?= Html::encode($model->descricao) ?>
+                        </p>
 
 
-                    <ul class="list-group list-group-flush mb-3">
+
+                        <ul class="list-group list-group-flush mb-3">
                             <li class="list-group-item"><strong>Dificuldade:</strong> <?= Html::encode($model->dificuldade->dificuldade ?? '-') ?></li>
                             <li class="list-group-item"><strong>Tempo:</strong> <?= Html::encode($model->tempo->quantidadetempo ?? '-') ?> seg</li>
                             <li class="list-group-item"><strong>Total Pontos:</strong> <?= Html::encode($model->totalpontosjogo) ?></li>
