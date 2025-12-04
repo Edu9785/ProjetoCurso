@@ -60,7 +60,6 @@ class JogosdefaultController extends Controller
     {
         $model = $this->findModel($id);
 
-        // buscar todas as categorias da BD
         $categorias = \common\models\Categoria::find()->all();
 
         return $this->render('view', [
@@ -83,7 +82,6 @@ class JogosdefaultController extends Controller
 
         if ($model->load(Yii::$app->request->post())) {
 
-
             $model->imageFile = UploadedFile::getInstance($model, 'imageFile');
 
             if ($model->imageFile) {
@@ -97,11 +95,6 @@ class JogosdefaultController extends Controller
                     ]);
                 }
 
-                // RECEBER CATEGORIAS SELECIONADAS
-                $selectedCategorias = Yii::$app->request->post('categorias', []);
-                $model->categorias = implode(',', $selectedCategorias);
-
-                // FICHEIRO IMAGEM
                 $model->imageFile = UploadedFile::getInstance($model, 'imageFile');
 
                 if ($model->imageFile && $model->upload()) {
@@ -111,20 +104,15 @@ class JogosdefaultController extends Controller
                 }
 
                 if ($model->save(false)) {
-
                     $categoriasSelecionadas = Yii::$app->request->post('categorias', []);
-                    if (is_array($categoriasSelecionadas)) {
-                        foreach ($categoriasSelecionadas as $catId) {
-                            $catId = (int)$catId;
-                            if ($catId > 0) {
+                        foreach ($categoriasSelecionadas as $categoriaID) {
+                            if ($categoriaID > 0) {
                                 $categoriasJogo = new JogosdefaultCategoria();
                                 $categoriasJogo->id_jogo = $model->id;
-                                $categoriasJogo->id_categoria = $catId;
+                                $categoriasJogo->id_categoria = $categoriaID;
                                 $categoriasJogo->save(false);
                             }
                         }
-                    }
-
                     return $this->redirect(['view', 'id' => $model->id]);
                 }
             }

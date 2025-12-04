@@ -10,8 +10,6 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="jogosdefault-view">
 
-    <h1><?= Html::encode($model->titulo) ?></h1>
-
     <p>
         <?= Html::a('Editar', ['update', 'id' => $model->id], ['class' => 'btn btn-warning']) ?>
         <?= Html::a('Apagar', ['delete', 'id' => $model->id], [
