@@ -9,9 +9,11 @@ $username = $user ? Html::encode($user->username) : 'Visitante';
 <aside class="main-sidebar elevation-4" style="background-color: #4d37b6;"> <!-- Azul claro -->
 
     <!-- Brand Logo -->
-    <a href="<?= Url::home() ?>" class="brand-link" style="background-color: #4d37b6; color: #fff;">
-        <img src="<?= $assetDir ?>/img/AdminLTELogo.png" alt="Desafia-te Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-        <span class="brand-text font-weight-light">Desafia-te</span>
+    <a href="<?= Url::home() ?>" class="brand-link" style="background-color: #4d37b6; color: #fff; padding-left: 5px;">
+        <img src="<?= Yii::getAlias('@web') ?>/img/icon_logodesafiate.png"
+             alt="Logo"
+             style="height: 70px; width: auto; margin-right: 5px;">
+        <span class="brand-text" style="position: relative; top: -5px; left: -5px; font-weight: bold;">Desafia-te</span>
     </a>
 
     <!-- Sidebar -->
@@ -20,7 +22,7 @@ $username = $user ? Html::encode($user->username) : 'Visitante';
         <!-- Sidebar user panel (optional) -->
         <div class="user-panel mt-3 pb-3 mb-3 d-flex">
             <div class="image">
-                <img src="<?= $assetDir ?>/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
+                <img src="<?= Yii::getAlias('@web') ?>/img/icon_user.png" class="img-circle elevation-2" alt="User Image">
             </div>
             <div class="info">
                 <a class="d-block" style="color: #fff; font-weight: 500;"><?= $username ?></a>
