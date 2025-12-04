@@ -12,8 +12,8 @@ $username = $user ? Html::encode($user->username) : 'Visitante';
     <a href="<?= Url::home() ?>" class="brand-link" style="background-color: #4d37b6; color: #fff; padding-left: 5px;">
         <img src="<?= Yii::getAlias('@web') ?>/img/icon_logodesafiate.png"
              alt="Logo"
-             style="height: 70px; width: auto; margin-right: 5px;">
-        <span class="brand-text" style="position: relative; top: -5px; left: -5px; font-weight: bold;">Desafia-te</span>
+             style="height: 60px; width: auto; margin-right: 5px;">
+        <span class="brand-text" style="position: relative; left: -5px; font-weight: bold;">Desafia-te</span>
     </a>
 
     <!-- Sidebar -->
