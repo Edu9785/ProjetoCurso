@@ -53,10 +53,33 @@ return [
                         'api/jogador',
                         'api/jogodefault',
                         ],
+                    'pluralize' => false,
                     'extraPatterns' => [
-                        'GET nomes' => 'nomes', // 'nome' é 'actionNome'
-                        'GET titulos' => 'titulos',
-                        'GET descricaos' => 'descricaos',
+
+                        // 1) Contar jogadores
+                        'GET count' => 'count',
+
+                        // 2) Apenas nomes
+                        'GET nomes' => 'nomes',
+
+                        // 3) Obter idade por ID
+                        'GET {id}/idade' => 'idade',
+
+                        // 4) Obter idade por nome
+                        'GET idade/{nome}' => 'idadepornome',
+
+                        // 5) Apagar jogador pelo nome
+                        'DELETE {nome}' => 'delpornome',
+
+                        // 6) Atualizar idade pelo nome
+                        'PUT {nome}' => 'putidadepornome',
+
+                        // 7) Criar jogador vazio
+                        'POST vazio' => 'postjogadorvazio',
+                    ],
+                    'tokens' => [
+                        '{id}' => '<id:\\d+>',           // apenas números
+                        '{nome}' => '<nome:\\w+>',       // letras, números, underscore
                     ],
                 ],
             ],
