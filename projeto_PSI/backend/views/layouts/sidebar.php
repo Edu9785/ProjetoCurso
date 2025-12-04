@@ -6,10 +6,10 @@ $user = Yii::$app->user->identity;
 $username = $user ? Html::encode($user->username) : 'Visitante';
 ?>
 
-<aside class="main-sidebar elevation-4" style="background-color: #00BFFF;"> <!-- Azul claro -->
+<aside class="main-sidebar elevation-4" style="background-color: #4d37b6;"> <!-- Azul claro -->
 
     <!-- Brand Logo -->
-    <a href="<?= Url::home() ?>" class="brand-link" style="background-color: #00BFFF; color: #fff;">
+    <a href="<?= Url::home() ?>" class="brand-link" style="background-color: #4d37b6; color: #fff;">
         <img src="<?= $assetDir ?>/img/AdminLTELogo.png" alt="Desafia-te Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
         <span class="brand-text font-weight-light">Desafia-te</span>
     </a>
@@ -75,7 +75,7 @@ $username = $user ? Html::encode($user->username) : 'Visitante';
                     ],
                     'options' => ['class' => 'nav nav-pills nav-sidebar flex-column', 'data-widget' => 'treeview', 'role' => 'menu', 'data-accordion' => 'false'],
                     'itemOptions' => ['class' => 'nav-item'],
-                    'linkTemplate' => '<a href="{url}" class="nav-link" style="color: #000;">{icon} {label}</a>',
+                    'linkTemplate' => '<a href="{url}" class="nav-link" style="color: #fff;">{icon} {label}</a>',
             ]) ?>
         </nav>
         <!-- /.sidebar-menu -->
