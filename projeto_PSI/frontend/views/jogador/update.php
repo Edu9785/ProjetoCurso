@@ -6,6 +6,9 @@ use yii\helpers\Html;
 /** @var common\models\Jogador $model */
 
 $this->title = 'Update Jogador: ' . $model->id;
+$this->params['breadcrumbs'][] = ['label' => 'Jogadors', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
+$this->params['breadcrumbs'][] = 'Update';
 ?>
 <div class="jogador-update">
 
