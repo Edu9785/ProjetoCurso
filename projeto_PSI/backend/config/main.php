@@ -65,14 +65,11 @@ return [
                         // 3) Obter idade por ID
                         'GET {id}/idade' => 'idade',
 
-                        // 4) Obter idade por nome
-                        'GET idade/{nome}' => 'idadepornome',
-
                         // 5) Apagar jogador pelo nome
-                        'DELETE {nome}' => 'delpornome',
+                        'DELETE {id}' => 'delporid',
 
                         // 6) Atualizar idade pelo nome
-                        'PUT {nome}' => 'putidadepornome',
+                        'PUT {id}' => 'putidadeporid',
 
                         // 7) Criar jogador vazio
                         'POST vazio' => 'postjogadorvazio',

@@ -40,28 +40,18 @@ class JogadorController extends ActiveController
         return $jogador;
     }
 
-    // 4) /api/jogador/idade/{nome}
-    public function actionIdadepornome($nome)
+    // 5) /api/jogador/{id}  (DELETE)
+    public function actionDelpornome($id)
     {
-        return Jogador::find()
-            ->select(['idade'])
-            ->where(['nome' => $nome])
-            ->asArray()
-            ->all();
+        return Jogador::deleteAll(['id' => $id]);
     }
 
-    // 5) /api/jogador/{nome}  (DELETE)
-    public function actionDelpornome($nome)
-    {
-        return Jogador::deleteAll(['nome' => $nome]);
-    }
-
-    // 6) /api/jogador/{nome} (PUT)
-    public function actionPutidadepornome($nome)
+    // 6) /api/jogador/{id} (PUT)
+    public function actionPutidadepornome($id)
     {
         $nova_idade = \Yii::$app->request->post('idade');
 
-        $jogador = Jogador::findOne(['nome' => $nome]);
+        $jogador = Jogador::findOne(['id' => $id]);
 
         if (!$jogador) {
             throw new NotFoundHttpException("Jogador não encontrado.");
