@@ -1,38 +1,45 @@
 <?php
-
 use yii\helpers\Html;
-use yii\widgets\DetailView;
 
 /** @var yii\web\View $this */
 /** @var common\models\Pergunta $model */
+/** @var common\models\Resposta[] $respostas */
+/** @var common\models\JogosDefault|null $jogo */
 
-$this->title = $model->id;
+$this->title = "Pergunta #{$model->id}";
 $this->params['breadcrumbs'][] = ['label' => 'Perguntas', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
-\yii\web\YiiAsset::register($this);
 ?>
+
 <div class="pergunta-view">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <h2>Pergunta: <?= Html::encode($model->pergunta) ?></h2>
+    <p><b>Valor:</b> <?= $model->valor ?></p>
 
-    <p>
-        <?= Html::a('Editar', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Apagar', ['delete', 'id' => $model->id], [
-            'class' => 'btn btn-danger',
-            'data' => [
-                'confirm' => 'Tem a certeza que deseja apagar esta Pergunta?',
-                'method' => 'post',
-            ],
-        ]) ?>
-    </p>
+    <?php if ($jogo): ?>
+        <p><b>Jogo:</b> <?= Html::encode($jogo->titulo) ?></p>
+        <p><b>Total pontos do jogo:</b> <?= $jogo->totalpontosjogo ?></p>
+    <?php endif; ?>
 
-    <?= DetailView::widget([
-        'model' => $model,
-        'attributes' => [
-            'id',
-            'pergunta',
-            'valor',
-        ],
+    <hr>
+    <h4>Respostas:</h4>
+    <ul>
+        <?php foreach ($respostas as $r): ?>
+            <li>
+                <?= Html::encode($r->resposta) ?>
+                <?php if ($r->correta): ?>
+                    <span style="color:green;">(Correta)</span>
+                <?php endif; ?>
+            </li>
+        <?php endforeach; ?>
+    </ul>
+
+    <hr>
+    <?= Html::a('Editar', ['update', 'id' => $model->id], ['class'=>'btn btn-warning']) ?>
+    <?= Html::a('Apagar', ['delete', 'id' => $model->id], [
+            'class'=>'btn btn-danger',
+            'data-confirm'=>'Apagar pergunta?',
+            'data-method'=>'post'
     ]) ?>
 
 </div>

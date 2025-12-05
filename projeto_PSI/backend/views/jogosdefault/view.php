@@ -17,6 +17,9 @@ $this->params['breadcrumbs'][] = $this->title;
             'data-confirm' => 'Tem certeza que deseja apagar este jogo?',
             'data-method' => 'post',
         ]) ?>
+        <?= Html::a('Gerir Perguntas', ['pergunta/view', 'id' => $model->id], ['class' => 'btn btn-info']) ?>
+
+
     </p>
 
     <div class="card mb-4 shadow-sm">

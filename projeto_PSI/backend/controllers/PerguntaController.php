@@ -2,6 +2,10 @@
 
 namespace backend\controllers;
 
+use common\models\JogosDefault;
+use Yii;
+use common\models\Resposta;
+use common\models\JogosdefaultPergunta;
 use common\models\Pergunta;
 use common\models\PerguntaSearch;
 use yii\web\Controller;
@@ -55,8 +59,22 @@ class PerguntaController extends Controller
      */
     public function actionView($id)
     {
+        $model = Pergunta::findOne($id);
+
+        if (!$model) {
+            throw new NotFoundHttpException("Pergunta não encontrada.");
+        }
+
+        // Obtem respostas ligadas a essa pergunta
+        $respostas = $model->respostas; // precisa do relacionamento no model Pergunta
+
+        // Obtem o jogo ao qual a pergunta pertence (via pivot)
+        $jogo = $model->jogosDefault ?? null;
+
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'model' => $model,
+            'respostas' => $respostas,
+            'jogo' => $jogo,
         ]);
     }
 
@@ -65,20 +83,54 @@ class PerguntaController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return string|\yii\web\Response
      */
-    public function actionCreate()
+    public function actionCreate($id)
     {
-        $model = new Pergunta();
+        $jogo = JogosDefault::findOne($id);
+        $totalPontos = $jogo->totalpontosjogo;
 
-        if ($this->request->isPost) {
-            if ($model->load($this->request->post()) && $model->save()) {
-                return $this->redirect(['view', 'id' => $model->id]);
+        if (Yii::$app->request->isPost) {
+            $dadosPerguntas = Yii::$app->request->post('PerguntaTexto', []);
+            $dadosValores = Yii::$app->request->post('PerguntaValor', []);
+            $dadosRespostas = Yii::$app->request->post('RespostaTexto', []);
+            $corretas = Yii::$app->request->post('RespostaCorreta', []);
+
+            foreach ($dadosPerguntas as $index => $perguntaTexto) {
+                if (trim($perguntaTexto) === '') continue;
+
+                // Cria nova pergunta
+                $modelPergunta = new Pergunta();
+                $modelPergunta->pergunta = $perguntaTexto;
+                $modelPergunta->valor = $dadosValores[$index] ?? 0;
+                if (!$modelPergunta->save()) {
+                    Yii::error($modelPergunta->errors);
+                    continue;
+                }
+
+                // Liga ao jogo
+                $jogosPergunta = new JogosdefaultPergunta();
+                $jogosPergunta->id_jogo = $id;
+                $jogosPergunta->id_pergunta = $modelPergunta->id;
+                $jogosPergunta->save();
+
+                // Salva respostas
+                if (!empty($dadosRespostas[$index])) {
+                    foreach ($dadosRespostas[$index] as $respIndex => $respostaTxt) {
+                        if (trim($respostaTxt) === '') continue;
+
+                        $resp = new Resposta();
+                        $resp->id_pergunta = $modelPergunta->id;
+                        $resp->resposta = $respostaTxt;
+                        $resp->correta = (isset($corretas[$index]) && $corretas[$index] == $respIndex) ? 1 : 0;
+                        $resp->save();
+                    }
+                }
             }
-        } else {
-            $model->loadDefaultValues();
+
+            return $this->redirect(['pergunta/view', 'id' => $id]);
         }
 
         return $this->render('create', [
-            'model' => $model,
+            'totalPontos' => $totalPontos,
         ]);
     }
 

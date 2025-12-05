@@ -13,7 +13,7 @@ $username = $user ? Html::encode($user->username) : 'Visitante';
         <img src="<?= Yii::getAlias('@web') ?>/img/icon_logodesafiate.png"
              alt="Logo"
              style="height: 60px; width: auto; margin-right: 5px;">
-        <span class="brand-text" style="position: relative; left: -5px; font-weight: bold;">Desafia-te</span>
+        <span class="brand-text" style="position: relative; font-weight: bold;">Desafia-te</span>
     </a>
 
     <!-- Sidebar -->

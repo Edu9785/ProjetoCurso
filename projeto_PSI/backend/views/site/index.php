@@ -2,8 +2,7 @@
 
 use yii\db\Query;
 
-$this->title = 'Dashboard';
-$this->params['breadcrumbs'][] = $this->title;
+$this->title = 'Home';
 
 $totalAdmins = (new Query())
         ->from('auth_assignment')
