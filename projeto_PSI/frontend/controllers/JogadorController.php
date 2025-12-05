@@ -65,10 +65,26 @@ class JogadorController extends Controller
      * @return string
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionView($id)
+    public function actionView()
     {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
+        $userId = \Yii::$app->user->id;
+        $model = Jogador::findOne(['id_user' => $userId]);
+        $userModel = $model->user; // pega o modelo User relacionado
+
+        if ($this->request->isPost) {
+            $post = $this->request->post();
+            $loadJogador = $model->load($post);
+            $loadUser = $userModel->load($post);
+
+            if ($loadJogador && $loadUser && $model->save() && $userModel->save()) {
+                \Yii::$app->session->setFlash('success', 'Perfil atualizado com sucesso!');
+                return $this->refresh();
+            }
+        }
+
+        return $this->render('index', [
+            'model' => $model,
+            'userModel' => $userModel,
         ]);
     }
 
@@ -104,9 +120,20 @@ class JogadorController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+        $user = $model->user;
 
-        if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($this->request->isPost) {
+            $model->load($this->request->post());
+            $user->load($this->request->post());
+
+            $isValid = $model->validate();
+            $isValid = $user->validate() && $isValid;
+
+            if ($isValid) {
+                $model->save(false);
+                $user->save(false);
+                return $this->redirect(['view', 'id' => $model->id]);
+            }
         }
 
         return $this->render('update', [

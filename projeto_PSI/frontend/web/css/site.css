@@ -102,3 +102,36 @@ a.desc:after {
     text-decoration: none;
 }
 
+/*perfil jogador*/
+
+.custom-input {
+    border-radius: 12px;
+    border: 1px solid #ccc;
+    transition: all 0.3s ease;
+    padding: 12px 15px;
+}
+
+.custom-input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 8px rgba(6,187,204,0.3);
+    outline: none;
+}
+
+.card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 25px rgba(0,0,0,0.15);
+}
+
+.btn-primary {
+    background: var(--primary);
+    border: none;
+    transition: 0.3s;
+}
+
+.btn-primary:hover {
+    background: darken(var(--primary), 10%);
+}

@@ -2,6 +2,7 @@
 
 namespace backend\modules\api\controllers;
 
+use common\models\User;
 use yii\rest\ActiveController;
 use common\models\Jogador;
 use yii\web\NotFoundHttpException;
@@ -41,13 +42,18 @@ class JogadorController extends ActiveController
     }
 
     // 5) /api/jogador/{id}  (DELETE)
-    public function actionDelpornome($id)
+    public function actionDelporid($id)
     {
-        return Jogador::deleteAll(['id' => $id]);
+        $model = $this->findModel($id);
+
+        $user = $model->user;
+
+        $user->status = User::STATUS_INACTIVE;
+        return $user->save(false);
     }
 
     // 6) /api/jogador/{id} (PUT)
-    public function actionPutidadepornome($id)
+    public function actionPutidadeporid($id)
     {
         $nova_idade = \Yii::$app->request->post('idade');
 

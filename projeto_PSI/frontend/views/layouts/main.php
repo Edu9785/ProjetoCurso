@@ -105,7 +105,7 @@ AppAsset::register($this);
                 'div',
                 Html::a(
                         Yii::$app->user->identity->username,
-                        ['/jogador/index'],
+                        ['/jogador/view'],
                         [
                                 'class' => 'btn btn-primary d-inline-flex align-items-center',
                                 'style' => 'border-radius:5px; padding: 8px 36px;'  // padding horizontal aumentado
