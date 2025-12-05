@@ -31,6 +31,17 @@ $imagem = $model->imagem
 
             <h1 class="fw-bold mb-3"><?= Html::encode($model->titulo) ?></h1>
 
+            <p class="fw-semi-bold text-dark mb-2"><strong>Categorias:</strong></p>
+            <div class="mb-3">
+                <?php if (!empty($model->categorias)) : ?>
+                    <?php foreach ($model->categorias as $categoria) : ?>
+                            <?= Html::encode($categoria->categoria) ?>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <span class="text-muted">Nenhuma categoria atribuída</span>
+                <?php endif; ?>
+            </div>
+
             <p class="fw-semi-bold text-dark mb-1">Dificuldade</p>
             <p class="mb-3"><?= $model->dificuldade->dificuldade ?? '-' ?></p>
 
