@@ -17,7 +17,14 @@ $this->params['breadcrumbs'][] = $this->title;
             'data-confirm' => 'Tem certeza que deseja apagar este jogo?',
             'data-method' => 'post',
         ]) ?>
-        <?= Html::a('Gerir Perguntas', ['pergunta/view', 'id' => $model->id], ['class' => 'btn btn-info']) ?>
+        <?= Html::a(
+                'Gerir Perguntas',
+                !empty($model->jogosdefaultPerguntas)
+                        ? ['pergunta/view', 'id' => $model->jogosdefaultPerguntas[0]->pergunta->id]
+                        : ['pergunta/create', 'id' => $model->id],
+                ['class' => 'btn btn-info']
+        ) ?>
+
 
 
     </p>
