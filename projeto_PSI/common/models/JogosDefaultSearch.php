@@ -6,44 +6,32 @@ use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use common\models\JogosDefault;
 
-/**
- * JogosDefaultSearch represents the model behind the search form of `common\models\JogosDefault`.
- */
 class JogosDefaultSearch extends JogosDefault
 {
-    /**
-     * {@inheritdoc}
-     */
+    public $categorias = [];
+    public $dificuldade;
+
     public function rules()
     {
         return [
-            [['id', 'id_dificuldade', 'id_tempo', 'totalpontosjogo'], 'integer'],
+            [['id', 'id_tempo', 'totalpontosjogo'], 'integer'],
             [['titulo', 'descricao', 'imagem'], 'safe'],
+
+            // NOVO
+            [['categorias'], 'each', 'rule' => ['integer']],
+            [['dificuldade'], 'integer'],
         ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function scenarios()
     {
-        // bypass scenarios() implementation in the parent class
         return Model::scenarios();
     }
 
-    /**
-     * Creates data provider instance with search query applied
-     *
-     * @param array $params
-     * @param string|null $formName Form name to be used into `->load()` method.
-     *
-     * @return ActiveDataProvider
-     */
     public function search($params, $formName = null)
     {
         $query = JogosDefault::find();
-
-        // add conditions that should always apply here
+        $query->joinWith(['categorias']); // importante!
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -52,22 +40,22 @@ class JogosDefaultSearch extends JogosDefault
         $this->load($params, $formName);
 
         if (!$this->validate()) {
-            // uncomment the following line if you do not want to return any records when validation fails
-            // $query->where('0=1');
             return $dataProvider;
         }
 
-        // grid filtering conditions
-        $query->andFilterWhere([
-            'id' => $this->id,
-            'id_dificuldade' => $this->id_dificuldade,
-            'id_tempo' => $this->id_tempo,
-            'totalpontosjogo' => $this->totalpontosjogo,
-        ]);
+        // FILTRAR POR DIFICULDADE
+        if (!empty($this->dificuldade)) {
+            $query->andWhere(['jogosdefault.id_dificuldade' => $this->dificuldade]);
+        }
 
+        // FILTRAR POR CATEGORIAS (multi-select)
+        if (!empty($this->categorias)) {
+            $query->andFilterWhere(['IN', 'categoria.id', $this->categorias]);
+        }
+
+        // FILTROS NORMAIS
         $query->andFilterWhere(['like', 'titulo', $this->titulo])
-            ->andFilterWhere(['like', 'descricao', $this->descricao])
-            ->andFilterWhere(['like', 'imagem', $this->imagem]);
+            ->andFilterWhere(['like', 'descricao', $this->descricao]);
 
         return $dataProvider;
     }
