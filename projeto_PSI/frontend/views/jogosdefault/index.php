@@ -32,43 +32,42 @@ use yii\grid\GridView;
             <div class="col-lg-3 col-md-4">
                 <h4 class="mb-4 fw-bold">Filtrar</h4>
 
-                <div class="mb-3">
-                    <label class="form-label">Categoria</label>
-                    <select class="form-select">
-                        <option selected>Escolha...</option>
-                        <?php foreach ($categorias as $cat): ?>
-                            <option value="<?= $cat->id ?>"><?= Html::encode($cat->categoria) ?></option>
-                        <?php endforeach; ?>
-                    </select>
+                <!-- Categorias Dinâmicas -->
+                <div id="categorias-wrapper">
+
+                    <!-- Primeiro campo inicial -->
+                    <div class="categoria-item mb-3 d-flex gap-2">
+                        <select name="categorias[]" class="form-select categoria-select">
+                            <option value="">Escolha...</option>
+                            <?php foreach ($categorias as $cat): ?>
+                                <option value="<?= $cat->id ?>"><?= Html::encode($cat->categoria) ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+
                 </div>
+
+                <!-- Botão adicionar categoria -->
+                <button type="button" class="btn btn-sm btn-primary mb-3" id="add-categoria">
+                    + Adicionar categoria
+                </button>
 
                 <div class="mb-3">
                     <label class="form-label">Dificuldade</label>
-                    <select class="form-select">
-                        <option selected>Escolha...</option>
+                    <select class="form-select" name="dificuldade">
+                        <option value="">Escolha...</option>
                         <?php foreach ($dificuldades as $dif): ?>
                             <option value="<?= $dif->id ?>"><?= Html::encode($dif->dificuldade) ?></option>
                         <?php endforeach; ?>
                     </select>
                 </div>
 
-                <div class="mb-3">
-                    <label class="form-label d-block">Tipo de Jogo</label>
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="tipo1">
-                        <label class="form-check-label" for="tipo1">Workshop</label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="tipo2">
-                        <label class="form-check-label" for="tipo2">Default</label>
-                    </div>
-                </div>
                 <div class="d-grid mt-4">
-                    <a href="#" class="btn btn-outline-primary">Procurar</a>
+                    <button class="btn btn-outline-primary">Procurar</button>
                 </div>
             </div>
 
-            <!-- Games Grid -->
+            <!-- Games Grid (RESTORED) -->
             <div class="col-lg-9 col-md-8">
                 <div class="row g-4">
 
@@ -92,15 +91,11 @@ use yii\grid\GridView;
                                     <h6 class="card-title mb-2"><?= Html::encode($jogo->titulo) ?></h6>
 
                                     <div class="d-flex justify-content-center gap-2">
-                                        <a href="<?= \yii\helpers\Url::to(['jogar', 'id' => $jogo->id]) ?>"
-                                           class="btn btn-primary btn-sm">
-                                            Iniciar
-                                        </a>
+                                        <a href="<?= Url::to(['jogar', 'id' => $jogo->id]) ?>"
+                                           class="btn btn-primary btn-sm">Iniciar</a>
 
-                                        <a href="<?= \yii\helpers\Url::to(['view', 'id' => $jogo->id]) ?>"
-                                           class="btn btn-outline-secondary btn-sm">
-                                            Ver Detalhes
-                                        </a>
+                                        <a href="<?= Url::to(['view', 'id' => $jogo->id]) ?>"
+                                           class="btn btn-outline-secondary btn-sm">Ver Detalhes</a>
                                     </div>
                                 </div>
 
@@ -115,3 +110,15 @@ use yii\grid\GridView;
     </div>
 </div>
 <!-- Jogos Section End -->
+
+<?php
+// Passar categorias para JS em JSON
+$categoriasJson = json_encode(
+        array_map(fn($c) => ['id' => $c->id, 'nome' => $c->categoria], $categorias),
+        JSON_UNESCAPED_UNICODE
+);
+
+// Incluir JS externo
+$this->registerJs("const categoriasData = $categoriasJson;", \yii\web\View::POS_HEAD);
+$this->registerJsFile('@web/js/jogosdefault.js', ['depends' => [\yii\web\JqueryAsset::class]]);
+?>
