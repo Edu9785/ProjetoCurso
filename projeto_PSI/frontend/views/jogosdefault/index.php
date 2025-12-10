@@ -91,7 +91,7 @@ use yii\grid\GridView;
                                     <h6 class="card-title mb-2"><?= Html::encode($jogo->titulo) ?></h6>
 
                                     <div class="d-flex justify-content-center gap-2">
-                                        <a href="<?= Url::to(['jogar', 'id' => $jogo->id]) ?>"
+                                        <a href="<?= \yii\helpers\Url::to(['pergunta/view']) ?>"
                                            class="btn btn-primary btn-sm">Iniciar</a>
 
                                         <a href="<?= Url::to(['view', 'id' => $jogo->id]) ?>"
