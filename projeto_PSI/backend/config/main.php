@@ -96,6 +96,32 @@ return [
                     ],
                 ],
 
+                // 🔹 Dificuldade
+                [
+                    'class' => 'yii\rest\UrlRule',
+                    'controller' => ['api/dificuldade'],
+                    'pluralize' => false,
+                    'extraPatterns' => [
+                        'GET dificuldades' => 'dificuldades',
+                    ],
+                    'tokens' => [
+                        '{id}' => '<id:\\d+>',
+                    ],
+                ],
+
+                // 🔹 Categoria
+                [
+                    'class' => 'yii\rest\UrlRule',
+                    'controller' => ['api/categoria'],
+                    'pluralize' => false,
+                    'extraPatterns' => [
+                        'GET categorias' => 'categorias',
+                    ],
+                    'tokens' => [
+                        '{id}' => '<id:\\d+>',
+                    ],
+                ],
+
             ],
         ],
 
