@@ -69,16 +69,4 @@ class JogadorController extends ActiveController
         return ['status' => 'idade atualizada com sucesso'];
     }
 
-    // 7) /api/jogador/vazio (POST)
-    public function actionPostjogadorvazio()
-    {
-        $model = new Jogador();
-        $model->id_user = 0;
-        $model->nome = '';
-        $model->idade = 0;
-        $model->id_premium = null;
-        $model->save();
-
-        return $model;
-    }
 }

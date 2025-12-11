@@ -47,40 +47,63 @@ return [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
+
+                // 🔹 Jogador
                 [
                     'class' => 'yii\rest\UrlRule',
-                    'controller' => [
-                        'api/jogador',
-                        'api/jogodefault',
-                        ],
+                    'controller' => ['api/jogador'],
                     'pluralize' => false,
                     'extraPatterns' => [
-
-                        // 1) Contar jogadores
                         'GET count' => 'count',
-
-                        // 2) Apenas nomes
                         'GET nomes' => 'nomes',
-
-                        // 3) Obter idade por ID
                         'GET {id}/idade' => 'idade',
-
-                        // 5) Apagar jogador pelo nome
                         'DELETE {id}' => 'delporid',
-
-                        // 6) Atualizar idade pelo nome
                         'PUT {id}' => 'putidadeporid',
-
-                        // 7) Criar jogador vazio
-                        'POST vazio' => 'postjogadorvazio',
                     ],
                     'tokens' => [
-                        '{id}' => '<id:\\d+>',           // apenas números
-                        '{nome}' => '<nome:\\w+>',       // letras, números, underscore
+                        '{id}' => '<id:\\d+>',
+                        '{nome}' => '<nome:\\w+>',
                     ],
                 ],
+
+                // 🔹 Jogos Default
+                [
+                    'class' => 'yii\rest\UrlRule',
+                    'controller' => ['api/jogosdefault'],
+                    'pluralize' => false,
+                    'extraPatterns' => [
+                        'GET count' => 'count',
+                        'GET titulos' => 'titulos',
+                        'GET descricoes' => 'descricoes',
+                        'GET {id}/titulo' => 'titulo',
+                        'PUT {id}' => 'puttitulo',
+                        'DELETE {id}' => 'delporid',
+                        'GET {id}/categorias' => 'categorias',
+                        'GET {id}/perguntas' => 'perguntas',
+                    ],
+                    'tokens' => [
+                        '{id}' => '<id:\\d+>',
+                    ],
+                ],
+
+                // 🔹 AuthController — tem regra própria
+                [
+                    'class' => 'yii\rest\UrlRule',
+                    'controller' => ['api/auth'],
+                    'pluralize' => false,
+                    'extraPatterns' => [
+                        'POST login' => 'login',
+                    ],
+                ],
+
             ],
         ],
+
+
     ],
     'params' => $params,
 ];
+
+// ==========================
+// API DO JOGOSDEFAULT
+// ==========================
