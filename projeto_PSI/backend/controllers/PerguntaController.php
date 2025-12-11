@@ -29,6 +29,7 @@ class PerguntaController extends Controller
                     'class' => VerbFilter::className(),
                     'actions' => [
                         'delete' => ['POST'],
+                        'delete-todas' => ['POST'],
                     ],
                 ],
             ]
@@ -57,24 +58,17 @@ class PerguntaController extends Controller
      * @return string
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionView($id)
+    public function actionView($id_jogo)
     {
-        $model = Pergunta::findOne($id);
 
-        if (!$model) {
-            throw new NotFoundHttpException("Pergunta não encontrada.");
+        $jogo = JogosDefault::findOne($id_jogo);
+
+        if (!$jogo) {
+            throw new NotFoundHttpException('Jogo não encontrado.');
         }
 
-        // Obtem respostas ligadas a essa pergunta
-        $respostas = $model->respostas; // precisa do relacionamento no model Pergunta
-
-        // Obtem o jogo ao qual a pergunta pertence (via pivot)
-        $jogo = $model->jogosDefault ?? null;
-
         return $this->render('view', [
-            'model' => $model,
-            'respostas' => $respostas,
-            'jogo' => $jogo,
+            'jogo' => $jogo
         ]);
     }
 
@@ -88,6 +82,11 @@ class PerguntaController extends Controller
         $jogo = JogosDefault::findOne($id);
         $totalPontos = $jogo->totalpontosjogo;
 
+        // Garantir que $modelsPerguntas existe, mesmo para jogo novo
+        $modelsPerguntas = $jogo->jogosdefaultPerguntas
+            ? array_map(fn($jp) => $jp->pergunta, $jogo->jogosdefaultPerguntas)
+            : [];
+
         if (Yii::$app->request->isPost) {
             $dadosPerguntas = Yii::$app->request->post('PerguntaTexto', []);
             $dadosValores = Yii::$app->request->post('PerguntaValor', []);
@@ -97,26 +96,19 @@ class PerguntaController extends Controller
             foreach ($dadosPerguntas as $index => $perguntaTexto) {
                 if (trim($perguntaTexto) === '') continue;
 
-                // Cria nova pergunta
                 $modelPergunta = new Pergunta();
                 $modelPergunta->pergunta = $perguntaTexto;
                 $modelPergunta->valor = $dadosValores[$index] ?? 0;
-                if (!$modelPergunta->save()) {
-                    Yii::error($modelPergunta->errors);
-                    continue;
-                }
+                $modelPergunta->save();
 
-                // Liga ao jogo
                 $jogosPergunta = new JogosdefaultPergunta();
                 $jogosPergunta->id_jogo = $id;
                 $jogosPergunta->id_pergunta = $modelPergunta->id;
                 $jogosPergunta->save();
 
-                // Salva respostas
                 if (!empty($dadosRespostas[$index])) {
                     foreach ($dadosRespostas[$index] as $respIndex => $respostaTxt) {
                         if (trim($respostaTxt) === '') continue;
-
                         $resp = new Resposta();
                         $resp->id_pergunta = $modelPergunta->id;
                         $resp->resposta = $respostaTxt;
@@ -126,11 +118,13 @@ class PerguntaController extends Controller
                 }
             }
 
-            return $this->redirect(['pergunta/view', 'id' => $id]);
+            return $this->redirect(['pergunta/view', 'id_jogo' => $id]);
         }
 
-        return $this->render('create', [
+        return $this->render('_form', [
+            'modelsPerguntas' => $modelsPerguntas,
             'totalPontos' => $totalPontos,
+            'id_jogo' => $jogo->id,
         ]);
     }
 
@@ -143,14 +137,111 @@ class PerguntaController extends Controller
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
+        $modelPergunta = Pergunta::findOne($id);
+        if (!$modelPergunta) throw new NotFoundHttpException("Pergunta não encontrada");
 
-        if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        $jp = $modelPergunta->jogosdefaultPerguntas[0] ?? null;
+        $jogo = $jp ? $jp->jogo : null;
+        if (!$jogo) throw new NotFoundHttpException("Jogo não encontrado");
+
+        $totalPontos = $jogo->totalpontosjogo;
+
+        // buscar todas as perguntas do jogo
+        $modelsPerguntas = Pergunta::find()
+            ->joinWith('jogosdefaultPerguntas')
+            ->where(['jogosdefault_pergunta.id_jogo' => $jogo->id])
+            ->orderBy('pergunta.id ASC')
+            ->all();
+
+        if (Yii::$app->request->isPost) {
+
+            $dadosPerguntas = Yii::$app->request->post('PerguntaTexto', []);
+            $dadosValores   = Yii::$app->request->post('PerguntaValor', []);
+            $dadosRespostas = Yii::$app->request->post('RespostaTexto', []);
+            $corretas       = Yii::$app->request->post('RespostaCorreta', []);
+
+            $errors = [];
+
+            // 🔥 NOVO CÓDIGO: apagar perguntas removidas no formulário
+            foreach ($modelsPerguntas as $idx => $model) {
+                if (!array_key_exists($idx, $dadosPerguntas)) {
+
+                    // apagar respostas da pergunta
+                    Resposta::deleteAll(['id_pergunta' => $model->id]);
+
+                    // apagar relação jogo-pergunta
+                    JogosdefaultPergunta::deleteAll([
+                        'id_jogo' => $jogo->id,
+                        'id_pergunta' => $model->id
+                    ]);
+
+                    // apagar a pergunta
+                    $model->delete();
+
+                    // remover da lista local
+                    unset($modelsPerguntas[$idx]);
+                }
+            }
+
+            // Reorganizar os índices após remoção
+            $modelsPerguntas = array_values($modelsPerguntas);
+
+            foreach ($dadosPerguntas as $index => $texto) {
+
+                if (trim($texto) === '') continue;
+
+                $respostas = $dadosRespostas[$index] ?? [];
+
+                $respostasValidas = array_filter($respostas, fn($r) => trim($r) !== '');
+                if (empty($respostasValidas)) {
+                    $errors[] = "A pergunta n.º " . ($index + 1) . " precisa ter pelo menos uma resposta.";
+                    continue;
+                }
+
+                if (!isset($corretas[$index]) || !isset($respostasValidas[$corretas[$index]])) {
+                    $errors[] = "A pergunta n.º " . ($index + 1) . " precisa ter uma resposta correta marcada.";
+                    continue;
+                }
+
+                // Pergunta existente ou nova
+                $modelAtual = $modelsPerguntas[$index] ?? new Pergunta();
+                $modelAtual->pergunta = $texto;
+                $modelAtual->valor = $dadosValores[$index] ?? 0;
+                $modelAtual->save();
+
+                // Criar relação se for nova
+                if (!isset($modelsPerguntas[$index])) {
+                    $rel = new JogosdefaultPergunta();
+                    $rel->id_jogo = $jogo->id;
+                    $rel->id_pergunta = $modelAtual->id;
+                    $rel->save();
+                }
+
+                // Apagar respostas antigas
+                Resposta::deleteAll(['id_pergunta' => $modelAtual->id]);
+
+                // Gravar respostas novas
+                foreach ($respostasValidas as $i => $rTxt) {
+                    $resp = new Resposta();
+                    $resp->id_pergunta = $modelAtual->id;
+                    $resp->resposta = $rTxt;
+                    $resp->correta = ($corretas[$index] == $i) ? 1 : 0;
+                    $resp->save();
+                }
+            }
+
+            if (!empty($errors)) {
+                Yii::$app->session->setFlash('error', implode('<br>', $errors));
+                return $this->refresh();
+            }
+
+            return $this->redirect(['pergunta/view', 'id_jogo' => $jogo->id]);
         }
 
-        return $this->render('update', [
-            'model' => $model,
+        return $this->render('_form', [
+            'modelsPerguntas' => $modelsPerguntas,
+            'totalPontos' => $totalPontos,
+            'id_jogo' => $jogo->id,
         ]);
     }
 
@@ -166,6 +257,31 @@ class PerguntaController extends Controller
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
+    }
+
+    public function actionDeleteTodas($id)
+    {
+        $jogo = JogosDefault::findOne($id);
+
+        if (!$jogo) {
+            throw new NotFoundHttpException("Jogo não encontrado.");
+        }
+
+        foreach ($jogo->jogosdefaultPerguntas as $jp) {
+
+            // Apagar respostas da pergunta
+            Resposta::deleteAll(['id_pergunta' => $jp->id_pergunta]);
+
+            // Apagar ligação jogo-pergunta
+            $jp->delete();
+
+            // Apagar a pergunta
+            $jp->pergunta->delete();
+        }
+
+        Yii::$app->session->setFlash('success', 'Todas as perguntas do jogo foram apagadas.');
+
+        return $this->redirect(['jogosdefault/view', 'id' => $jogo->id]);
     }
 
     /**

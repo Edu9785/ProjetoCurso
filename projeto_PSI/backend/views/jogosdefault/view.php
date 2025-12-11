@@ -4,29 +4,28 @@ use yii\helpers\Html;
 /** @var yii\web\View $this */
 /** @var common\models\JogosDefault $model */
 
-$this->title = $model->titulo;
+$this->title = 'Jogo ' .$model->titulo;
 $this->params['breadcrumbs'][] = ['label' => 'Jogos Defaults', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+$this->params['breadcrumbs'][] = $model->titulo;
 ?>
 <div class="jogosdefault-view">
 
     <p>
         <?= Html::a('Editar', ['update', 'id' => $model->id], ['class' => 'btn btn-warning']) ?>
+
         <?= Html::a('Apagar', ['delete', 'id' => $model->id], [
-            'class' => 'btn btn-danger',
-            'data-confirm' => 'Tem certeza que deseja apagar este jogo?',
-            'data-method' => 'post',
+                'class' => 'btn btn-danger',
+                'data-confirm' => 'Tem certeza que deseja apagar este jogo?',
+                'data-method' => 'post',
         ]) ?>
+
         <?= Html::a(
                 'Gerir Perguntas',
                 !empty($model->jogosdefaultPerguntas)
-                        ? ['pergunta/view', 'id' => $model->jogosdefaultPerguntas[0]->pergunta->id]
+                        ? ['pergunta/view', 'id_jogo' => $model->id]
                         : ['pergunta/create', 'id' => $model->id],
                 ['class' => 'btn btn-info']
         ) ?>
-
-
-
     </p>
 
     <div class="card mb-4 shadow-sm">
@@ -35,9 +34,18 @@ $this->params['breadcrumbs'][] = $this->title;
             <p><strong>Descrição:</strong> <?= Html::encode($model->descricao) ?></p>
 
             <ul class="list-group list-group-flush mb-3">
-                <li class="list-group-item"><strong>Dificuldade:</strong> <?= Html::encode($model->dificuldade->dificuldade ?? '-') ?></li>
-                <li class="list-group-item"><strong>Tempo:</strong> <?= Html::encode($model->tempo->quantidadetempo ?? '-') ?> seg</li>
-                <li class="list-group-item"><strong>Total Pontos:</strong> <?= Html::encode($model->totalpontosjogo) ?></li>
+                <li class="list-group-item"><strong>Dificuldade:</strong>
+                    <?= Html::encode($model->dificuldade->dificuldade ?? '-') ?>
+                </li>
+
+                <li class="list-group-item"><strong>Tempo:</strong>
+                    <?= Html::encode($model->tempo->quantidadetempo ?? '-') ?> seg
+                </li>
+
+                <li class="list-group-item"><strong>Total Pontos:</strong>
+                    <?= Html::encode($model->totalpontosjogo) ?>
+                </li>
+
                 <li class="list-group-item"><strong>Categorias:</strong>
                     <?php
                     $nomesCategorias = [];

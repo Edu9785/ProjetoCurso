@@ -189,7 +189,7 @@
       <path value="$PROJECT_DIR$/projeto_PSI/vendor/almasaeed2010/adminlte" />
     </include_path>
   </component>
-  <component name="PhpProjectSharedConfiguration" php_language_level="7.4">
+  <component name="PhpProjectSharedConfiguration" php_language_level="8.4">
     <option name="suggestChangeDefaultLanguageLevel" value="false" />
   </component>
   <component name="PhpStanOptionsConfiguration">

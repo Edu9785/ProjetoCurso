@@ -1,6 +1,5 @@
 <?php
 
-use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
@@ -10,6 +9,8 @@ use yii\widgets\ActiveForm;
 /** @var array $categorias */
 /** @var array $dificuldades */
 /** @var array $tempos */
+/** @var array $categoriasSelecionadas */
+
 ?>
 
 <div class="jogos-default-form">
@@ -25,29 +26,59 @@ use yii\widgets\ActiveForm;
 
     <!-- Dificuldade -->
     <?= $form->field($model, 'id_dificuldade')->label('Grau de Dificuldade')->dropDownList(
-        ArrayHelper::map($dificuldades, 'id', 'dificuldade'),
-        ['prompt' => 'Selecione a dificuldade...']
+            \yii\helpers\ArrayHelper::map($dificuldades, 'id', 'dificuldade'),
+            ['prompt' => 'Selecione a dificuldade...']
     ) ?>
 
     <!-- Tempo -->
     <?= $form->field($model, 'id_tempo')->label('Tempo')->dropDownList(
-        ArrayHelper::map($tempos, 'id', 'quantidadetempo'),
-        ['prompt' => 'Selecione o tempo...']
+            \yii\helpers\ArrayHelper::map($tempos, 'id', 'quantidadetempo'),
+            ['prompt' => 'Selecione o tempo...']
     ) ?>
 
     <!-- Categorias -->
     <div class="form-group">
         <label><strong>Categorias</strong></label>
         <div id="categorias-container">
-            <div class="categoria-item mb-2">
-                <select name="categorias[]" class="form-control">
-                    <option value="">Selecione a categoria...</option>
-                    <?php foreach ($categorias as $c): ?>
-                        <option value="<?= $c->id ?>"><?= $c->categoria ?></option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
+
+            <?php
+            // Se houver categorias selecionadas, mostrar cada uma com a opção marcada
+            if (!empty($categoriasSelecionadas)) {
+                foreach ($categoriasSelecionadas as $catId) {
+                    ?>
+                    <div class="categoria-item mb-2">
+                        <div class="d-flex gap-2">
+                            <select name="categorias[]" class="form-control">
+                                <option value="">Selecione a categoria...</option>
+                                <?php foreach ($categorias as $c): ?>
+                                    <option value="<?= $c->id ?>" <?= ($c->id == $catId) ? 'selected' : '' ?>>
+                                        <?= $c->categoria ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                            <button type="button" class="btn btn-danger btn-sm remove-categoria">X</button>
+                        </div>
+                    </div>
+                    <?php
+                }
+            } else {
+                // Caso não haja categorias selecionadas, criar um select vazio
+                ?>
+                <div class="categoria-item mb-2">
+                    <div class="d-flex gap-2">
+                        <select name="categorias[]" class="form-control">
+                            <option value="">Selecione a categoria...</option>
+                            <?php foreach ($categorias as $c): ?>
+                                <option value="<?= $c->id ?>"><?= $c->categoria ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                        <button type="button" class="btn btn-danger btn-sm remove-categoria">X</button>
+                    </div>
+                </div>
+            <?php } ?>
+
         </div>
+
         <button type="button" class="btn btn-primary btn-sm mt-2" id="add-categoria-btn">
             <i class="fas fa-plus"></i> Adicionar categoria
         </button>
@@ -84,9 +115,16 @@ use yii\widgets\ActiveForm;
     `;
         container.appendChild(div);
 
-        // Evento para remover o select
+        // Permitir remover a nova categoria
         div.querySelector(".remove-categoria").addEventListener("click", function () {
             div.remove();
+        });
+    });
+
+    // Permitir remover categorias já existentes
+    document.querySelectorAll(".remove-categoria").forEach(btn => {
+        btn.addEventListener("click", function () {
+            btn.closest(".categoria-item").remove();
         });
     });
 </script>

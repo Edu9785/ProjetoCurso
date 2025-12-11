@@ -60,13 +60,11 @@ class JogosdefaultController extends Controller
     {
         $model = $this->findModel($id);
 
-        $categorias = \common\models\Categoria::find()->all();
-
         return $this->render('view', [
-            'model' => $model,
-            'categorias' => $categorias
+            'model' => $model
         ]);
     }
+
     /**
      * Creates a new JogosDefault model.
      * If creation is successful, the browser will be redirected to the 'view' page.
@@ -94,29 +92,22 @@ class JogosdefaultController extends Controller
                         'categorias' => $categorias,
                     ]);
                 }
+            }
 
-                $model->imageFile = UploadedFile::getInstance($model, 'imageFile');
-
-                if ($model->imageFile && $model->upload()) {
-                    $model->save(false);
-                } else {
-                    $model->save(false);
+            if ($model->save(false)) {
+                $categoriasSelecionadas = Yii::$app->request->post('categorias', []);
+                foreach ($categoriasSelecionadas as $categoriaID) {
+                    if ($categoriaID > 0) {
+                        $categoriasJogo = new JogosdefaultCategoria();
+                        $categoriasJogo->id_jogo = $model->id;
+                        $categoriasJogo->id_categoria = $categoriaID;
+                        $categoriasJogo->save(false);
+                    }
                 }
-
-                if ($model->save(false)) {
-                    $categoriasSelecionadas = Yii::$app->request->post('categorias', []);
-                        foreach ($categoriasSelecionadas as $categoriaID) {
-                            if ($categoriaID > 0) {
-                                $categoriasJogo = new JogosdefaultCategoria();
-                                $categoriasJogo->id_jogo = $model->id;
-                                $categoriasJogo->id_categoria = $categoriaID;
-                                $categoriasJogo->save(false);
-                            }
-                        }
-                    return $this->redirect(['view', 'id' => $model->id]);
-                }
+                return $this->redirect(['view', 'id' => $model->id]);
             }
         }
+
         return $this->render('create', [
             'model' => $model,
             'dificuldades' => $dificuldades,
@@ -125,9 +116,8 @@ class JogosdefaultController extends Controller
         ]);
     }
 
-
     /**
-     * Updates an existing Jogodefault model.
+     * Updates an existing JogosDefault model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param int $id ID
      * @return string|\yii\web\Response
@@ -143,9 +133,10 @@ class JogosdefaultController extends Controller
 
         $oldImage = $model->imagem;
 
-        $categoriasSelecionadas = array_map(function($cat) {
-            return $cat->id_categoria;
-        }, $model->jogosdefaultCategorias);
+        $categoriasSelecionadas = \yii\helpers\ArrayHelper::getColumn(
+            $model->getJogosdefaultCategorias()->all(),
+            'id_categoria'
+        );
 
         if ($model->load(Yii::$app->request->post())) {
 
@@ -205,9 +196,28 @@ class JogosdefaultController extends Controller
     {
         $model = $this->findModel($id);
 
-        JogosdefaultCategoria::deleteAll(['id_jogo' => $model->id]);
+        // 1️⃣ Apagar perguntas e respostas vinculadas ao jogo
+        foreach ($model->jogosdefaultPerguntas as $jp) {
 
+            // Apagar respostas da pergunta
+            \common\models\Resposta::deleteAll(['id_pergunta' => $jp->id_pergunta]);
+
+            // Primeiro deletar a relação na tabela jogosdefault_pergunta
+            $jp->delete();
+
+            // Agora deletar a pergunta
+            $jp->pergunta->delete();
+        }
+
+        // Apagar categorias vinculadas
+        foreach ($model->jogosdefaultCategorias as $jc) {
+            $jc->delete();
+        }
+
+        // 2️⃣ Apagar o próprio jogo
         $model->delete();
+
+        Yii::$app->session->setFlash('success', 'Jogo e todas as perguntas/respostas vinculadas foram eliminados com sucesso.');
 
         return $this->redirect(['index']);
     }
@@ -221,10 +231,10 @@ class JogosdefaultController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = JogosDefault::findOne(['id' => $id])) !== null) {
+        if (($model = JogosDefault::findOne($id)) !== null) {
             return $model;
         }
 
-        throw new NotFoundHttpException('The requested page does not exist.');
+        throw new NotFoundHttpException('The requested jogo does not exist.');
     }
 }

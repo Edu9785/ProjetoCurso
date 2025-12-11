@@ -5,10 +5,10 @@ use yii\helpers\Html;
 /** @var yii\web\View $this */
 /** @var common\models\JogosDefault $model */
 
-$this->title = 'Update Jogos Default: ' . $model->id;
+$this->title = 'Editar Jogo Default: ' . $model->id;
 $this->params['breadcrumbs'][] = ['label' => 'Jogos Defaults', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = 'Update';
+$this->params['breadcrumbs'][] = 'Editar';
 ?>
 <div class="jogos-default-update">
 
@@ -17,6 +17,7 @@ $this->params['breadcrumbs'][] = 'Update';
             'dificuldades' => $dificuldades,
             'tempos' => $tempos,
             'categorias' => $categorias,
+            'categoriasSelecionadas' => $categoriasSelecionadas,
     ]) ?>
 
 </div>
