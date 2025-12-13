@@ -2,23 +2,66 @@
 
 namespace backend\modules\api\controllers;
 
-use common\models\User;
 use yii\rest\ActiveController;
-use common\models\Jogador;
 use yii\web\NotFoundHttpException;
+use Yii;
+use common\models\Jogador;
+use common\models\User;
+use common\models\Premium;
 
 class JogadorController extends ActiveController
 {
-    public $modelClass = Jogador::class;
+    public $modelClass = 'common\models\Jogador';
 
-    // 1) /api/jogador/count
-    public function actionCount()
+    // GET /api/jogador
+    public function actionIndex()
     {
-        $total = Jogador::find()->count();
-        return ['count' => (int)$total];
+        return Jogador::find()->all();
     }
 
-    // 2) /api/jogador/nomes
+    // GET /api/jogador/{id}
+    public function actionView($id)
+    {
+        return $this->findModel($id);
+    }
+
+    // POST /api/jogador
+    public function actionCreate()
+    {
+        $model = new Jogador();
+        $model->load(Yii::$app->request->post(), '');
+        $model->save();
+        return $model;
+    }
+
+    // PUT /api/jogador/{id}
+    public function actionUpdate($id)
+    {
+        $model = $this->findModel($id);
+        $model->load(Yii::$app->request->post(), '');
+        $model->save();
+        return $model;
+    }
+
+    // DELETE /api/jogador/{id}
+    public function actionDelete($id)
+    {
+        $jogador = $this->findModel($id);
+        $user = $jogador->user;
+
+        $user->status = User::STATUS_INACTIVE;
+        $user->save(false);
+
+        return ['success' => true];
+    }
+
+    // GET /api/jogador/count
+    public function actionCount()
+    {
+        return ['count' => (int) Jogador::find()->count()];
+    }
+
+    // GET /api/jogador/nomes
     public function actionNomes()
     {
         return Jogador::find()
@@ -27,46 +70,45 @@ class JogadorController extends ActiveController
             ->all();
     }
 
-    // 3) /api/jogador/{id}/idade
+    // GET /api/jogador/{id}/idade
     public function actionIdade($id)
     {
-        $jogador = Jogador::find()
-            ->select(['idade'])
-            ->where(['id' => $id])
-            ->one();
-
-        if (!$jogador) {
-            throw new NotFoundHttpException("Jogador não encontrado.");
-        }
-        return $jogador;
+        return $this->findModel($id)->idade;
     }
 
-    // 5) /api/jogador/{id}  (DELETE)
-    public function actionDelporid($id)
+    // PUT /api/jogador/{id}/idade
+    public function actionPutidade($id)
     {
-        $model = $this->findModel($id);
+        $jogador = $this->findModel($id);
+        $jogador->idade = Yii::$app->request->post('idade');
+        $jogador->save(false);
 
-        $user = $model->user;
-
-        $user->status = User::STATUS_INACTIVE;
-        return $user->save(false);
+        return ['success' => true];
     }
 
-    // 6) /api/jogador/{id} (PUT)
-    public function actionPutidadeporid($id)
+    // GET /api/jogador/{id}/premium
+    public function actionPremium($id)
     {
-        $nova_idade = \Yii::$app->request->post('idade');
+        $jogador = $this->findModel($id);
 
-        $jogador = Jogador::findOne(['id' => $id]);
-
-        if (!$jogador) {
-            throw new NotFoundHttpException("Jogador não encontrado.");
+        if (!$jogador->id_premium) {
+            return ['premium' => false];
         }
 
-        $jogador->idade = $nova_idade;
-        $jogador->save();
+        $premium = Premium::findOne($jogador->id_premium);
 
-        return ['status' => 'idade atualizada com sucesso'];
+        return [
+            'premium' => true,
+            'plano' => $premium->nome,
+            'preco' => $premium->preco
+        ];
     }
 
+    protected function findModel($id)
+    {
+        if (($model = Jogador::findOne($id)) !== null) {
+            return $model;
+        }
+        throw new NotFoundHttpException('Jogador não encontrado');
+    }
 }

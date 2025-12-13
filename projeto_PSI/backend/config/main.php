@@ -57,28 +57,19 @@ return [
                         'GET count' => 'count',
                         'GET nomes' => 'nomes',
                         'GET {id}/idade' => 'idade',
-                        'DELETE {id}' => 'delporid',
-                        'PUT {id}' => 'putidadeporid',
-                    ],
-                    'tokens' => [
-                        '{id}' => '<id:\\d+>',
-                        '{nome}' => '<nome:\\w+>',
+                        'PUT {id}/idade' => 'putidade',
+                        'GET {id}/premium' => 'premium',
+                        'PUT {id}/ativar-premium/{premiumId}' => 'ativarpremium',
+                        'PUT {id}/remover-premium' => 'removerpremium',
                     ],
                 ],
 
                 // 🔹 Jogos Default
                 [
                     'class' => 'yii\rest\UrlRule',
-                    'controller' => ['api/jogosdefault'],
+                    'controller' => ['api/jogodefault'],
                     'pluralize' => false,
                     'extraPatterns' => [
-                        'GET count' => 'count',
-                        'GET titulos' => 'titulos',
-                        'GET descricoes' => 'descricoes',
-                        'GET {id}/titulo' => 'titulo',
-                        'PUT {id}' => 'puttitulo',
-                        'DELETE {id}' => 'delporid',
-                        'GET {id}/categorias' => 'categorias',
                         'GET {id}/perguntas' => 'perguntas',
                     ],
                     'tokens' => [
@@ -94,35 +85,64 @@ return [
                     'extraPatterns' => [
                         'POST login' => 'login',
                         'POST signup' => 'signup',
+                        'Post logout' => 'logout',
                     ],
                 ],
 
-                // 🔹 Dificuldade
+                // 🔹 Dificuldades
                 [
                     'class' => 'yii\rest\UrlRule',
                     'controller' => ['api/dificuldade'],
                     'pluralize' => false,
                     'extraPatterns' => [
-                        'GET dificuldades' => 'dificuldades',
-                    ],
-                    'tokens' => [
-                        '{id}' => '<id:\\d+>',
+                        'GET count' => 'count',
+                        'GET nomes' => 'nomes',
                     ],
                 ],
 
-                // 🔹 Categoria
+                // 🔹 Categorias
                 [
                     'class' => 'yii\rest\UrlRule',
                     'controller' => ['api/categoria'],
                     'pluralize' => false,
                     'extraPatterns' => [
-                        'GET categorias' => 'categorias',
+                        'GET nomes' => 'nomes',
+                        'GET count' => 'count',
+                        'GET {id}/jogosdefault' => 'jogosdefault',
                     ],
                     'tokens' => [
                         '{id}' => '<id:\\d+>',
                     ],
                 ],
 
+                // 🔹 Perguntas
+                [
+                    'class' => 'yii\rest\UrlRule',
+                    'controller' => ['api/pergunta'],
+                    'pluralize' => false,
+                    'extraPatterns' => [
+                        'GET {id}/respostas' => 'respostas',
+                        'GET search/{texto}' => 'search',
+                    ],
+                    'tokens' => [
+                        '{id}' => '<id:\\d+>',
+                        '{texto}' => '<texto:[^/]+>',
+                    ],
+                ],
+
+                // 🔹 Respostas
+                [
+                    'class' => 'yii\rest\UrlRule',
+                    'controller' => ['api/resposta'],
+                    'pluralize' => false,
+                    'extraPatterns' => [
+                        'GET pergunta/{id}' => 'porpergunta',
+                        'PUT {id}/correta' => 'setcorreta',
+                    ],
+                    'tokens' => [
+                        '{id}' => '<id:\\d+>',
+                    ],
+                ],
             ],
         ],
 
@@ -130,7 +150,3 @@ return [
     ],
     'params' => $params,
 ];
-
-// ==========================
-// API DO JOGOSDEFAULT
-// ==========================

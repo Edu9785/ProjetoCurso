@@ -3,95 +3,151 @@
 namespace backend\modules\api\controllers;
 
 use yii\rest\ActiveController;
-use common\models\JogosDefault;
 use yii\web\NotFoundHttpException;
+use yii\web\UploadedFile;
+use Yii;
+use common\models\JogosDefault;
+use common\models\Pergunta;
 
 class JogodefaultController extends ActiveController
 {
-    public $modelClass = JogosDefault::class;
+    public $modelClass = 'common\models\JogosDefault';
 
-    // 1) GET /api/jogosdefault/count
-    public function actionCount()
+    public function behaviors()
     {
-        $total = JogosDefault::find()->count();
-        return ['count' => (int)$total];
+        $behaviors = parent::behaviors();
+
+        $behaviors['contentNegotiator']['formats']['application/json'] =
+            \yii\web\Response::FORMAT_JSON;
+
+        return $behaviors;
     }
 
-    // 2) GET /api/jogosdefault/titulos
-    public function actionTitulos()
+    // ------------------------------------
+    // GET /api/jogosdefault
+    // ------------------------------------
+    public function actionIndex()
     {
-        return JogosDefault::find()
-            ->select(['id', 'titulo'])
-            ->asArray()
-            ->all();
+        $query = JogosDefault::find();
+
+        // filtro por dificuldade
+        if ($dif = Yii::$app->request->get('dificuldade')) {
+            $query->andWhere(['id_dificuldade' => $dif]);
+        }
+
+        // pesquisa por título
+        if ($search = Yii::$app->request->get('search')) {
+            $query->andWhere(['like', 'titulo', $search]);
+        }
+
+        return $query->with(['dificuldade', 'tempo', 'categorias'])->all();
     }
 
-    // 3) GET /api/jogosdefault/descricoes
-    public function actionDescricoes()
+    // ------------------------------------
+    // GET /api/jogosdefault/{id}
+    // ------------------------------------
+    public function actionView($id)
     {
-        return JogosDefault::find()
-            ->select(['id', 'descricao'])
-            ->asArray()
-            ->all();
-    }
-
-    // 4) GET /api/jogosdefault/{id}/titulo
-    public function actionTitulo($id)
-    {
-        $jogo = JogosDefault::find()
-            ->select(['titulo'])
+        $model = JogosDefault::find()
             ->where(['id' => $id])
+            ->with(['dificuldade', 'tempo', 'categorias'])
             ->one();
 
-        if (!$jogo) {
-            throw new NotFoundHttpException("Jogo não encontrado.");
+        if (!$model) {
+            throw new NotFoundHttpException('Jogo não encontrado');
         }
 
-        return $jogo;
+        return $model;
     }
 
-    // 5) PUT /api/jogosdefault/{id} — atualizar título
-    public function actionPuttitulo($id)
-    {
-        $novo = \Yii::$app->request->post('titulo');
-
-        $jogo = JogosDefault::findOne(['id' => $id]);
-
-        if (!$jogo) {
-            throw new NotFoundHttpException("Jogo não encontrado.");
-        }
-
-        $jogo->titulo = $novo;
-        $jogo->save();
-
-        return ['status' => 'título atualizado com sucesso'];
-    }
-
-    // 6) DELETE /api/jogosdefault/{id}
-    public function actionDelporid($id)
-    {
-        return JogosDefault::deleteAll(['id' => $id]);
-    }
-
-    // 7) GET /api/jogosdefault/{id}/categorias
-    public function actionCategorias($id)
-    {
-        $jogo = JogosDefault::findOne($id);
-        if (!$jogo) {
-            throw new NotFoundHttpException("Jogo não encontrado.");
-        }
-
-        return $jogo->categorias;
-    }
-
-    // 8) GET /api/jogosdefault/{id}/perguntas
+    // ------------------------------------
+    // GET /api/jogosdefault/{id}/perguntas
+    // MASTER / DETAIL
+    // ------------------------------------
     public function actionPerguntas($id)
     {
         $jogo = JogosDefault::findOne($id);
+
         if (!$jogo) {
-            throw new NotFoundHttpException("Jogo não encontrado.");
+            throw new NotFoundHttpException('Jogo não encontrado');
         }
 
-        return $jogo->jogosdefaultPerguntas;
+        return Pergunta::find()
+            ->joinWith('jogosdefaultPerguntas')
+            ->where(['jogosdefault_pergunta.id_jogo' => $id])
+            ->with('respostas')
+            ->all();
+    }
+
+    // ------------------------------------
+    // POST /api/jogosdefault
+    // (com upload de imagem)
+    // ------------------------------------
+    public function actionCreate()
+    {
+        $model = new JogosDefault();
+
+        $model->load(Yii::$app->request->post(), '');
+
+        $model->imageFile = UploadedFile::getInstanceByName('imageFile');
+
+        if ($model->upload() && $model->save()) {
+            return [
+                'success' => true,
+                'jogo' => $model
+            ];
+        }
+
+        return [
+            'success' => false,
+            'errors' => $model->errors
+        ];
+    }
+
+    // ------------------------------------
+    // PUT /api/jogosdefault/{id}
+    // ------------------------------------
+    public function actionUpdate($id)
+    {
+        $model = JogosDefault::findOne($id);
+
+        if (!$model) {
+            throw new NotFoundHttpException('Jogo não encontrado');
+        }
+
+        $model->load(Yii::$app->request->bodyParams, '');
+
+        $model->imageFile = UploadedFile::getInstanceByName('imageFile');
+
+        if ($model->upload() && $model->save()) {
+            return [
+                'success' => true,
+                'jogo' => $model
+            ];
+        }
+
+        return [
+            'success' => false,
+            'errors' => $model->errors
+        ];
+    }
+
+    // ------------------------------------
+    // DELETE /api/jogosdefault/{id}
+    // ------------------------------------
+    public function actionDelete($id)
+    {
+        $model = JogosDefault::findOne($id);
+
+        if (!$model) {
+            throw new NotFoundHttpException('Jogo não encontrado');
+        }
+
+        $model->delete();
+
+        return [
+            'success' => true,
+            'message' => 'Jogo default eliminado'
+        ];
     }
 }

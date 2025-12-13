@@ -2,19 +2,30 @@
 
 namespace backend\modules\api\controllers;
 
-use common\models\Dificuldade;
 use yii\rest\ActiveController;
+use yii\web\Response;
+use Yii;
+use common\models\Dificuldade;
 
 class DificuldadeController extends ActiveController
 {
     public $modelClass = 'common\models\Dificuldade';
 
-    public function actionIndex()
+    public function behaviors()
     {
-        return $this->render('index');
+        $behaviors = parent::behaviors();
+
+        $behaviors['contentNegotiator']['formats']['application/json'] =
+            Response::FORMAT_JSON;
+
+        return $behaviors;
     }
 
-    public function actionDificuldade()
+    // ----------------------------
+    // GET /api/dificuldades/nomes
+    // (para spinner Android)
+    // ----------------------------
+    public function actionNomes()
     {
         return Dificuldade::find()
             ->select(['id', 'dificuldade'])
@@ -22,4 +33,13 @@ class DificuldadeController extends ActiveController
             ->all();
     }
 
+    // ----------------------------
+    // GET /api/dificuldades/count
+    // ----------------------------
+    public function actionCount()
+    {
+        return [
+            'total' => Dificuldade::find()->count()
+        ];
+    }
 }

@@ -2,19 +2,30 @@
 
 namespace backend\modules\api\controllers;
 
-use yii\rest\ActiveController;
 use yii\rest\Controller;
+use yii\web\Response;
 use Yii;
 use common\models\User;
 use common\models\Jogador;
 
 class AuthController extends Controller
 {
+    public function behaviors()
+    {
+        $behaviors = parent::behaviors();
+
+        $behaviors['contentNegotiator']['formats']['application/json'] =
+            Response::FORMAT_JSON;
+
+        return $behaviors;
+    }
+
     public function verbs()
     {
         return [
             'login' => ['POST'],
             'signup' => ['POST'],
+            'logout' => ['POST'],
         ];
     }
 
@@ -26,10 +37,14 @@ class AuthController extends Controller
         $username = Yii::$app->request->post('username');
         $password = Yii::$app->request->post('password');
 
+        if (!$username || !$password) {
+            return ['success' => false, 'errorerror' => 'Username e password são obrigatórios'];
+        }
+
         $user = User::findByUsername($username);
 
         if (!$user || !$user->validatePassword($password)) {
-            return ['error' => 'Credenciais inválidas'];
+            return ['success' => false, 'error' => 'Credenciais inválidas'];
         }
 
         if (!$user->auth_key) {
@@ -38,7 +53,7 @@ class AuthController extends Controller
         }
 
         return [
-            'status' => 'success',
+            'success' => true,
             'user_id' => $user->id,
             'token' => $user->auth_key,
         ];
@@ -53,12 +68,27 @@ class AuthController extends Controller
 
         $required = ['username', 'nome', 'email', 'password', 'idade'];
         foreach ($required as $field) {
-            if (!isset($data[$field])) {
-                return ['error' => "Missing field: $field"];
+            if (empty($data[$field])) {
+                return ['success' => false, 'error' => "Campo obrigatório: $field"];
             }
         }
 
-        // Create USER
+        // validações extra
+        if (strlen($data['password']) < 6) {
+            return ['success' => false, 'error' => 'Password deve ter pelo menos 6 caracteres'];
+        }
+
+        if (User::find()->where(['username' => $data['username']])->exists()) {
+            return ['success' => false, 'error' => 'Username já existe'];
+        }
+
+        if (User::find()->where(['email' => $data['email']])->exists()) {
+            return ['success' => false, 'error' => 'Email já registado'];
+        }
+
+        // ------------------
+        // Criar USER
+        // ------------------
         $user = new User();
         $user->username = $data['username'];
         $user->email = $data['email'];
@@ -71,12 +101,14 @@ class AuthController extends Controller
             return ['success' => false, 'errors' => $user->errors];
         }
 
-        // Create JOGADOR
+        // ------------------
+        // Criar JOGADOR
+        // ------------------
         $jogador = new Jogador();
         $jogador->id_user = $user->id;
         $jogador->nome = $data['nome'];
-        $jogador->idade = intval($data['idade']);
-        $jogador->id_premium = 1; // default
+        $jogador->idade = (int)$data['idade'];
+        $jogador->id_premium = 1;
 
         if (!$jogador->save()) {
             $user->delete();
@@ -85,10 +117,36 @@ class AuthController extends Controller
 
         return [
             'success' => true,
-            'message' => 'Registo efetuado com sucesso!',
+            'message' => 'Conta criada com sucesso',
             'user_id' => $user->id,
             'jogador_id' => $jogador->id,
             'token' => $user->auth_key,
+        ];
+    }
+
+    // --------------------------
+    // LOGOUT
+    // --------------------------
+    public function actionLogout()
+    {
+        $token = Yii::$app->request->headers->get('Authorization');
+
+        if (!$token) {
+            return ['success' => false, 'error' => 'Token não fornecido'];
+        }
+
+        $user = User::findOne(['auth_key' => $token]);
+
+        if (!$user) {
+            return ['success' => false, 'error' => 'Token inválido'];
+        }
+
+        $user->auth_key = null;
+        $user->save(false);
+
+        return [
+            'success' => true,
+            'message' => 'Logout efetuado com sucesso'
         ];
     }
 }
