@@ -55,10 +55,10 @@ $imagem = $model->imagem
                 <?= Html::encode($model->descricao) ?>
             </p>
 
-            <!-- Botão PLAY -->
-            <a href="<?= \yii\helpers\Url::to(['pergunta/view']) ?>" class="btn btn-primary px-5 py-2 mt-4 fw-semi-bold" style="border-radius: 8px;">
-                Play
+            <a href="<?= \yii\helpers\Url::to(['pergunta/view', 'id_jogo' => $model->id]) ?>" class="btn btn-primary">
+                Jogar
             </a>
+
         </div>
 
     </div>

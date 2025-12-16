@@ -14,7 +14,7 @@ use yii\helpers\Json;
 $this->title = 'Jogos Trivia';
 ?>
 
-<!-- Header Start -->
+
 <div class="container-fluid bg-primary py-5 mb-5 page-header">
     <div class="container py-5">
         <div class="row justify-content-center">
@@ -24,24 +24,20 @@ $this->title = 'Jogos Trivia';
         </div>
     </div>
 </div>
-<!-- Header End -->
 
-<!-- Jogos Section Start -->
+
 <div class="container-xxl py-5">
     <div class="container">
         <div class="row g-5">
 
-            <!-- Sidebar Filters -->
             <div class="col-lg-3 col-md-4">
-                <!-- FORM que envia GET para o mesmo index -->
                 <form method="GET" id="filtro-jogos-form">
 
                     <h4 class="mb-4 fw-bold">Filtrar</h4>
 
-                    <!-- Wrapper para selects dinâmicos -->
                     <div id="categorias-wrapper">
                         <?php
-                        // Preserve valores selecionados (do searchModel ou do request)
+
                         $selectedCats = [];
                         if (!empty($searchModel->categorias) && is_array($searchModel->categorias)) {
                             $selectedCats = $searchModel->categorias;
@@ -64,11 +60,11 @@ $this->title = 'Jogos Trivia';
                                             </option>
                                         <?php endforeach; ?>
                                     </select>
-                                    <!-- botão remover para selects pré-existentes -->
                                     <button type="button" class="btn btn-danger btn-sm remove-categoria">Remover</button>
                                 </div>
                             <?php endforeach;
                         else: ?>
+
                             <!-- Renderiza um select vazio por defeito -->
                             <div class="categoria-item mb-3 d-flex gap-2">
                                 <select name="JogosDefaultSearch[categorias][]" class="form-select categoria-select">
@@ -81,7 +77,6 @@ $this->title = 'Jogos Trivia';
                         <?php endif; ?>
                     </div>
 
-                    <!-- Botão adicionar categoria (JS vai clonar um select com este name) -->
                     <button type="button" class="btn btn-sm btn-primary mb-3" id="add-categoria">
                         + Adicionar categoria
                     </button>

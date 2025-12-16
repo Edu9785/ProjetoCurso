@@ -2,7 +2,10 @@
 
 namespace frontend\controllers;
 
+use yii;
 use common\models\Pergunta;
+use common\models\Resposta;
+use common\models\JogosdefaultPergunta;
 use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -63,10 +66,87 @@ class PerguntaController extends Controller
      * @return string
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionView($id)
+    public function actionView($id_jogo)
     {
+        $session = Yii::$app->session;
+
+        if (!$session->has('jogo')) {
+
+            $idsPerguntas = JogosdefaultPergunta::find()
+                ->select('id_pergunta')
+                ->where(['id_jogo' => $id_jogo])
+                ->column();
+
+            if (empty($idsPerguntas)) {
+                throw new NotFoundHttpException('Este jogo não tem perguntas associadas.');
+            }
+
+            $perguntas = Pergunta::find()
+                ->where(['id' => $idsPerguntas])
+                ->orderBy('RAND()')
+                ->all();
+
+            $session->set('jogo', [
+                'id_jogo'   => $id_jogo,
+                'perguntas' => array_column($perguntas, 'id'),
+                'contador'  => 0,
+                'pontos'    => 0,
+                'acertos'   => [],
+            ]);
+        }
+
+        $jogo = $session->get('jogo');
+
+        if ($jogo['contador'] >= count($jogo['perguntas'])) {
+            return $this->redirect(['pergunta/resultado']);
+        }
+
+        $idPergunta = $jogo['perguntas'][$jogo['contador']];
+        $pergunta = Pergunta::findOne($idPergunta);
+
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'pergunta' => $pergunta
+        ]);
+    }
+
+
+    public function actionResponder()
+    {
+        $session = Yii::$app->session;
+        $jogo = $session->get('jogo');
+
+        $idResposta = Yii::$app->request->post('id_resposta');
+        $resposta = Resposta::findOne($idResposta);
+
+        if ($resposta && $resposta->correta) {
+            $jogo['pontos'] += $resposta->pergunta->valor;
+            $jogo['acertos'][] = $resposta->pergunta->id;
+        }
+
+        $jogo['contador']++;
+
+        $session->set('jogo', $jogo);
+
+        return $this->redirect([
+            'pergunta/view',
+            'id_jogo' => $jogo['id_jogo']
+        ]);
+    }
+
+    public function actionResultado()
+    {
+        $session = Yii::$app->session;
+
+        if (!$session->has('jogo')) {
+            return $this->redirect(['site/index']);
+        }
+
+        $jogo = $session->get('jogo');
+
+        $session->remove('jogo');
+
+        return $this->render('resultado', [
+            'jogo' => $jogo
         ]);
     }
 
@@ -75,6 +155,7 @@ class PerguntaController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return string|\yii\web\Response
      */
+
     public function actionCreate()
     {
         $model = new Pergunta();

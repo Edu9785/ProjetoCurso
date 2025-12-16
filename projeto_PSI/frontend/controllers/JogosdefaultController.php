@@ -6,6 +6,7 @@ use common\models\Categoria;
 use common\models\Dificuldade;
 use common\models\JogosDefault;
 use common\models\JogosDefaultSearch;
+use common\models\Pergunta;
 use common\models;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;

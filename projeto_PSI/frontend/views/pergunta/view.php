@@ -1,38 +1,30 @@
 <?php
-
 use yii\helpers\Html;
-use yii\widgets\DetailView;
+use yii\helpers\Url;
 
-/** @var yii\web\View $this */
-/** @var common\models\Pergunta $model */
-
-$this->title = $model->id;
-$this->params['breadcrumbs'][] = ['label' => 'Perguntas', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
-\yii\web\YiiAsset::register($this);
+/** @var common\models\Pergunta $pergunta */
 ?>
-<div class="pergunta-view">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+<div class="container py-5">
 
-    <p>
-        <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Delete', ['delete', 'id' => $model->id], [
-            'class' => 'btn btn-danger',
-            'data' => [
-                'confirm' => 'Are you sure you want to delete this item?',
-                'method' => 'post',
-            ],
-        ]) ?>
-    </p>
+    <h3 class="mb-4">
+        <?= Html::encode($pergunta->pergunta) ?>
+    </h3>
 
-    <?= DetailView::widget([
-        'model' => $model,
-        'attributes' => [
-            'id',
-            'pergunta',
-            'valor',
-        ],
-    ]) ?>
+    <form method="post" action="<?= Url::to(['pergunta/responder']) ?>">
+        <?= Html::hiddenInput(
+            Yii::$app->request->csrfParam,
+            Yii::$app->request->csrfToken
+        ) ?>
+
+        <?php foreach ($pergunta->respostas as $resposta): ?>
+            <button type="submit"
+                    name="id_resposta"
+                    value="<?= $resposta->id ?>"
+                    class="btn btn-outline-primary d-block w-100 mb-3 text-start">
+                <?= Html::encode($resposta->resposta) ?>
+            </button>
+        <?php endforeach; ?>
+    </form>
 
 </div>

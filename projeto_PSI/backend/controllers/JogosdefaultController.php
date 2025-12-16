@@ -196,25 +196,19 @@ class JogosdefaultController extends Controller
     {
         $model = $this->findModel($id);
 
-        // 1️⃣ Apagar perguntas e respostas vinculadas ao jogo
         foreach ($model->jogosdefaultPerguntas as $jp) {
 
-            // Apagar respostas da pergunta
             \common\models\Resposta::deleteAll(['id_pergunta' => $jp->id_pergunta]);
 
-            // Primeiro deletar a relação na tabela jogosdefault_pergunta
             $jp->delete();
 
-            // Agora deletar a pergunta
             $jp->pergunta->delete();
         }
 
-        // Apagar categorias vinculadas
+
         foreach ($model->jogosdefaultCategorias as $jc) {
             $jc->delete();
         }
-
-        // 2️⃣ Apagar o próprio jogo
         $model->delete();
 
         Yii::$app->session->setFlash('success', 'Jogo e todas as perguntas/respostas vinculadas foram eliminados com sucesso.');
