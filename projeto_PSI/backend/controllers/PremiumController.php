@@ -2,6 +2,8 @@
 
 namespace backend\controllers;
 
+use yii\web\UploadedFile;
+use Yii;
 use common\models\Premium;
 use common\models\PremiumSearch;
 use yii\web\Controller;
@@ -69,12 +71,22 @@ class PremiumController extends Controller
     {
         $model = new Premium();
 
-        if ($this->request->isPost) {
-            if ($model->load($this->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post())) {
+
+            $model->imageFile = UploadedFile::getInstance($model, 'imageFile');
+
+            if ($model->imageFile) {
+                if (!$model->upload()) {
+                    Yii::$app->session->setFlash('error', 'Erro ao enviar a imagem.');
+                    return $this->render('create', [
+                        'model' => $model,
+                    ]);
+                }
+            }
+
+            if ($model->save(false)) {
                 return $this->redirect(['view', 'id' => $model->id]);
             }
-        } else {
-            $model->loadDefaultValues();
         }
 
         return $this->render('create', [
@@ -92,15 +104,33 @@ class PremiumController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+        $oldImage = $model->imagem;
 
-        if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($model->load(Yii::$app->request->post())) {
+
+            $model->imageFile = UploadedFile::getInstance($model, 'imageFile');
+
+            if ($model->imageFile) {
+                if (!$model->upload()) {
+                    Yii::$app->session->setFlash('error', 'Erro ao enviar a imagem.');
+                    return $this->render('update', [
+                        'model' => $model,
+                    ]);
+                }
+            } else {
+                $model->imagem = $oldImage;
+            }
+
+            if ($model->save(false)) {
+                return $this->redirect(['view', 'id' => $model->id]);
+            }
         }
 
         return $this->render('update', [
             'model' => $model,
         ]);
     }
+
 
     /**
      * Deletes an existing Premium model.

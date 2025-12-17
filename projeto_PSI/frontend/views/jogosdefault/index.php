@@ -128,7 +128,7 @@ $this->title = 'Jogos Trivia';
                                         <h6 class="card-title mb-2"><?= Html::encode($jogo->titulo) ?></h6>
 
                                         <div class="d-flex justify-content-center gap-2">
-                                            <a href="<?= Url::to(['jogar', 'id' => $jogo->id]) ?>"
+                                            <a href="<?= Url::to(['pergunta/view', 'id_jogo' => $jogo->id]) ?>"
                                                class="btn btn-primary btn-sm">Iniciar</a>
 
                                             <a href="<?= Url::to(['view', 'id' => $jogo->id]) ?>"
@@ -154,10 +154,8 @@ $this->title = 'Jogos Trivia';
 <!-- Jogos Section End -->
 
 <?php
-// Passar categorias para JS de forma segura (JSON)
 $categoriasJson = Json::htmlEncode(array_map(fn($c) => ['id' => $c->id, 'nome' => $c->categoria], $categorias));
 $this->registerJs("const categoriasData = $categoriasJson;", \yii\web\View::POS_HEAD);
 
-// Incluir JS externo (certifica-te que o ficheiro existe: web/js/jogosdefault.js)
 $this->registerJsFile('@web/js/jogosdefault.js', ['depends' => [\yii\web\JqueryAsset::class]]);
 ?>

@@ -16,6 +16,8 @@ use Yii;
 class Premium extends \yii\db\ActiveRecord
 {
 
+    public $imageFile;
+
 
     /**
      * {@inheritdoc}
@@ -34,6 +36,8 @@ class Premium extends \yii\db\ActiveRecord
             [['nome', 'preco'], 'required'],
             [['preco'], 'number'],
             [['nome'], 'string', 'max' => 100],
+            [['imagem'], 'string', 'max' => 255],
+            [['imageFile'], 'file', 'skipOnEmpty' => true, 'extensions' => 'png, jpg, jpeg, webp'],
         ];
     }
 
@@ -46,7 +50,38 @@ class Premium extends \yii\db\ActiveRecord
             'id' => 'ID',
             'nome' => 'Nome',
             'preco' => 'Preco',
+            'imagem' => 'Imagem',
+            'imageFile' => 'Upload da Imagem',
         ];
+    }
+
+    public function upload()
+    {
+        if (!$this->imageFile) {
+            return true;
+        }
+
+        $path = Yii::getAlias('@frontend/web/uploads/');
+        if (!is_dir($path)) {
+            mkdir($path, 0777, true);
+        }
+
+        // apagar imagem antiga (se existir)
+        if (!empty($this->imagem)) {
+            $oldFile = $path . $this->imagem;
+            if (file_exists($oldFile)) {
+                @unlink($oldFile);
+            }
+        }
+
+        $filename = uniqid('img_') . '.' . $this->imageFile->extension;
+
+        if ($this->imageFile->saveAs($path . $filename)) {
+            $this->imagem = $filename;
+            return true;
+        }
+
+        return false;
     }
 
     /**
