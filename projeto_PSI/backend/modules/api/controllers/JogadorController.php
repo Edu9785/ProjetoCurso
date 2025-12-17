@@ -30,6 +30,7 @@ class JogadorController extends ActiveController
     {
         $model = new Jogador();
         $model->load(Yii::$app->request->post(), '');
+        $model->id_premium = null;
         $model->save();
         return $model;
     }

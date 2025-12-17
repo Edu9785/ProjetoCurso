@@ -59,8 +59,8 @@ return [
                         'GET {id}/idade' => 'idade',
                         'PUT {id}/idade' => 'putidade',
                         'GET {id}/premium' => 'premium',
-                        'PUT {id}/ativar-premium/{premiumId}' => 'ativarpremium',
-                        'PUT {id}/remover-premium' => 'removerpremium',
+                        'PUT {id}/ComprarPremium/{Id_premium}' => 'ativarpremium',
+                        'PUT {id}/RemoverPremium' => 'removerpremium',
                     ],
                 ],
 

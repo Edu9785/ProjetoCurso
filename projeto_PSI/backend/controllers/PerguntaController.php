@@ -154,7 +154,6 @@ class PerguntaController extends Controller
             ->all();
 
         if (Yii::$app->request->isPost) {
-
             $dadosPerguntas = Yii::$app->request->post('PerguntaTexto', []);
             $dadosValores   = Yii::$app->request->post('PerguntaValor', []);
             $dadosRespostas = Yii::$app->request->post('RespostaTexto', []);
@@ -162,37 +161,38 @@ class PerguntaController extends Controller
 
             $errors = [];
 
-            // 🔥 NOVO CÓDIGO: apagar perguntas removidas no formulário
+            // 🔥 Validação da soma dos pontos
+            $somaPontos = array_sum(array_map('intval', $dadosValores));
+            if ($somaPontos != $totalPontos) {
+                if (Yii::$app->request->isAjax) {
+                    return $this->asJson([
+                        'success' => false,
+                        'errors' => "A soma dos pontos das perguntas ($somaPontos) deve ser IGUAL ao total do jogo ($totalPontos)."
+                    ]);
+                } else {
+                    Yii::$app->session->setFlash('error', "A soma dos pontos das perguntas ($somaPontos) deve ser IGUAL ao total do jogo ($totalPontos).");
+                    return $this->refresh();
+                }
+            }
+
+            // apagar perguntas removidas no formulário
             foreach ($modelsPerguntas as $idx => $model) {
                 if (!array_key_exists($idx, $dadosPerguntas)) {
-
-                    // apagar respostas da pergunta
                     Resposta::deleteAll(['id_pergunta' => $model->id]);
-
-                    // apagar relação jogo-pergunta
-                    JogosdefaultPergunta::deleteAll([
-                        'id_jogo' => $jogo->id,
-                        'id_pergunta' => $model->id
-                    ]);
-
-                    // apagar a pergunta
+                    JogosdefaultPergunta::deleteAll(['id_jogo' => $jogo->id, 'id_pergunta' => $model->id]);
                     $model->delete();
-
-                    // remover da lista local
                     unset($modelsPerguntas[$idx]);
                 }
             }
 
-            // Reorganizar os índices após remoção
             $modelsPerguntas = array_values($modelsPerguntas);
 
             foreach ($dadosPerguntas as $index => $texto) {
-
                 if (trim($texto) === '') continue;
 
                 $respostas = $dadosRespostas[$index] ?? [];
-
                 $respostasValidas = array_filter($respostas, fn($r) => trim($r) !== '');
+
                 if (empty($respostasValidas)) {
                     $errors[] = "A pergunta n.º " . ($index + 1) . " precisa ter pelo menos uma resposta.";
                     continue;
@@ -203,13 +203,11 @@ class PerguntaController extends Controller
                     continue;
                 }
 
-                // Pergunta existente ou nova
                 $modelAtual = $modelsPerguntas[$index] ?? new Pergunta();
                 $modelAtual->pergunta = $texto;
                 $modelAtual->valor = $dadosValores[$index] ?? 0;
                 $modelAtual->save();
 
-                // Criar relação se for nova
                 if (!isset($modelsPerguntas[$index])) {
                     $rel = new JogosdefaultPergunta();
                     $rel->id_jogo = $jogo->id;
@@ -217,10 +215,7 @@ class PerguntaController extends Controller
                     $rel->save();
                 }
 
-                // Apagar respostas antigas
                 Resposta::deleteAll(['id_pergunta' => $modelAtual->id]);
-
-                // Gravar respostas novas
                 foreach ($respostasValidas as $i => $rTxt) {
                     $resp = new Resposta();
                     $resp->id_pergunta = $modelAtual->id;
@@ -231,8 +226,22 @@ class PerguntaController extends Controller
             }
 
             if (!empty($errors)) {
-                Yii::$app->session->setFlash('error', implode('<br>', $errors));
-                return $this->refresh();
+                if (Yii::$app->request->isAjax) {
+                    return $this->asJson([
+                        'success' => false,
+                        'errors' => implode('<br>', $errors)
+                    ]);
+                } else {
+                    Yii::$app->session->setFlash('error', implode('<br>', $errors));
+                    return $this->refresh();
+                }
+            }
+
+            if (Yii::$app->request->isAjax) {
+                return $this->asJson([
+                    'success' => true,
+                    'redirect' => \yii\helpers\Url::to(['pergunta/view', 'id_jogo' => $jogo->id])
+                ]);
             }
 
             return $this->redirect(['pergunta/view', 'id_jogo' => $jogo->id]);
@@ -244,6 +253,7 @@ class PerguntaController extends Controller
             'id_jogo' => $jogo->id,
         ]);
     }
+
 
     /**
      * Deletes an existing Pergunta model.
