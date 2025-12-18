@@ -70,9 +70,6 @@ class RespostaController extends ActiveController
         return ['status' => 'Resposta atualizada'];
     }
 
-    /* ==========================
-     * AUX
-     * ========================== */
     protected function findModel($id)
     {
         if (($model = Resposta::findOne($id)) !== null) {

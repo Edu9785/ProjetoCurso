@@ -102,13 +102,22 @@ class AuthController extends Controller
         }
 
         // ------------------
+        // ATRIBUIR ROLE "user"
+        // ------------------
+        $auth = Yii::$app->authManager;
+        $role = $auth->getRole('user');
+
+        if ($role) {
+            $auth->assign($role, $user->id);
+        }
+
+        // ------------------
         // Criar JOGADOR
         // ------------------
         $jogador = new Jogador();
         $jogador->id_user = $user->id;
         $jogador->nome = $data['nome'];
         $jogador->idade = (int)$data['idade'];
-        $jogador->id_premium = 1;
 
         if (!$jogador->save()) {
             $user->delete();
