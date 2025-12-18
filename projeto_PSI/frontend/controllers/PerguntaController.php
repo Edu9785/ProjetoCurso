@@ -2,6 +2,7 @@
 
 namespace frontend\controllers;
 
+use common\models\JogosDefault;
 use yii;
 use common\models\Pergunta;
 use common\models\Resposta;
@@ -72,23 +73,37 @@ class PerguntaController extends Controller
 
         if (!$session->has('jogo')) {
 
-            $idsPerguntas = JogosdefaultPergunta::find()
-                ->select('id_pergunta')
-                ->where(['id_jogo' => $id_jogo])
-                ->column();
+            $jogosdefault = JogosDefault::findOne($id_jogo);
+            $perguntas = [];
 
-            if (empty($idsPerguntas)) {
+            foreach ($jogosdefault->jogosdefaultPerguntas as $defaultPergunta) {
+                $jogoPerguntas = $defaultPergunta->pergunta;
+                if ($jogoPerguntas) {
+                    $arrayRespostas = [];
+                    foreach ($jogoPerguntas->respostas as $resposta) {
+                        $arrayRespostas[] = [
+                            'id' => $resposta->id,
+                            'resposta' => $resposta->resposta,
+                            'correta' => $resposta->correta,
+                        ];
+                    }
+
+                    $perguntas[] = [
+                        'id' => $jogoPerguntas->id,
+                        'pergunta' => $jogoPerguntas->pergunta,
+                        'valor' => $jogoPerguntas->valor,
+                        'respostas' => $arrayRespostas,
+                    ];
+                }
+            }
+
+            if (empty($perguntas)) {
                 throw new NotFoundHttpException('Este jogo não tem perguntas associadas.');
             }
 
-            $perguntas = Pergunta::find()
-                ->where(['id' => $idsPerguntas])
-                ->orderBy('RAND()')
-                ->all();
-
             $session->set('jogo', [
                 'id_jogo'   => $id_jogo,
-                'perguntas' => array_column($perguntas, 'id'),
+                'perguntas' => $perguntas,
                 'contador'  => 0,
                 'pontos'    => 0,
                 'acertos'   => [],
@@ -101,13 +116,14 @@ class PerguntaController extends Controller
             return $this->redirect(['pergunta/resultado']);
         }
 
-        $idPergunta = $jogo['perguntas'][$jogo['contador']];
-        $pergunta = Pergunta::findOne($idPergunta);
+        // Pega a pergunta atual diretamente da sessão
+        $pergunta = $jogo['perguntas'][$jogo['contador']];
 
         return $this->render('view', [
             'pergunta' => $pergunta
         ]);
     }
+
 
 
     public function actionResponder()
