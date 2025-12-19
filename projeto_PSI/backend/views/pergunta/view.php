@@ -5,7 +5,7 @@ use yii\helpers\Html;
 /** @var common\models\JogosDefault $jogo */
 /** @var common\models\Pergunta[] $perguntasDoJogo */
 
-$this->title = 'Jogo: ' .$jogo->titulo ;
+$this->title = 'Jogo: ' .$jogo->titulo. ' - Gerir Perguntas';
 $this->params['breadcrumbs'][] = ['label' => 'Jogos Defaults', 'url' => ['jogosdefault/index']];
 $this->params['breadcrumbs'][] = $jogo->titulo;
 ?>

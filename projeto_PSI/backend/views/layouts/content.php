@@ -1,42 +1,47 @@
 <?php
 /* @var $content string */
 
+use yii\helpers\Html;
 use yii\bootstrap4\Breadcrumbs;
+
+
+$hideTitle = !empty($this->params['hideTitle']);
 ?>
+
 <div class="content-wrapper">
-    <!-- Content Header (Page header) -->
+
     <div class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">
-                <div class="col-sm-6">
-                    <h1 class="m-0">
-                        <?php
-                        if (!is_null($this->title)) {
-                            echo \yii\helpers\Html::encode($this->title);
-                        } else {
-                            echo \yii\helpers\Inflector::camelize($this->context->id);
-                        }
-                        ?>
-                    </h1>
-                </div><!-- /.col -->
-                <div class="col-sm-6">
-                    <?php
-                    echo Breadcrumbs::widget([
-                        'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
-                        'options' => [
-                            'class' => 'breadcrumb float-sm-right'
-                        ]
-                    ]);
-                    ?>
-                </div><!-- /.col -->
-            </div><!-- /.row -->
-        </div><!-- /.container-fluid -->
-    </div>
-    <!-- /.content-header -->
 
-    <!-- Main content -->
-    <div class="content">
-        <?= $content ?><!-- /.container-fluid -->
+                <?php if (!$hideTitle): ?>
+
+                <div class="col-sm-6">
+                    <h1 class="m-0"><?= Html::encode($this->title) ?></h1>
+                </div>
+
+
+                <div class="col-sm-6">
+                    <?php else: ?>
+
+                    <div class="col-sm-12">
+                        <?php endif; ?>
+
+                        <?= Breadcrumbs::widget([
+                                'links' => $this->params['breadcrumbs'] ?? [],
+                                'options' => [
+                                        'class' => 'breadcrumb float-sm-right'
+                                ]
+                        ]) ?>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="content">
+            <?= $content ?>
+        </div>
+
     </div>
-    <!-- /.content -->
-</div>

@@ -12,7 +12,10 @@ if (!isset($modelsPerguntas) || !is_array($modelsPerguntas)) {
 }
 ?>
 
-<h2>Gerir Perguntas + Respostas</h2>
+<?php
+$this->title = 'Gerir Perguntas do Jogo';
+?>
+
 
 <div id="erros-container">
     <?php if (Yii::$app->session->hasFlash('error')): ?>
