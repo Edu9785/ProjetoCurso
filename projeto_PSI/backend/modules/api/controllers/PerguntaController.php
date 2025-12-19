@@ -3,81 +3,55 @@
 namespace backend\modules\api\controllers;
 
 use yii\rest\ActiveController;
+use yii\rest\Controller;
 use yii\web\NotFoundHttpException;
 use Yii;
 use common\models\Pergunta;
-use common\models\Resposta;
+use common\models\JogosDefault;
 
-class PerguntaController extends ActiveController
+class PerguntaController extends Controller
 {
-    public $modelClass = 'common\models\Pergunta';
-
-
-    // GET /api/pergunta
-    public function actionIndex()
+    public function actionJogar($id_jogo)
     {
-        return Pergunta::find()->all();
-    }
+        $jogo = JogosDefault::findOne($id_jogo);
 
-    // GET /api/pergunta/{id}
-    public function actionView($id)
-    {
-        return $this->findModel($id);
-    }
-
-    // POST /api/pergunta
-    public function actionCreate()
-    {
-        $model = new Pergunta();
-        $model->load(Yii::$app->request->post(), '');
-        $model->save();
-        return $model;
-    }
-
-    // PUT /api/pergunta/{id}
-    public function actionUpdate($id)
-    {
-        $model = $this->findModel($id);
-        $model->load(Yii::$app->request->post(), '');
-        $model->save();
-        return $model;
-    }
-
-    // DELETE /api/pergunta/{id}
-    public function actionDelete($id)
-    {
-        $this->findModel($id)->delete();
-        return ['success' => true];
-    }
-
-    /* ==========================
-     * ENDPOINTS PERSONALIZADOS
-     * ========================== */
-
-    // GET /api/pergunta/{id}/respostas
-    public function actionRespostas($id)
-    {
-        return Resposta::find()
-            ->where(['id_pergunta' => $id])
-            ->all();
-    }
-
-    // GET /api/pergunta/search/{texto}
-    public function actionSearch($texto)
-    {
-        return Pergunta::find()
-            ->where(['like', 'pergunta', $texto])
-            ->all();
-    }
-
-    /* ==========================
-     * AUX
-     * ========================== */
-    protected function findModel($id)
-    {
-        if (($model = Pergunta::findOne($id)) !== null) {
-            return $model;
+        if (!$jogo) {
+            throw new NotFoundHttpException('Jogo não encontrado');
         }
-        throw new NotFoundHttpException('Pergunta não encontrada');
+
+        $perguntas = [];
+
+        foreach ($jogo->jogosdefaultPerguntas as $defaultPergunta) {
+            $pergunta = $defaultPergunta->pergunta;
+
+            if ($pergunta) {
+                $respostas = [];
+
+                foreach ($pergunta->respostas as $resposta) {
+                    $respostas[] = [
+                        'id'       => $resposta->id,
+                        'resposta' => $resposta->resposta,
+                        'correta'  => (bool)$resposta->correta,
+                    ];
+                }
+
+                $perguntas[] = [
+                    'id'        => $pergunta->id,
+                    'pergunta'  => $pergunta->pergunta,
+                    'valor'     => $pergunta->valor,
+                    'respostas' => $respostas,
+                ];
+            }
+        }
+
+        if (empty($perguntas)) {
+            throw new NotFoundHttpException('Este jogo não tem perguntas');
+        }
+
+        return [
+            'id_jogo'   => $jogo->id,
+            'titulo'    => $jogo->titulo,
+            'perguntas' => $perguntas
+        ];
     }
 }

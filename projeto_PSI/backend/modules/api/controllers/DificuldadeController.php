@@ -27,10 +27,7 @@ class DificuldadeController extends ActiveController
     // ----------------------------
     public function actionNomes()
     {
-        return Dificuldade::find()
-            ->select(['id', 'dificuldade'])
-            ->asArray()
-            ->all();
+        return Dificuldade::find()->all();
     }
 
     // ----------------------------

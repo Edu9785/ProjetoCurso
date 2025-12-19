@@ -53,17 +53,22 @@ return [
                     'class' => 'yii\rest\UrlRule',
                     'controller' => ['api/jogador'],
                     'pluralize' => false,
+
                     'extraPatterns' => [
                         'GET nomes' => 'nomes',
-                        'GET {id}/idade' => 'idade',
-                        'PUT {id}/idade' => 'putidade',
+
+                        'GET {id}' => 'view',
+                        'PUT {id}' => 'update',
+                        'PATCH {id}' => 'update',
+
                         'GET {id}/premium' => 'premium',
                         'PUT {id}/comprar-premium/{id_premium}' => 'ativarpremium',
                         'PUT {id}/remover-premium' => 'removerpremium',
                     ],
+
                     'tokens' => [
-                        '{id}' => '<id:\\d+>',
-                        '{id_premium}' => '<id_premium:\\d+>',
+                        '{id}' => '<id:\d+>',
+                        '{id_premium}' => '<id_premium:\d+>',
                     ],
                 ],
 
@@ -124,12 +129,10 @@ return [
                     'controller' => ['api/pergunta'],
                     'pluralize' => false,
                     'extraPatterns' => [
-                        'GET {id}/respostas' => 'respostas',
-                        'GET search/{texto}' => 'search',
+                        'GET jogar/{id_jogo}' => 'jogar',
                     ],
                     'tokens' => [
-                        '{id}' => '<id:\\d+>',
-                        '{texto}' => '<texto:[^/]+>',
+                        '{id_jogo}' => '<id_jogo:\d+>',
                     ],
                 ],
             ],

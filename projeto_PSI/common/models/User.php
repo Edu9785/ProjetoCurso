@@ -25,6 +25,7 @@ use yii\web\IdentityInterface;
  */
 class User extends ActiveRecord implements IdentityInterface
 {
+    const SCENARIO_API_UPDATE = 'api-update';
     const STATUS_DELETED = 0;
 
     public $password;
