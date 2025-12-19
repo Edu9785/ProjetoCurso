@@ -21,30 +21,47 @@ class UserController extends Controller
      */
     public function behaviors()
     {
-        return array_merge(
-            parent::behaviors(),
-            [
-                'access' => [
-                    'class' => AccessControl::class,
-                    'only' => ['index', 'view', 'create', 'update', 'delete'],
-                    'rules' => [
-                        [
-                            'allow' => true,
-                            'roles' => ['admin'],
-                        ],
+        return [
+            // 🔐 CONTROLO DE ACESSO
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+
+                    // Visitantes → login
+                    [
+                        'allow' => false,
+                        'roles' => ['?'],
+                    ],
+
+                    // Apenas admin
+                    [
+                        'allow' => true,
+                        'roles' => ['admin'],
                     ],
                 ],
-                'verbs' => [
-                    'class' => VerbFilter::class,
-                    'actions' => [
-                        'delete' => ['POST'],
-                    ],
+                'denyCallback' => function () {
+                    if (Yii::$app->user->isGuest) {
+                        return Yii::$app->response->redirect(['site/login']);
+                    }
+
+                    throw new \yii\web\ForbiddenHttpException(
+                        'Não tem permissões para aceder a esta área.'
+                    );
+                },
+            ],
+
+            // 🧾 FILTRO DE VERBOS HTTP
+            'verbs' => [
+                'class' => VerbFilter::class,
+                'actions' => [
+                    'delete' => ['POST'],
                 ],
-            ]
-        );
+            ],
+        ];
     }
 
-    /**
+
+        /**
      * Lists all User models.
      *
      * @return string
@@ -144,7 +161,7 @@ class UserController extends Controller
     {
         $user = $this->findModel($id);
 
-        $user->status = User::STATUS_INACTIVE;
+        $user->status = User::STATUS_DELETED;
 
         $user->save(false);
 

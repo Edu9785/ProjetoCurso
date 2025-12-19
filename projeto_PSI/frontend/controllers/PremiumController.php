@@ -7,6 +7,7 @@ use Yii;
 use common\models\Premium;
 use common\models\PremiumSearch;
 use yii\data\ActiveDataProvider;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -19,20 +20,42 @@ class PremiumController extends Controller
     /**
      * @inheritDoc
      */
+
     public function behaviors()
     {
-        return array_merge(
-            parent::behaviors(),
-            [
-                'verbs' => [
-                    'class' => VerbFilter::className(),
-                    'actions' => [
-                        'delete' => ['POST'],
+        return [
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'allow' => false,
+                        'actions' => ['comprar'],
+                        'roles' => ['?'],
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['index'],
+                        'roles' => ['user', 'manager', '?'],
                     ],
                 ],
-            ]
-        );
+                'denyCallback' => function () {
+                    if (Yii::$app->user->isGuest) {
+                        Yii::$app->session->setFlash(
+                            'error',
+                            'Tem de iniciar sessão para comprar um plano premium.'
+                        );
+
+                        return Yii::$app->response->redirect(['/site/login']);
+                    }
+
+                    throw new \yii\web\ForbiddenHttpException(
+                        'Acesso negado.'
+                    );
+                },
+            ],
+        ];
     }
+
 
     /**
      * Lists all Premium models.

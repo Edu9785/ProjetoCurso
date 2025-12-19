@@ -8,6 +8,7 @@ use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii;
 
 /**
  * DificuldadeController implements the CRUD actions for Dificuldade model.
@@ -19,27 +20,42 @@ class DificuldadeController extends Controller
      */
     public function behaviors()
     {
-        return array_merge(
-            parent::behaviors(),
-            [
-                'access' => [
-                    'class' => AccessControl::class,
-                    'only' => ['index', 'view', 'create', 'update', 'delete'],
-                    'rules' => [
-                        [
-                            'allow' => true,
-                            'roles' => ['admin'],
-                        ],
+        return [
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'allow' => false,
+                        'roles' => ['?'],
+                    ],
+                    [
+                        'allow' => true,
+                        'roles' => ['manager', 'admin'],
                     ],
                 ],
-                'verbs' => [
-                    'class' => VerbFilter::className(),
-                    'actions' => [
-                        'delete' => ['POST'],
-                    ],
+                'denyCallback' => function () {
+                    if (Yii::$app->user->isGuest) {
+                        Yii::$app->session->setFlash(
+                            'error',
+                            'Tem de iniciar sessão para aceder ao Back Office.'
+                        );
+
+                        return Yii::$app->response->redirect(['/site/login']);
+                    }
+
+                    throw new \yii\web\ForbiddenHttpException(
+                        'Não tem permissões para aceder a esta área.'
+                    );
+                },
+            ],
+
+            'verbs' => [
+                'class' => VerbFilter::class,
+                'actions' => [
+                    'delete' => ['POST'],
                 ],
-            ]
-        );
+            ],
+        ];
     }
 
     /**

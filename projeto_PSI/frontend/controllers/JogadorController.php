@@ -3,7 +3,10 @@
 namespace frontend\controllers;
 
 use common\models\Jogador;
+use common\models\User;
+use Yii;
 use yii\data\ActiveDataProvider;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -18,17 +21,35 @@ class JogadorController extends Controller
      */
     public function behaviors()
     {
-        return array_merge(
-            parent::behaviors(),
-            [
-                'verbs' => [
-                    'class' => VerbFilter::className(),
-                    'actions' => [
-                        'delete' => ['POST'],
+        return [
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'allow' => false,
+                        'roles' => ['?'],
+                    ],
+                    [
+                        'allow' => true,
+                        'roles' => ['user', 'manager'],
                     ],
                 ],
-            ]
-        );
+                'denyCallback' => function () {
+                    if (Yii::$app->user->isGuest) {
+                        Yii::$app->session->setFlash(
+                            'error',
+                            'Tem de iniciar sessão para aceder à sua página.'
+                        );
+
+                        return Yii::$app->response->redirect(['/site/login']);
+                    }
+
+                    throw new \yii\web\ForbiddenHttpException(
+                        'Acesso negado.'
+                    );
+                },
+            ],
+        ];
     }
 
     /**
@@ -87,29 +108,6 @@ class JogadorController extends Controller
             'userModel' => $userModel,
         ]);
     }
-
-    /**
-     * Creates a new Jogador model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return string|\yii\web\Response
-     */
-    public function actionCreate()
-    {
-        $model = new Jogador();
-
-        if ($this->request->isPost) {
-            if ($model->load($this->request->post()) && $model->save()) {
-                return $this->redirect(['view', 'id' => $model->id]);
-            }
-        } else {
-            $model->loadDefaultValues();
-        }
-
-        return $this->render('create', [
-            'model' => $model,
-        ]);
-    }
-
     /**
      * Updates an existing Jogador model.
      * If update is successful, the browser will be redirected to the 'view' page.
@@ -150,8 +148,15 @@ class JogadorController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $jogador = Jogador::findOne($id);
 
+        $user = $jogador->user;
+
+        $user->status = User::STATUS_DELETED;
+
+        $user->save(false);
+
+        Yii::$app->session->setFlash('success', 'Conta apagada');
         return $this->redirect(['index']);
     }
 

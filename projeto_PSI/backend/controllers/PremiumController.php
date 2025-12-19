@@ -20,17 +20,46 @@ class PremiumController extends Controller
      */
     public function behaviors()
     {
-        return array_merge(
-            parent::behaviors(),
-            [
-                'verbs' => [
-                    'class' => VerbFilter::className(),
-                    'actions' => [
-                        'delete' => ['POST'],
+        return [
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+
+                    // 🚪 Visitantes
+                    [
+                        'allow' => false,
+                        'roles' => ['?'],
+                    ],
+
+                    // ✅ Gestor e Admin
+                    [
+                        'allow' => true,
+                        'roles' => ['manager', 'admin'],
                     ],
                 ],
-            ]
-        );
+                'denyCallback' => function () {
+                    if (Yii::$app->user->isGuest) {
+                        Yii::$app->session->setFlash(
+                            'error',
+                            'Tem de iniciar sessão para aceder ao Back Office.'
+                        );
+
+                        return Yii::$app->response->redirect(['/site/login']);
+                    }
+
+                    throw new \yii\web\ForbiddenHttpException(
+                        'Não tem permissões para aceder a esta área.'
+                    );
+                },
+            ],
+
+            'verbs' => [
+                'class' => VerbFilter::class,
+                'actions' => [
+                    'delete' => ['POST'],
+                ],
+            ],
+        ];
     }
 
     /**

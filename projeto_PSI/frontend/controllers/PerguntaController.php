@@ -8,6 +8,7 @@ use common\models\Pergunta;
 use common\models\Resposta;
 use common\models\JogosdefaultPergunta;
 use yii\data\ActiveDataProvider;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -22,17 +23,35 @@ class PerguntaController extends Controller
      */
     public function behaviors()
     {
-        return array_merge(
-            parent::behaviors(),
-            [
-                'verbs' => [
-                    'class' => VerbFilter::className(),
-                    'actions' => [
-                        'delete' => ['POST'],
+        return [
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'allow' => false,
+                        'roles' => ['?'],
+                    ],
+                    [
+                        'allow' => true,
+                        'roles' => ['user', 'manager'],
                     ],
                 ],
-            ]
-        );
+                'denyCallback' => function () {
+                    if (Yii::$app->user->isGuest) {
+                        Yii::$app->session->setFlash(
+                            'error',
+                            'Tem de iniciar sessão para jogar'
+                        );
+
+                        return Yii::$app->response->redirect(['/site/login']);
+                    }
+
+                    throw new \yii\web\ForbiddenHttpException(
+                        'Acesso negado.'
+                    );
+                },
+            ],
+        ];
     }
 
     /**
@@ -40,27 +59,6 @@ class PerguntaController extends Controller
      *
      * @return string
      */
-    public function actionIndex()
-    {
-        $dataProvider = new ActiveDataProvider([
-            'query' => Pergunta::find(),
-            /*
-            'pagination' => [
-                'pageSize' => 50
-            ],
-            'sort' => [
-                'defaultOrder' => [
-                    'id' => SORT_DESC,
-                ]
-            ],
-            */
-        ]);
-
-        return $this->render('index', [
-            'dataProvider' => $dataProvider,
-        ]);
-    }
-
     /**
      * Displays a single Pergunta model.
      * @param int $id ID

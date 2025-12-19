@@ -75,41 +75,6 @@ use yii\helpers\Url;
 
 
 
-
-
-<!-- Categories Start -->
- <div class="container-xxl py-5 category">
-     <div class="container">
-         <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
-             <h6 class="section-title bg-white text-center text-primary px-3">Categorias</h6>
-             <h1 class="mb-5">As Nossas Categorias</h1>
-         </div>
-
-         <div class="row g-4 justify-content-center">
-             <?php foreach ($categorias as $categoria): ?>
-                 <div class="col-lg-4 col-md-6 wow zoomIn" data-wow-delay="0.1s">
-                     <div class="card border-0 shadow-sm text-center h-100">
-                         <div class="card-body">
-                             <h5 class="card-title"><?= Html::encode($categoria->categoria) ?></h5>
-                             <br>
-                             <a href="<?= \yii\helpers\Url::to([
-                                     'jogosdefault/index',
-                                     'JogosDefaultSearch' => [
-                                             'categorias' => [$categoria->id]
-                                     ]
-                             ]) ?>" class="btn btn-outline-primary px-4 py-2">
-                                 Ver Jogos
-                             </a>                         </div>
-                     </div>
-                 </div>
-             <?php endforeach; ?>
-         </div>
-     </div>
- </div>
- <!-- Categories End -->
-
-
-
 <!-- Premium Start -->
 <div class="container-xxl py-5">
     <div class="container">
