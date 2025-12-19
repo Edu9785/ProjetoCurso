@@ -54,13 +54,16 @@ return [
                     'controller' => ['api/jogador'],
                     'pluralize' => false,
                     'extraPatterns' => [
-                        'GET count' => 'count',
                         'GET nomes' => 'nomes',
                         'GET {id}/idade' => 'idade',
                         'PUT {id}/idade' => 'putidade',
                         'GET {id}/premium' => 'premium',
-                        'PUT {id}/ComprarPremium/{Id_premium}' => 'ativarpremium',
-                        'PUT {id}/RemoverPremium' => 'removerpremium',
+                        'PUT {id}/comprar-premium/{id_premium}' => 'ativarpremium',
+                        'PUT {id}/remover-premium' => 'removerpremium',
+                    ],
+                    'tokens' => [
+                        '{id}' => '<id:\\d+>',
+                        '{id_premium}' => '<id_premium:\\d+>',
                     ],
                 ],
 
@@ -127,20 +130,6 @@ return [
                     'tokens' => [
                         '{id}' => '<id:\\d+>',
                         '{texto}' => '<texto:[^/]+>',
-                    ],
-                ],
-
-                // 🔹 Respostas
-                [
-                    'class' => 'yii\rest\UrlRule',
-                    'controller' => ['api/resposta'],
-                    'pluralize' => false,
-                    'extraPatterns' => [
-                        'GET pergunta/{id}' => 'porpergunta',
-                        'PUT {id}/correta' => 'setcorreta',
-                    ],
-                    'tokens' => [
-                        '{id}' => '<id:\\d+>',
                     ],
                 ],
             ],

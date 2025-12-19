@@ -99,4 +99,21 @@ class Jogador extends \yii\db\ActiveRecord
         return $this->hasOne(User::class, ['id' => 'id_user']);
     }
 
+    public function fields()
+    {
+        return [
+            'id',
+            'nome',
+            'idade',
+            'id_premium',
+
+            // dados do user associado
+            'username' => function () {
+                return $this->user ? $this->user->username : null;
+            },
+            'email' => function () {
+                return $this->user ? $this->user->email : null;
+            },
+        ];
+    }
 }

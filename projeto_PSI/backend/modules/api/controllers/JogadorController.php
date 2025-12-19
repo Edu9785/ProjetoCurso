@@ -16,33 +16,96 @@ class JogadorController extends ActiveController
     // GET /api/jogador
     public function actionIndex()
     {
-        return Jogador::find()->all();
+        return Jogador::find()
+            ->with('user')
+            ->all();
     }
 
     // GET /api/jogador/{id}
     public function actionView($id)
     {
-        return $this->findModel($id);
-    }
-
-    // POST /api/jogador
-    public function actionCreate()
-    {
-        $model = new Jogador();
-        $model->load(Yii::$app->request->post(), '');
-        $model->id_premium = null;
-        $model->save();
-        return $model;
+        return Jogador::find()
+            ->with('user')
+            ->where(['id' => $id])
+            ->one();
     }
 
     // PUT /api/jogador/{id}
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
-        $model->load(Yii::$app->request->post(), '');
-        $model->save();
-        return $model;
+        $jogador = $this->findModel($id);
+        $user = $jogador->user; // relação Jogador → User
+
+        $data = Yii::$app->request->post();
+
+        // --------------------
+        // Atualizar JOGADOR
+        // --------------------
+        $jogador->load($data, '');
+
+        // --------------------
+        // Atualizar USER
+        // --------------------
+        if (isset($data['username'])) {
+            // verificar se username já existe (exceto o próprio user)
+            if (User::find()
+                ->where(['username' => $data['username']])
+                ->andWhere(['<>', 'id', $user->id])
+                ->exists()) {
+
+                return [
+                    'success' => false,
+                    'error' => 'Username já está em uso'
+                ];
+            }
+
+            $user->username = $data['username'];
+        }
+
+        if (isset($data['email'])) {
+            // verificar se email já existe (exceto o próprio user)
+            if (User::find()
+                ->where(['email' => $data['email']])
+                ->andWhere(['<>', 'id', $user->id])
+                ->exists()) {
+
+                return [
+                    'success' => false,
+                    'error' => 'Email já está em uso'
+                ];
+            }
+
+            $user->email = $data['email'];
+        }
+
+        // --------------------
+        // Guardar tudo
+        // --------------------
+        if (!$jogador->save()) {
+            return [
+                'success' => false,
+                'errors' => $jogador->errors
+            ];
+        }
+
+        if (!$user->save()) {
+            return [
+                'success' => false,
+                'errors' => $user->errors
+            ];
+        }
+
+        return [
+            'success' => true,
+            'message' => 'Dados atualizados com sucesso',
+            'jogador' => $jogador,
+            'user' => [
+                'username' => $user->username,
+                'email' => $user->email
+            ]
+        ];
     }
+
 
     // DELETE /api/jogador/{id}
     public function actionDelete($id)
@@ -54,12 +117,6 @@ class JogadorController extends ActiveController
         $user->save(false);
 
         return ['success' => true];
-    }
-
-    // GET /api/jogador/count
-    public function actionCount()
-    {
-        return ['count' => (int) Jogador::find()->count()];
     }
 
     // GET /api/jogador/nomes
@@ -104,6 +161,59 @@ class JogadorController extends ActiveController
             'preco' => $premium->preco
         ];
     }
+
+    // PUT /api/jogador/{id}/comprar-premium/{id_premium}
+    public function actionAtivarpremium($id, $id_premium)
+    {
+        $jogador = $this->findModel($id);
+
+        // verificar se plano premium existe
+        $premium = Premium::findOne($id_premium);
+        if (!$premium) {
+            throw new NotFoundHttpException('Plano premium não encontrado');
+        }
+
+        // verificar se já é premium
+        if ($jogador->id_premium) {
+            return [
+                'success' => false,
+                'message' => 'Jogador já possui plano premium'
+            ];
+        }
+
+        $jogador->id_premium = $premium->id;
+        $jogador->save(false);
+
+        return [
+            'success' => true,
+            'message' => 'Premium ativado com sucesso',
+            'plano' => $premium->nome,
+            'preco' => $premium->preco
+        ];
+    }
+
+    // PUT /api/jogador/{id}/remover-premium
+    public function actionRemoverpremium($id)
+    {
+        $jogador = $this->findModel($id);
+
+        if (!$jogador->id_premium) {
+            return [
+                'success' => false,
+                'message' => 'Jogador não possui premium ativo'
+            ];
+        }
+
+        $jogador->id_premium = null;
+        $jogador->save(false);
+
+        return [
+            'success' => true,
+            'message' => 'Premium removido com sucesso'
+        ];
+    }
+
+
 
     protected function findModel($id)
     {
