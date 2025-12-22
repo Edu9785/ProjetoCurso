@@ -18,9 +18,13 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="col-md-4 mb-4">
                 <div class="card h-100 shadow-sm">
                     <?php if ($model->imagem): ?>
-                        <img src="<?= Yii::getAlias('@frontendUrl') . '/uploads/' . $model->imagem ?>" class="card-img-top" alt="<?= Html::encode($model->titulo) ?>">
+                        <img src="<?= Yii::getAlias('@frontendUrl') . '/uploads/' . $model->imagem ?>"
+                             class="card-img-top jogo-img"
+                             alt="<?= Html::encode($model->titulo) ?>">
                     <?php else: ?>
-                        <img src="https://via.placeholder.com/400x200?text=Sem+Imagem" class="card-img-top" alt="Sem Imagem">
+                        <img src="https://via.placeholder.com/400x200?text=Sem+Imagem"
+                             class="card-img-top jogo-img"
+                             alt="Sem Imagem">
                     <?php endif; ?>
 
                     <div class="card-body">

@@ -3,6 +3,7 @@
 namespace common\models;
 
 use Yii;
+use common\mosquitto\phpMQTT;
 
 /**
  * This is the model class for table "premium".

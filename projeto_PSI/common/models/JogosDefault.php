@@ -4,6 +4,7 @@ namespace common\models;
 
 use Yii;
 use yii\web\UploadedFile;
+use common\mosquitto\phpMQTT;
 
 /**
  * This is the model class for table "jogosdefault".
@@ -140,5 +141,44 @@ class JogosDefault extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Tempo::class, ['id' => 'id_tempo']);
     }
+
+    /**
+     * Messaging MQTT — notifica quando um jogo é criado
+     */
+    public function afterSave($insert, $changedAttributes)
+    {
+        parent::afterSave($insert, $changedAttributes);
+
+        // Só notificar quando é um NOVO jogo
+        if ($insert) {
+
+            $obj = new \stdClass();
+            $obj->id = $this->id;
+            $obj->titulo = $this->titulo;
+            $obj->descricao = $this->descricao;
+
+            $json = json_encode($obj);
+
+            $this->publishMqtt("JOGO_NOVO", $json);
+        }
+    }
+
+    /**
+     * Publica mensagem no Mosquitto (igual ao PDF)
+     */
+    private function publishMqtt($canal, $mensagem)
+    {
+        $server = "127.0.0.1";
+        $port = 1883;
+        $clientId = "yii2-jogo-" . uniqid();
+
+        $mqtt = new phpMQTT($server, $port, $clientId);
+
+        if ($mqtt->connect(true)) {
+            $mqtt->publish($canal, $mensagem, 0);
+            $mqtt->close();
+        }
+    }
+
 
 }
