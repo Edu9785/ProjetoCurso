@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use common\mosquitto\phpMQTT;
 use yii\filters\AccessControl;
 use yii\web\UploadedFile;
 use Yii;
@@ -115,6 +116,10 @@ class PremiumController extends Controller
             }
 
             if ($model->save(false)) {
+
+                // 🔔 PUBLICAR EVENTO MQTT
+                $this->publicarPremiumNovo($model);
+
                 return $this->redirect(['view', 'id' => $model->id]);
             }
         }
@@ -190,5 +195,24 @@ class PremiumController extends Controller
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    /**
+     * Publica mensagem MQTT quando um premium é criado
+     */
+    private function publicarPremiumNovo(Premium $premium)
+    {
+        $mqtt = new phpMQTT("localhost", 1883, "backend-premium-" . uniqid());
+
+        if ($mqtt->connect()) {
+
+            $mensagem = json_encode([
+                'nome'  => $premium->nome,
+                'preco' => (float)$premium->preco
+            ]);
+
+            $mqtt->publish("PREMIUM_NOVO", $mensagem, 0);
+            $mqtt->close();
+        }
     }
 }

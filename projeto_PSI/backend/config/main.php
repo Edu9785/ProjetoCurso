@@ -135,6 +135,19 @@ return [
                         '{id_jogo}' => '<id_jogo:\d+>',
                     ],
                 ],
+
+                // 🔹 Premium
+                [
+                    'class' => 'yii\rest\UrlRule',
+                    'controller' => ['api/premium'],
+                    'pluralize' => false,
+                    'extraPatterns' => [
+                        'GET nomes' => 'nomes',
+                    ],
+                    'tokens' => [
+                        '{id}' => '<id:\\d+>',
+                    ],
+                ],
             ],
         ],
 

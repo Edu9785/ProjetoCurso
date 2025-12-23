@@ -153,7 +153,6 @@ class JogosDefault extends \yii\db\ActiveRecord
         if ($insert) {
 
             $obj = new \stdClass();
-            $obj->id = $this->id;
             $obj->titulo = $this->titulo;
             $obj->descricao = $this->descricao;
 
