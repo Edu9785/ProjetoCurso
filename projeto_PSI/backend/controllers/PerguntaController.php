@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use yii\filters\AccessControl;
 use common\models\JogosDefault;
 use Yii;
 use common\models\Resposta;

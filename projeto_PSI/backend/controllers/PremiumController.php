@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use yii\filters\AccessControl;
 use yii\web\UploadedFile;
 use Yii;
 use common\models\Premium;
