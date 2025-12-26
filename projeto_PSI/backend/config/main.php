@@ -21,6 +21,9 @@ return [
     'components' => [
         'request' => [
             'csrfParam' => '_csrf-backend',
+            'parsers' => [
+                'application/json' => 'yii\web\JsonParser',
+            ],
         ],
         'user' => [
             'identityClass' => 'common\models\User',
@@ -60,6 +63,8 @@ return [
                         'GET {id}' => 'view',
                         'PUT {id}' => 'update',
                         'PATCH {id}' => 'update',
+
+                        'PUT updatejogador/{id}' => 'update-jogador',
 
                         'GET {id}/premium' => 'premium',
                         'PUT {id}/comprar-premium/{id_premium}' => 'ativarpremium',

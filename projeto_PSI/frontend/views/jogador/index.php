@@ -23,7 +23,7 @@ $this->title = 'Perfil';
             </a>
 
             <!-- Botão Eliminar Perfil -->
-            <?= Html::a('Eliminar Perfil', ['delete-profile'], [
+            <?= Html::a('Eliminar Perfil', ['delete', 'id' => $model->id], [
                     'class' => 'btn btn-outline-danger px-3 py-2',
                     'style' => 'border-radius:6px;',
                     'data' => [

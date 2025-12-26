@@ -36,60 +36,79 @@ class JogadorController extends ActiveController
         return $jogador;
     }
 
-    // PUT / PATCH /api/jogador/{id}
-    public function actionUpdate($id)
+    // PUT / PATCH /api/jogador/updatejogador/{id}
+    public function actionUpdateJogador($id)
     {
-        $jogador = $this->findModel($id);
-        $user = $jogador->user;
-
         $data = Yii::$app->request->bodyParams;
 
-        // -------- Jogador --------
-        $jogador->load($data, '');
-
-        // -------- User --------
-        if (isset($data['username'])) {
-            if (User::find()
-                ->where(['username' => $data['username']])
-                ->andWhere(['<>', 'id', $user->id])
-                ->exists()) {
-                return ['success' => false, 'error' => 'Username já em uso'];
-            }
-            $user->username = $data['username'];
+        // 🔹 Buscar Jogador primeiro
+        $jogador = Jogador::findOne($id);
+        if (!$jogador) {
+            throw new NotFoundHttpException('Jogador não encontrado');
         }
 
-        if (isset($data['email'])) {
-            if (User::find()
-                ->where(['email' => $data['email']])
-                ->andWhere(['<>', 'id', $user->id])
-                ->exists()) {
-                return ['success' => false, 'error' => 'Email já em uso'];
-            }
-            $user->email = $data['email'];
+        // 🔹 Buscar User associado
+        $user = User::findOne($jogador->id_user);
+        if (!$user) {
+            throw new NotFoundHttpException('User não encontrado');
         }
 
-        if ($jogador->validate() && $user->validate()) {
-            $jogador->save(false);
-            $user->save(false);
+        $transaction = Yii::$app->db->beginTransaction();
+
+        try {
+            // ====== UPDATE USER ======
+            if (isset($data['email'])) {
+                $user->email = $data['email'];
+            }
+
+            if (isset($data['username'])) {
+                $user->username = $data['username'];
+            }
+
+            if (!$user->save()) {
+                throw new \Exception(json_encode($user->errors));
+            }
+
+            // ====== UPDATE JOGADOR ======
+            if (isset($data['nome'])) {
+                $jogador->nome = $data['nome'];
+            }
+
+            if (isset($data['idade'])) {
+                $jogador->idade = $data['idade'];
+            }
+
+            if (!$jogador->save()) {
+                throw new \Exception(json_encode($jogador->errors));
+            }
+
+            $transaction->commit();
 
             return [
                 'success' => true,
-                'jogador' => $jogador,
+                'message' => 'Dados atualizados com sucesso',
                 'user' => [
+                    'id' => $user->id,
+                    'email' => $user->email,
                     'username' => $user->username,
-                    'email' => $user->email
-                ]
+                ],
+                'jogador' => [
+                    'id' => $jogador->id,
+                    'nome' => $jogador->nome,
+                    'idade' => $jogador->idade,
+                ],
+            ];
+
+        } catch (\Exception $e) {
+            $transaction->rollBack();
+
+            return [
+                'success' => false,
+                'error' => $e->getMessage(),
             ];
         }
-
-        return [
-            'success' => false,
-            'errors' => [
-                'jogador' => $jogador->errors,
-                'user' => $user->errors
-            ]
-        ];
     }
+
 
 
     protected function findModel($id)
