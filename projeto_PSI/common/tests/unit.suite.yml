@@ -1,7 +1,14 @@
-suite_namespace: common\tests\unit
+suite_namespace: test\unit
 actor: UnitTester
 bootstrap: false
 modules:
-    enabled:
-        - Yii2:
-            part: fixtures
+  enabled:
+
+    - Yii2:
+        part: ORM
+    - Db:
+        dsn: 'mysql:host=localhost;dbname=desafia_bd'
+        user: 'root'
+        password: ''
+        cleanup: true
+    - Asserts
