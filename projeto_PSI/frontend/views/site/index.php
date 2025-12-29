@@ -11,15 +11,15 @@ use yii\helpers\Url;
 
 <!-- Slide Estático -->
 <div class="container-fluid p-0 mb-5 position-relative">
-    <img class="img-fluid w-100" src="<?= Yii::getAlias('@web/img/carousel-1.jpg') ?>" alt="Slide 1">
+    <img class="img-fluid w-100" src="<?= Yii::getAlias('@web/img/homepage2.png') ?>" alt="Slide 1">
 
     <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center"
          style="background: rgba(24, 29, 56, .7);">
         <div class="container">
             <div class="row justify-content-start">
                 <div class="col-sm-10 col-lg-8">
-                    <h5 class="text-uppercase mb-3 animated slideInDown">
-                        Jogos Trivia
+                    <h5 class="text-white mb-3 animated slideInDown">
+                        Diverte-te!
                     </h5>
                     <h1 class="display-3 text-white animated slideInDown">
                         Aprende ao Jogar
