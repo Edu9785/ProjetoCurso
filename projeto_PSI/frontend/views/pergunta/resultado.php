@@ -6,29 +6,47 @@ use yii\helpers\Html;
 
 <div class="container py-5">
 
-    <h1 class="mb-4">Resultado Final</h1>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="mb-0">Resultado Final</h1>
+        <?= Html::a('← Voltar', ['jogosdefault/index'], ['class' => 'btn btn-secondary']) ?>
+    </div>
 
-    <p><strong>Pontos totais:</strong> <?= $jogo['pontos'] ?></p>
-    <p><strong>Perguntas acertadas:</strong> <?= count($jogo['acertos']) ?></p>
+    <div class="row g-4 mb-4">
 
-    <hr>
+        <!-- Pontos e acertos -->
+        <div class="col-md-6">
+            <div class="card shadow-sm p-3 h-100">
+                <h5 class="card-title">Pontos Totais</h5>
+                <p class="display-6 text-primary fw-bold"><?= $jogo['pontos'] ?></p>
+            </div>
+        </div>
 
-    <h4>Perguntas corretas</h4>
+        <div class="col-md-6">
+            <div class="card shadow-sm p-3 h-100">
+                <h5 class="card-title">Perguntas Acertadas</h5>
+                <p class="display-6 text-success fw-bold"><?= count($jogo['acertos']) ?></p>
+            </div>
+        </div>
 
-    <?php if (!empty($jogo['acertos'])): ?>
-        <ul>
-            <?php foreach ($jogo['acertos'] as $idPergunta): ?>
-                <?php $p = \common\models\Pergunta::findOne($idPergunta); ?>
-                <li><?= Html::encode($p->pergunta) ?></li>
-            <?php endforeach; ?>
-        </ul>
-    <?php else: ?>
-        <p class="text-muted">Não acertaste nenhuma pergunta.</p>
-    <?php endif; ?>
+    </div>
 
-    <a href="<?= \yii\helpers\Url::to(['site/index']) ?>"
-       class="btn btn-primary mt-4">
-        Voltar ao início
-    </a>
+    <div class="card shadow-sm p-4">
+        <h4 class="mb-3">Perguntas corretas</h4>
+
+        <?php if (!empty($jogo['acertos'])): ?>
+            <ul class="list-group list-group-flush">
+                <?php foreach ($jogo['acertos'] as $idPergunta): ?>
+                    <?php $p = \common\models\Pergunta::findOne($idPergunta); ?>
+                    <li class="list-group-item"><?= Html::encode($p->pergunta) ?></li>
+                <?php endforeach; ?>
+            </ul>
+        <?php else: ?>
+            <p class="text-muted">Não acertaste nenhuma pergunta.</p>
+        <?php endif; ?>
+    </div>
+
+    <div class="mt-4">
+        <?= Html::a('Voltar aos Inicio', ['site/index'], ['class' => 'btn btn-primary btn-lg']) ?>
+    </div>
 
 </div>

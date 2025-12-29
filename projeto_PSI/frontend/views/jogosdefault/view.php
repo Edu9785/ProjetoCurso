@@ -17,6 +17,11 @@ $imagem = $model->imagem
 
 <div class="container py-5">
 
+    <!-- BOTÃO VOLTAR -->
+    <div class="d-flex justify-content-end mb-3">
+        <?= Html::a('← Voltar', ['jogosdefault/index'], ['class' => 'btn btn-secondary']) ?>
+    </div>
+
     <div class="row align-items-start">
 
         <!-- IMAGEM -->
