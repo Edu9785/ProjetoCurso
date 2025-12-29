@@ -15,7 +15,7 @@ $this->title = 'Jogos Trivia';
 ?>
 
 
-<div class="container-fluid bg-primary py-5 mb-5">
+<div class="container-fluid hero-section py-5 mb-5">
     <div class="container py-5">
         <div class="row justify-content-center">
             <div class="col-lg-10 text-center">
@@ -37,20 +37,10 @@ $this->title = 'Jogos Trivia';
 
                     <div id="categorias-wrapper">
                         <?php
+                        $selectedCats = is_array($searchModel->categorias) ? array_filter($searchModel->categorias) : [];
 
-                        $selectedCats = [];
-                        if (!empty($searchModel->categorias) && is_array($searchModel->categorias)) {
-                            $selectedCats = $searchModel->categorias;
-                        } else {
-                            $req = Yii::$app->request->get('JogosDefaultSearch');
-                            if (!empty($req['categorias']) && is_array($req['categorias'])) {
-                                $selectedCats = $req['categorias'];
-                            }
-                        }
-
-                        // Se houver selects previamente escolhidos, renderiza-os.
-                        if (!empty($selectedCats)) :
-                            foreach ($selectedCats as $selCat) : ?>
+                        if (!empty($selectedCats)):
+                            foreach ($selectedCats as $index => $selCat): ?>
                                 <div class="categoria-item mb-3 d-flex gap-2">
                                     <select name="JogosDefaultSearch[categorias][]" class="form-select categoria-select">
                                         <option value="">Escolha...</option>
@@ -60,12 +50,13 @@ $this->title = 'Jogos Trivia';
                                             </option>
                                         <?php endforeach; ?>
                                     </select>
-                                    <button type="button" class="btn btn-danger btn-sm remove-categoria">Remover</button>
+
+                                    <?php if ($index > 0): // 👈 só mostra Remover a partir do segundo ?>
+                                        <button type="button" class="btn btn-danger btn-sm remove-categoria">Remover</button>
+                                    <?php endif; ?>
                                 </div>
                             <?php endforeach;
                         else: ?>
-
-                            <!-- Renderiza um select vazio por defeito -->
                             <div class="categoria-item mb-3 d-flex gap-2">
                                 <select name="JogosDefaultSearch[categorias][]" class="form-select categoria-select">
                                     <option value="">Escolha...</option>
@@ -77,14 +68,11 @@ $this->title = 'Jogos Trivia';
                         <?php endif; ?>
                     </div>
 
-                    <button type="button" class="btn btn-sm btn-primary mb-3" id="add-categoria">
-                        + Adicionar categoria
-                    </button>
+                    <button type="button" class="btn btn-sm btn-primary mb-3" id="add-categoria">+ Adicionar categoria</button>
 
                     <div class="mb-3">
                         <label class="form-label">Dificuldade</label>
                         <?php
-                        // Valor selecionado para dificuldade
                         $selectedDif = $searchModel->dificuldade ?? Yii::$app->request->get('JogosDefaultSearch')['dificuldade'] ?? '';
                         ?>
                         <select class="form-select" name="JogosDefaultSearch[dificuldade]">
@@ -103,6 +91,7 @@ $this->title = 'Jogos Trivia';
 
                 </form>
             </div>
+
 
             <!-- Games Grid -->
             <div class="col-lg-9 col-md-8">

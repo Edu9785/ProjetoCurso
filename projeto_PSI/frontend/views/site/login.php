@@ -22,6 +22,7 @@ $this->title = 'Login';
                 ->textInput([
                         'autofocus' => true,
                         'placeholder' => 'Nome de usuário',
+                        'class' => 'form-control custom-input',
                         'style' => '
                         font-size: 1.3rem;
                         padding: 18px 16px;
@@ -37,6 +38,7 @@ $this->title = 'Login';
         <?= $form->field($model, 'password')
                 ->passwordInput([
                         'placeholder' => 'Senha',
+                        'class' => 'form-control custom-input',
                         'style' => '
                         font-size: 1.3rem;
                         padding: 18px 16px;
@@ -54,7 +56,7 @@ $this->title = 'Login';
                     'class' => 'btn w-100 py-4',
                     'name' => 'login-button',
                     'style' => '
-                        background-color: #00bcd4;
+                        background-color: #4d37b6;
                         color: #fff;
                         border-radius: 12px;
                         font-weight: 700;
@@ -73,17 +75,8 @@ $this->title = 'Login';
             Ainda não tens conta?
             <?= Html::a('<strong>Junta-te a nós!</strong>', ['site/signup'], [
                     'class' => 'text-decoration-none',
-                    'style' => 'color: #00bcd4; font-weight: 700;'
+                    'style' => 'color: #4d37b6; font-weight: 700;'
             ]) ?>
         </div>
     </div>
 </div>
-
-<?php
-$this->registerCss("
-    .btn:hover {
-        background-color: #00acc1 !important;
-        transform: scale(1.04);
-    }
-");
-?>

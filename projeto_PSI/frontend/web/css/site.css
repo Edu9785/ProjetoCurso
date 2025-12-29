@@ -1,46 +1,239 @@
-main > .container, main > .container-fluid
-{
+/*************************************************
+ * VARIÁVEIS DO PROJETO
+ *************************************************/
+:root {
+    --primary: #4d37b6;
+    --primary-dark: #3b2aa0;
+    --light: #f4f4fb;
+    --dark: #000000;
+    --text-dark: #0a0a3b;
+}
+
+
+/*************************************************
+ * BASE
+ *************************************************/
+body {
+    font-family: 'Nunito', sans-serif;
+    background-color: #fff;
+    color: #333;
+}
+
+main > .container,
+main > .container-fluid {
     padding: 70px 15px 20px;
 }
 
+a {
+    text-decoration: none;
+}
+
+
+/*************************************************
+ * BOTÕES (override Bootstrap)
+ *************************************************/
+.btn {
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background-color: var(--primary);
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-dark);
+}
+
+.btn-outline-primary {
+    color: var(--primary);
+    border-color: var(--primary);
+    border-radius: 8px;
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--primary);
+    color: #fff;
+}
+
+
+/*************************************************
+ * NAVBAR
+ *************************************************/
+.navbar-light .navbar-nav .nav-link {
+    font-weight: 500;
+    color: var(--dark);
+}
+
+.navbar-light .navbar-nav .nav-link:hover,
+.navbar-light .navbar-nav .nav-link.active {
+    color: var(--primary);
+}
+
+
+/*************************************************
+ * CARDS
+ *************************************************/
+.card {
+    border-radius: 8px;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+}
+
+
+/*************************************************
+ * FORMULÁRIOS
+ *************************************************/
+.form-label {
+    font-weight: 600;
+}
+
+.custom-input {
+    border-radius: 12px;
+    border: 1px solid #ccc;
+    padding: 12px 15px;
+    transition: 0.3s;
+}
+
+.custom-input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 8px rgba(77,55,182,0.3);
+    outline: none;
+}
+
+
+/*************************************************
+ * PERFIL DO JOGADOR
+ *************************************************/
+.profile-container {
+    max-width: 600px;
+    margin: auto;
+}
+
+.profile-avatar {
+    width: 120px;
+    height: 120px;
+    background: #d9d9d9;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.profile-row {
+    padding: 15px 0;
+    border-bottom: 1px solid #e0e0e0;
+    display: flex;
+    align-items: center;
+}
+
+.profile-row span:first-child {
+    font-weight: 700;
+    color: var(--text-dark);
+}
+
+.profile-row span:last-child {
+    margin-left: auto;
+}
+
+
+/*************************************************
+ * CURSOS / PREMIUM / JOGOS
+ *************************************************/
+
+.hero-section {
+    background-color: var(--primary);
+}
+
+.course-item {
+    border-radius: 8px;
+    overflow: hidden;
+    transition: 0.3s;
+}
+
+.course-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+
+.course-item img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    transition: 0.4s;
+}
+
+.course-item:hover img {
+    transform: scale(1.05);
+}
+
+.btn-buy {
+    background-color: var(--dark);
+    color: #fff;
+    border: none;
+}
+
+.btn-buy:hover {
+    background-color: var(--primary);
+}
+
+
+/*************************************************
+ * FOOTER
+ *************************************************/
 .footer {
-    background-color: #f5f5f5;
-    font-size: .9em;
-    height: 60px;
+    background: linear-gradient(135deg, #14162e, #1e1e3f);
+    color: #fff;
 }
 
-.footer > .container, .footer > .container-fluid {
-    padding-right: 15px;
-    padding-left: 15px;
+.footer h4 {
+    font-weight: 700;
+    margin-bottom: 20px;
 }
 
-.not-set {
-    color: #c55;
-    font-style: italic;
+.footer .btn-link {
+    color: #ddd;
+    padding: 0;
+    margin-bottom: 8px;
+    display: block;
 }
 
-/* add sorting icons to gridview sort links */
-a.asc:after, a.desc:after {
-    content: '';
-    left: 3px;
-    display: inline-block;
-    width: 0;
-    height: 0;
-    border: solid 5px transparent;
-    margin: 4px 4px 2px 4px;
-    background: transparent;
+.footer .btn-link:hover {
+    color: var(--primary);
+    letter-spacing: 0.5px;
 }
 
-a.asc:after {
-    border-bottom: solid 7px #212529;
-    border-top-width: 0;
+.footer .btn-social {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 8px;
 }
 
-a.desc:after {
-    border-top: solid 7px #212529;
-    border-bottom-width: 0;
+.footer .btn-social:hover {
+    background: var(--primary);
+    border-color: var(--primary);
 }
 
+.footer .copyright {
+    border-top: 1px solid rgba(255,255,255,0.1);
+    padding: 20px 0;
+    font-size: 14px;
+}
+
+
+/*************************************************
+ * GRIDVIEW / YII
+ *************************************************/
 .grid-view th,
 .grid-view td:last-child {
     white-space: nowrap;
@@ -51,88 +244,9 @@ a.desc:after {
     min-width: 50px;
 }
 
-.hint-block {
-    display: block;
-    margin-top: 5px;
-    color: #999;
-}
-
 .error-summary {
     color: #a94442;
     background: #fdf7f7;
     border-left: 3px solid #eed3d7;
     padding: 10px 20px;
-    margin: 0 0 15px 0;
 }
-
-/* align the logout "link" (button in form) of the navbar */
-.navbar form > button.logout {
-    padding-top: 7px;
-    color: rgba(255, 255, 255, 0.5);
-}
-
-@media(max-width:767px) {
-    .navbar form > button.logout {
-        display:block;
-        text-align: left;
-        width: 100%;
-        padding: 10px 0;
-    }
-}
-
-.navbar form > button.logout:focus,
-.navbar form > button.logout:hover {
-    text-decoration: none;
-    color: rgba(255, 255, 255, 0.75);
-}
-
-.navbar form > button.logout:focus {
-    outline: none;
-}
-
-/* style breadcrumb widget as in previous bootstrap versions */
-.breadcrumb {
-    background-color: var(--bs-gray-200);
-    border-radius: .25rem;
-    padding: .75rem 1rem;
-}
-
-.breadcrumb-item > a
-{
-    text-decoration: none;
-}
-
-/*perfil jogador*/
-
-.custom-input {
-    border-radius: 12px;
-    border: 1px solid #ccc;
-    transition: all 0.3s ease;
-    padding: 12px 15px;
-}
-
-.custom-input:focus {
-    border-color: var(--primary);
-    box-shadow: 0 0 8px rgba(6,187,204,0.3);
-    outline: none;
-}
-
-.card {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 12px 25px rgba(0,0,0,0.15);
-}
-
-.btn-primary {
-    background: var(--primary);
-    border: none;
-    transition: 0.3s;
-}
-
-.btn-primary:hover {
-    background: darken(var(--primary), 10%);
-}
-

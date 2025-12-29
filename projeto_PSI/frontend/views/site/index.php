@@ -9,69 +9,34 @@ use yii\helpers\Url;
 ?>
 
 
-<!-- Carousel Start -->
-<div class="container-fluid p-0 mb-5">
-    <div class="owl-carousel header-carousel position-relative">
+<!-- Slide Estático -->
+<div class="container-fluid p-0 mb-5 position-relative">
+    <img class="img-fluid w-100" src="<?= Yii::getAlias('@web/img/carousel-1.jpg') ?>" alt="Slide 1">
 
-        <!-- Slide 1 -->
-        <div class="owl-carousel-item position-relative">
-            <img class="img-fluid" src="<?= Yii::getAlias('@web/img/carousel-1.jpg') ?>" alt="Carousel 1">
-
-            <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center"
-                 style="background: rgba(24, 29, 56, .7);">
-                <div class="container">
-                    <div class="row justify-content-start">
-                        <div class="col-sm-10 col-lg-8">
-                            <h5 class="text-primary text-uppercase mb-3 animated slideInDown">
-                                Jogos Trivia
-                            </h5>
-                            <h1 class="display-3 text-white animated slideInDown">
-                                Aprende a Jogar
-                            </h1>
-                            <p class="fs-5 text-white mb-4 pb-2">
-                                Descobre jogos educativos organizados por categorias e dificuldades.
-                            </p>
-                            <a href="<?= \yii\helpers\Url::to(['jogosdefault/index']) ?>"
-                               class="btn btn-primary py-md-3 px-md-5 me-3 animated slideInLeft">
-                                Ir para os Jogos
-                            </a>
-                        </div>
-                    </div>
+    <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center"
+         style="background: rgba(24, 29, 56, .7);">
+        <div class="container">
+            <div class="row justify-content-start">
+                <div class="col-sm-10 col-lg-8">
+                    <h5 class="text-uppercase mb-3 animated slideInDown">
+                        Jogos Trivia
+                    </h5>
+                    <h1 class="display-3 text-white animated slideInDown">
+                        Aprende ao Jogar
+                    </h1>
+                    <p class="fs-5 text-white mb-4 pb-2">
+                        Descobre jogos educativos organizados por categorias e dificuldades.
+                    </p>
+                    <a href="<?= \yii\helpers\Url::to(['jogosdefault/index']) ?>"
+                       class="btn btn-primary py-md-3 px-md-5 me-3 animated slideInLeft">
+                        Ir para os Jogos
+                    </a>
                 </div>
             </div>
         </div>
-
-        <!-- Slide 2 -->
-        <div class="owl-carousel-item position-relative">
-            <img class="img-fluid" src="<?= Yii::getAlias('@web/img/carousel-2.jpg') ?>" alt="Carousel 2">
-
-            <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center"
-                 style="background: rgba(24, 29, 56, .7);">
-                <div class="container">
-                    <div class="row justify-content-start">
-                        <div class="col-sm-10 col-lg-8">
-                            <h5 class="text-primary text-uppercase mb-3 animated slideInDown">
-                                Diversão & Conhecimento
-                            </h5>
-                            <h1 class="display-3 text-white animated slideInDown">
-                                Joga e Aprende ao Mesmo Tempo
-                            </h1>
-                            <p class="fs-5 text-white mb-4 pb-2">
-                                Escolhe a dificuldade, a categoria e começa já.
-                            </p>
-                            <a href="<?= \yii\helpers\Url::to(['jogosdefault/index']) ?>"
-                               class="btn btn-primary py-md-3 px-md-5 me-3 animated slideInLeft">
-                                Ver Jogos
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
     </div>
 </div>
-<!-- Carousel End -->
+
 
 
 
@@ -79,7 +44,7 @@ use yii\helpers\Url;
 <div class="container-xxl py-5">
     <div class="container">
         <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
-            <h6 class="section-title bg-white text-center text-primary px-3">Premium</h6>
+            <h6 class="section-title bg-white text-center px-3">Premium</h6>
             <h1 class="mb-5">Nossos Premiums</h1>
         </div>
 
@@ -127,7 +92,7 @@ use yii\helpers\Url;
  <div class="container-xxl py-5">
      <div class="container">
          <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
-             <h6 class="section-title bg-white text-center text-primary px-3">Criadores</h6>
+             <h6 class="section-title bg-white text-center px-3">Criadores</h6>
              <h1 class="mb-5">Os Nossos Criadores</h1>
          </div>
 

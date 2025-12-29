@@ -27,6 +27,7 @@ $this->title = 'Signup';
                 ->textInput([
                         'autofocus' => true,
                         'placeholder' => 'Nome de utilizador',
+                        'class' => 'form-control custom-input',
                         'style' => '
                     font-size: 1.3rem;
                     padding: 18px 16px;
@@ -43,12 +44,13 @@ $this->title = 'Signup';
         <?= $form->field($model, 'nome')
                 ->textInput([
                         'placeholder' => 'Nome do jogador',
+                        'class' => 'form-control custom-input',
                         'style' => '
-            font-size: 1.3rem;
-            padding: 18px 16px;
-            height: 68px;
-            border-radius: 10px;
-        '
+                                font-size: 1.3rem;
+                                padding: 18px 16px;
+                                height: 68px;
+                                border-radius: 10px;
+                            '
                 ])
                 ->label('Nome', [
                         'class' => 'fw-semibold mb-2',
@@ -59,6 +61,7 @@ $this->title = 'Signup';
         <?= $form->field($model, 'email')
                 ->textInput([
                         'placeholder' => 'Email',
+                        'class' => 'form-control custom-input',
                         'style' => '
                     font-size: 1.3rem;
                     padding: 18px 16px;
@@ -75,6 +78,7 @@ $this->title = 'Signup';
         <?= $form->field($model, 'password')
                 ->passwordInput([
                         'placeholder' => 'Senha',
+                        'class' => 'form-control custom-input',
                         'style' => '
                     font-size: 1.3rem;
                     padding: 18px 16px;
@@ -92,6 +96,7 @@ $this->title = 'Signup';
             ->textInput([
                 'type' => 'number',
                 'placeholder' => 'Idade',
+                    'class' => 'form-control custom-input',
                 'style' => '
             font-size: 1.3rem;
             padding: 18px 16px;
@@ -111,7 +116,7 @@ $this->title = 'Signup';
                     'class' => 'btn w-100 py-4',
                     'name' => 'signup-button',
                     'style' => '
-                    background-color: #00bcd4;
+                    background-color: #4d37b6;
                     color: #fff;
                     border-radius: 12px;
                     font-weight: 700;
@@ -128,11 +133,3 @@ $this->title = 'Signup';
     </div>
 </div>
 
-<?php
-$this->registerCss("
-    .btn:hover {
-        background-color: #00acc1 !important;
-        transform: scale(1.04);
-    }
-");
-?>

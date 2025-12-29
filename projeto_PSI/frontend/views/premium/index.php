@@ -7,13 +7,20 @@ use yii\helpers\Html;
 $premiums = $dataProvider->getModels();
 ?>
 
+<div class="container-fluid hero-section py-5 mb-5">
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-10 text-center">
+                <h1 class="display-3 text-white animated slideInDown">Premium</h1>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Premium Start -->
 <div class="container-xxl py-5">
+
     <div class="container">
-        <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
-            <h6 class="section-title bg-white text-center text-primary px-3">Premium</h6>
-            <h1 class="mb-5">Nossos Premiums</h1>
-        </div>
 
         <div class="row g-4 justify-content-center">
             <?php foreach ($premiums as $premium): ?>
