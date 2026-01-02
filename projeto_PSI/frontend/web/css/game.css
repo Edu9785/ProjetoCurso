@@ -1,0 +1,58 @@
+.game-page {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #1f1c2c, #4d37b6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.game-card {
+    background: #fff;
+    border-radius: 20px;
+    padding: 45px 40px;
+    max-width: 720px;
+    width: 100%;
+    box-shadow: 0 25px 45px rgba(0, 0, 0, 0.25);
+    animation: gameFadeIn 0.5s ease-in-out;
+}
+
+.game-question {
+    font-size: 1.7rem;
+    font-weight: 800;
+    text-align: center;
+    margin-bottom: 35px;
+    color: #333;
+}
+
+.game-answer {
+    width: 100%;
+    border-radius: 14px;
+    padding: 16px 20px;
+    font-size: 1.05rem;
+    font-weight: 600;
+    background: #f7f7f7;
+    border: 2px solid #e0e0ef;
+    transition: all 0.25s ease;
+    text-align: left;
+}
+
+.game-answer:hover {
+    background: #4d37b6;
+    color: #fff;
+    border-color: #4d37b6;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 18px rgba(77, 55, 182, 0.35);
+}
+
+@keyframes gameFadeIn {
+    from { opacity: 0; transform: scale(0.96); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+@media (max-width: 576px) {
+
+    .game-card { padding: 30px 22px; }
+
+    .game-question { font-size: 1.4rem; }
+}

@@ -2,29 +2,38 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 
-/** @var common\models\Pergunta $pergunta */
+/** @var array $pergunta */
+
+$this->params['hideFooter'] = true;
+$this->registerCssFile('@web/css/game.css', ['depends' => [\frontend\assets\AppAsset::class]]);
 ?>
 
-<div class="container py-5">
+<div class="game-page">
 
-    <h3 class="mb-4">
-        <?= Html::encode($pergunta['pergunta']) ?>
-    </h3>
+    <div class="game-card">
 
-    <form method="post" action="<?= Url::to(['pergunta/responder']) ?>">
-        <?= Html::hiddenInput(
-            Yii::$app->request->csrfParam,
-            Yii::$app->request->csrfToken
-        ) ?>
+        <div class="game-question">
+            <?= Html::encode($pergunta['pergunta']) ?>
+        </div>
 
-        <?php foreach ($pergunta['respostas'] as $resposta): ?>
-            <button type="submit"
-                    name="id_resposta"
-                    value="<?= $resposta['id'] ?>"
-                    class="btn btn-outline-primary d-block w-100 mb-3 text-start">
-                <?= Html::encode($resposta['resposta']) ?>
-            </button>
-        <?php endforeach; ?>
-    </form>
+        <form method="post" action="<?= Url::to(['pergunta/responder']) ?>">
+            <?= Html::hiddenInput(
+                    Yii::$app->request->csrfParam,
+                    Yii::$app->request->csrfToken
+            ) ?>
+
+            <?php foreach ($pergunta['respostas'] as $resposta): ?>
+                <button
+                        type="submit"
+                        name="id_resposta"
+                        value="<?= $resposta['id'] ?>"
+                        class="game-answer mb-3"
+                >
+                    <?= Html::encode($resposta['resposta']) ?>
+                </button>
+            <?php endforeach; ?>
+        </form>
+
+    </div>
 
 </div>

@@ -168,6 +168,7 @@ class JogadorController extends Controller
         $user = $model->user;
 
         $user->status = User::STATUS_INACTIVE;
+
         $user->save(false);
 
         return $this->redirect(['index']);

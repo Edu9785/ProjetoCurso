@@ -19,6 +19,24 @@ $totalManagers = (new Query())
         ->where(['item_name' => 'manager'])
         ->count();
 
+$lastUsers = (new Query())
+        ->select([
+                'user.username',
+                'user.email',
+                'user.created_at'
+        ])
+        ->from('user')
+        ->innerJoin(
+                'auth_assignment',
+                'auth_assignment.user_id = user.id'
+        )
+        ->where(['auth_assignment.item_name' => 'user']) // 👈 só frontend users
+        ->orderBy(['user.created_at' => SORT_DESC])
+        ->limit(5)
+        ->all();
+
+
+
 ?>
 
 <div class="container-fluid">
@@ -50,6 +68,38 @@ $totalManagers = (new Query())
                     'theme' => 'success'
             ]) ?>
         </div>
+
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Últimos Utilizadores</h3>
+                    </div>
+
+                    <div class="card-body p-0">
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>Username</th>
+                                <th>Email</th>
+                                <th>Data</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <?php foreach ($lastUsers as $user): ?>
+                                <tr>
+                                    <td><?= $user['username'] ?></td>
+                                    <td><?= $user['email'] ?></td>
+                                    <td><?= date('d/m/Y', $user['created_at']) ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
 
     </div>
 </div>
