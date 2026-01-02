@@ -52,7 +52,7 @@ $this->title = 'Login';
                 ]) ?>
 
         <div class="form-group text-center mt-5">
-            <?= Html::submitButton('Conecte-se', [
+            <?= Html::submitButton('Iniciar Sessão', [
                     'class' => 'btn w-100 py-4',
                     'name' => 'login-button',
                     'style' => '

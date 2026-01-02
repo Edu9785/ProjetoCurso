@@ -50,7 +50,7 @@ $this->registerCss("
 
             <div class="row mt-3">
                 <div class="col-12">
-                    <?= Html::submitButton('Sign In', ['class' => 'btn btn-primary btn-block']) ?>
+                    <?= Html::submitButton('Iniciar Sessão', ['class' => 'btn btn-primary btn-block']) ?>
                 </div>
             </div>
 

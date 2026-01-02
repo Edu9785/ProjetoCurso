@@ -21,7 +21,7 @@ AppAsset::register($this);
     <?php $this->registerCsrfMetaTags() ?>
     <title><?= Html::encode($this->title) ?></title>
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="<?= Yii::getAlias('@web') ?>/img/icon_logodesafiate.png">
+    <link rel="icon" type="image/png" href="<?= Yii::getAlias('@web'. '/img/icon_logodesafiate.png') ?>">
 
 
     <!-- Google Web Fonts -->
@@ -34,14 +34,14 @@ AppAsset::register($this);
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
 
     <!-- Libraries Stylesheet -->
-    <link href="lib/animate/animate.min.css" rel="stylesheet">
+    <link href="<?= Yii::getAlias('@web'). '/lib/animate/animate.min.css';?>" rel="stylesheet">
     <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
 
     <!-- Customized Bootstrap Stylesheet -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="<?= Yii::getAlias('@web'). '/css/bootstrap.min.css';?>" rel="stylesheet">
 
     <!-- Template Stylesheet -->
-    <link href="css/style.css" rel="stylesheet">
+    <link href="<?= Yii::getAlias('@web'). '/css/style.css';?>" rel="stylesheet">
     <?php $this->head() ?>
 </head>
 <body class="d-flex flex-column h-100">
