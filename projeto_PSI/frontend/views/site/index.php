@@ -102,7 +102,7 @@ use yii\helpers\Url;
              <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
                  <div class="team-item bg-light">
                      <div class="overflow-hidden">
-                         <img class="img-fluid" src="img/team-1.jpg" alt="">
+                         <img class="img-fluid" src="img/Eduardo.jpg" alt="">
                      </div>
                      <div class="text-center p-4">
                          <h5 class="mb-0">Eduardo Oliveira</h5>
@@ -113,7 +113,7 @@ use yii\helpers\Url;
              <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
                  <div class="team-item bg-light">
                      <div class="overflow-hidden">
-                         <img class="img-fluid" src="img/team-2.jpg" alt="">
+                         <img class="img-fluid" src="img/Dinis.png" alt="">
                      </div>
                      <div class="text-center p-4">
                          <h5 class="mb-0">Dinis Ruivo</h5>
@@ -124,7 +124,7 @@ use yii\helpers\Url;
              <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.7s">
                  <div class="team-item bg-light">
                      <div class="overflow-hidden">
-                         <img class="img-fluid" src="img/team-4.jpg" alt="">
+                         <img class="img-fluid" src="img/Rafael.jpeg" alt="">
                      </div>
                      <div class="text-center p-4">
                          <h5 class="mb-0">Rafael Rodrigues</h5>
