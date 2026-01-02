@@ -22,6 +22,12 @@ $this->title = 'Jogos Trivia';
                 <h1 class="display-3 text-white animated slideInDown">Jogos Trivia</h1>
             </div>
         </div>
+        <div class="row justify-content-center mb-4">
+            <div class="col-lg-6 text-center">
+                <input id="search-jogos" class="form-control" placeholder="Pesquisar jogos pelo nome..." />
+            </div>
+        </div>
+
     </div>
 </div>
 
@@ -95,7 +101,7 @@ $this->title = 'Jogos Trivia';
 
             <!-- Games Grid -->
             <div class="col-lg-9 col-md-8">
-                <div class="row g-4">
+                <div class="row g-4" id="jogos-grid">
                     <?php if (!empty($dataProvider->models)): ?>
                         <?php foreach ($dataProvider->models as $jogo): ?>
                             <div class="col-lg-3 col-md-4 col-sm-6">
@@ -144,7 +150,17 @@ $this->title = 'Jogos Trivia';
 
 <?php
 $categoriasJson = Json::htmlEncode(array_map(fn($c) => ['id' => $c->id, 'nome' => $c->categoria], $categorias));
-$this->registerJs("const categoriasData = $categoriasJson;", \yii\web\View::POS_HEAD);
+$this->registerJs(
+    "window.categoriasData = " . Json::encode(array_map(fn($c) => ['id' => $c->id, 'nome' => $c->categoria], $categorias)) . ";",
+    \yii\web\View::POS_HEAD
+);
+$jogosArray = array_map(fn($j) => [
+    'id' => $j->id,
+    'titulo' => $j->titulo,
+    'imagem' => $j->imagem ? Yii::getAlias('@web/uploads/' . $j->imagem) : null,
+], $dataProvider->getModels());
+$this->registerJs("window.jogosData = " . Json::encode($jogosArray) . ";", \yii\web\View::POS_HEAD);
+
 
 $this->registerJsFile('@web/js/jogosdefault.js', ['depends' => [\yii\web\JqueryAsset::class]]);
 ?>

@@ -6,11 +6,11 @@ use common\models\Categoria;
 use common\models\Dificuldade;
 use common\models\JogosDefault;
 use common\models\JogosDefaultSearch;
-use common\models\Pergunta;
-use common\models;
+use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\Response;
 
 /**
  * JogosdefaultController implements the CRUD actions for JogosDefault model.
@@ -126,6 +126,22 @@ class JogosdefaultController extends Controller
 
         return $this->redirect(['index']);
     }
+
+    public function actionSearchAjax($q = '')
+    {
+        $query = JogosDefault::find();
+
+        if (!empty($q)) {
+            $query->andWhere(['like', 'titulo', $q]);
+        }
+
+        $jogos = $query->all();
+
+        return $this->renderPartial('_jogos_grid', [
+            'jogos' => $jogos
+        ]);
+    }
+
 
     /**
      * Finds the JogosDefault model based on its primary key value.

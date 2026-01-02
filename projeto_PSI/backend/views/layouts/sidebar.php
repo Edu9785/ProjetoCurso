@@ -36,7 +36,8 @@ $username = $user ? Html::encode($user->username) : 'Visitante';
                             ['label' =>
                                     'Administradores',
                                     'icon' => 'users-cog',
-                                    'url' => ['/user/index']
+                                    'url' => ['/user/index'],
+                                    'visible' => Yii::$app->user->can('admin')
                             ],
 
                             ['label' =>
