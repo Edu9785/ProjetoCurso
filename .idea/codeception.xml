@@ -46,7 +46,7 @@
           <option name="path" value="$PROJECT_DIR$/projeto_PSI/common/tests" />
           <option name="mySuiteNamespaces">
             <map>
-              <entry key="unit" value="common\tests\unit" />
+              <entry key="unit" value="test\unit" />
             </map>
           </option>
         </Configuration>
