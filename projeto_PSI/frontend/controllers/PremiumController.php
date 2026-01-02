@@ -34,6 +34,11 @@ class PremiumController extends Controller
                     ],
                     [
                         'allow' => true,
+                        'actions' => ['comprar'],
+                        'roles' => ['@'],
+                    ],
+                    [
+                        'allow' => true,
                         'actions' => ['index'],
                         'roles' => ['user', 'manager', '?'],
                     ],
