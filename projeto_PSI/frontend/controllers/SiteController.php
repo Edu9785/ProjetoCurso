@@ -97,9 +97,6 @@ class SiteController extends Controller
         if (!Yii::$app->user->isGuest) {
             return $this->goHome();
         }
-        if (!Yii::$app->user->isGuest) {
-            return $this->goHome();
-        }
 
         $model = new LoginForm();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
@@ -195,20 +192,34 @@ class SiteController extends Controller
     public function actionRequestPasswordReset()
     {
         $model = new PasswordResetRequestForm();
+
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             if ($model->sendEmail()) {
-                Yii::$app->session->setFlash('success', 'Check your email for further instructions.');
-
-                return $this->goHome();
+                Yii::$app->session->setFlash('success', 'O link para alterar a palavra-passe foi enviado para o seu email.');
+            } else {
+                Yii::$app->session->setFlash('error', 'Não foi possível enviar o email. Verifique se o endereço existe.');
             }
 
-            Yii::$app->session->setFlash('error', 'Sorry, we are unable to reset password for the provided email address.');
+            if (Yii::$app->request->isAjax) {
+                $flashesHtml = '';
+                foreach (Yii::$app->session->getAllFlashes() as $type => $message) {
+                    $flashesHtml .= "<div class='alert alert-{$type} alert-dismissible fade show' role='alert'>
+                    {$message}
+                    <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button>
+                </div>";
+                }
+                Yii::$app->response->format = \yii\web\Response::FORMAT_RAW;
+                return $flashesHtml;
+            }
+
+            return $this->refresh();
         }
 
         return $this->render('requestPasswordResetToken', [
             'model' => $model,
         ]);
     }
+
 
     /**
      * Resets password.
@@ -226,7 +237,7 @@ class SiteController extends Controller
         }
 
         if ($model->load(Yii::$app->request->post()) && $model->validate() && $model->resetPassword()) {
-            Yii::$app->session->setFlash('success', 'New password saved.');
+            Yii::$app->session->setFlash('success', 'Nova palavra-passe guardada com sucesso.');
 
             return $this->goHome();
         }

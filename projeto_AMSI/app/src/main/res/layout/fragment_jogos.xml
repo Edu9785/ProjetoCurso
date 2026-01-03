@@ -1,35 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#EAF8FF"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="#EAF8FF">
 
     <!-- Título -->
     <TextView
-        android:id="@+id/txtTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Jogos"
-        android:textSize="20sp"
-        android:textStyle="bold"/>
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="12dp"/>
 
     <!-- Pesquisa -->
     <EditText
         android:id="@+id/edtSearch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Pesquisar jogo"
-        android:layout_marginTop="12dp"/>
+        android:hint="Pesquisar jogos"
+        android:drawableEnd="@drawable/ic_search"
+        android:padding="12dp"
+        android:background="@drawable/bg_input"
+        android:layout_marginBottom="12dp"/>
+
+    <!-- Filtros -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="16dp">
+
+        <!-- Categorias (multi) -->
+        <TextView
+            android:id="@+id/txtCategorias"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Categorias"
+            android:padding="10dp"
+            android:drawableEnd="@drawable/ic_arrow_drop_down"
+            android:background="@drawable/bg_dropdown"
+            android:layout_marginEnd="8dp"/>
+
+        <!-- Dificuldade -->
+        <TextView
+            android:id="@+id/txtDificuldade"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Dificuldade"
+            android:padding="10dp"
+            android:drawableEnd="@drawable/ic_arrow_drop_down"
+            android:background="@drawable/bg_dropdown"
+            android:layout_marginEnd="8dp"/>
+
+        <!-- Botão Filtrar -->
+        <Button
+            android:id="@+id/btnFiltrar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Filtrar"/>
+    </LinearLayout>
 
     <!-- Lista de jogos -->
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerGames"
+        android:id="@+id/rvJogos"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:layout_marginTop="16dp"/>
+        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        app:spanCount="2"/>
 
 </LinearLayout>

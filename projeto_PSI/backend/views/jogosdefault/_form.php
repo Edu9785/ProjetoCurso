@@ -30,12 +30,6 @@ use yii\widgets\ActiveForm;
             ['prompt' => 'Selecione a dificuldade...']
     ) ?>
 
-    <!-- Tempo -->
-    <?= $form->field($model, 'id_tempo')->label('Tempo')->dropDownList(
-            \yii\helpers\ArrayHelper::map($tempos, 'id', 'quantidadetempo'),
-            ['prompt' => 'Selecione o tempo...']
-    ) ?>
-
     <!-- Categorias -->
     <div class="form-group">
         <label><strong>Categorias</strong></label>
@@ -86,6 +80,15 @@ use yii\widgets\ActiveForm;
 
     <!-- Upload de imagem -->
     <?= $form->field($model, 'imageFile')->fileInput() ?>
+
+    <?php if (!$model->isNewRecord && !empty($model->imagem)): ?>
+        <div class="mb-3">
+            <label class="form-label">Imagem atual</label><br>
+            <img src="<?= Yii::getAlias('@frontendUrl') . '/uploads/' . $model->imagem ?>"
+                 style="max-width: 200px; border-radius: 8px;">
+        </div>
+    <?php endif; ?>
+
 
     <!-- Submit -->
     <div class="form-group">

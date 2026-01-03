@@ -42,7 +42,7 @@ class JogosDefault extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id_dificuldade', 'titulo', 'descricao', 'id_tempo', 'totalpontosjogo', 'imagem'], 'required'],
+            [['id_dificuldade', 'titulo', 'descricao', 'totalpontosjogo', 'imagem'], 'required'],
             [['id_dificuldade', 'id_tempo', 'totalpontosjogo'], 'integer'],
             [['titulo', 'imagem'], 'string', 'max' => 45],
             [['descricao'], 'string', 'max' => 500],

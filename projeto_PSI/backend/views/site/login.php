@@ -36,7 +36,7 @@ $this->registerCss("
 <div class="login-abs-wrapper">
     <div class="card">
         <div class="card-body login-card-body">
-            <p class="login-box-msg">Sign in to start your session</p>
+            <p class="login-box-msg">Faça login para iniciar sessão</p>
 
             <?php $form = \yii\bootstrap4\ActiveForm::begin(['id' => 'login-form']) ?>
 
@@ -46,7 +46,7 @@ $this->registerCss("
 
             <?= $form->field($model, 'password', [
                     'options' => ['class' => 'form-group has-feedback mb-4'],
-            ])->label(false)->passwordInput(['placeholder' => $model->getAttributeLabel('password')]) ?>
+            ])->label(false)->passwordInput(['placeholder' =>'Palavra-passe']) ?>
 
             <div class="row mt-3">
                 <div class="col-12">

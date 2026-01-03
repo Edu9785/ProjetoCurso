@@ -69,12 +69,13 @@ $username = $user ? Html::encode($user->username) : 'Visitante';
                                     'icon' => 'gem',
                                     'url' => ['/premium/index']
                             ],
-
+                            /*
                             ['label' =>
                                     'Temporizadores',
                                     'icon' => 'clock',
                                     'url' => ['/tempo/index']
                             ],
+                            */
                     ],
                     'options' => ['class' => 'nav nav-pills nav-sidebar flex-column', 'data-widget' => 'treeview', 'role' => 'menu', 'data-accordion' => 'false'],
                     'itemOptions' => ['class' => 'nav-item'],

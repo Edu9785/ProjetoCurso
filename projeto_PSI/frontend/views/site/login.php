@@ -37,7 +37,7 @@ $this->title = 'Login';
 
         <?= $form->field($model, 'password')
                 ->passwordInput([
-                        'placeholder' => 'Senha',
+                        'placeholder' => 'Palavra-passe',
                         'class' => 'form-control custom-input',
                         'style' => '
                         font-size: 1.3rem;
@@ -46,10 +46,17 @@ $this->title = 'Login';
                         border-radius: 10px;
                     '
                 ])
-                ->label('Senha', [
+                ->label('Palavra-passe', [
                         'class' => 'fw-semibold mb-2',
                         'style' => 'font-size: 1.3rem;'
                 ]) ?>
+
+        <div class="text-end mt-2">
+            <?= Html::a('Esqueceste-te da senha?', ['site/request-password-reset'], [
+                    'class' => 'text-decoration-none',
+                    'style' => 'color: #4d37b6; font-weight: 600; font-size: 1.1rem;'
+            ]) ?>
+        </div>
 
         <div class="form-group text-center mt-5">
             <?= Html::submitButton('Iniciar Sessão', [

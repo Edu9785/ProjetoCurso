@@ -35,7 +35,15 @@ $lastUsers = (new Query())
         ->limit(5)
         ->all();
 
-
+$this->registerCss("
+    .small-box .small-box-footer .fa-arrow-circle-right {
+        display: none !important;
+    }
+    .small-box .small-box-footer:empty::after {
+        content: ' ';
+        visibility: hidden;
+    }
+");
 
 ?>
 
@@ -47,7 +55,9 @@ $lastUsers = (new Query())
                     'title' => $totalAdmins,
                     'text' => 'Administradores',
                     'icon' => 'fas fa-user-shield',
-                    'theme' => 'info'
+                    'theme' => 'info',
+                    'linkText' => false,
+                    'linkUrl' => false,
             ]) ?>
         </div>
 
@@ -56,7 +66,9 @@ $lastUsers = (new Query())
                     'title' => $totalManagers,
                     'text' => 'Gestores',
                     'icon' => 'fas fa-user-tie',
-                    'theme' => 'warning'
+                    'theme' => 'warning',
+                    'linkText' => false,
+                    'linkUrl' => false,
             ]) ?>
         </div>
 
@@ -65,7 +77,9 @@ $lastUsers = (new Query())
                     'title' => $totalPlayers,
                     'text' => 'Jogadores',
                     'icon' => 'fas fa-users',
-                    'theme' => 'success'
+                    'theme' => 'success',
+                    'linkText' => false,
+                    'linkUrl' => false,
             ]) ?>
         </div>
 

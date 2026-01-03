@@ -77,7 +77,7 @@ $this->title = 'Signup';
         <!-- PASSWORD -->
         <?= $form->field($model, 'password')
                 ->passwordInput([
-                        'placeholder' => 'Senha',
+                        'placeholder' => 'Palavra-passe',
                         'class' => 'form-control custom-input',
                         'style' => '
                     font-size: 1.3rem;
@@ -86,7 +86,7 @@ $this->title = 'Signup';
                     border-radius: 10px;
                 '
                 ])
-                ->label('Senha', [
+                ->label('Palavra-passe', [
                         'class' => 'fw-semibold mb-2',
                         'style' => 'font-size: 1.3rem;'
                 ]) ?>

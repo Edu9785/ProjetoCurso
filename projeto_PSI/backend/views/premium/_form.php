@@ -23,7 +23,7 @@ use yii\widgets\ActiveForm;
     <?php if (!$model->isNewRecord && !empty($model->imagem)): ?>
         <div class="mb-3">
             <label class="form-label">Imagem atual</label><br>
-            <img src="<?= Yii::getAlias('@web/uploads/' . $model->imagem) ?>"
+            <img src="<?= Yii::getAlias('@frontendUrl') . '/uploads/' . $model->imagem ?>"
                  style="max-width: 200px; border-radius: 8px;">
         </div>
     <?php endif; ?>
