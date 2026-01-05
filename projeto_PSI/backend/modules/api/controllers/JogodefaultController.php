@@ -40,7 +40,7 @@ class JogodefaultController extends ActiveController
             $query->andWhere(['like', 'titulo', $search]);
         }
 
-        return $query->with(['dificuldade', 'tempo', 'categorias'])->all();
+        return $query->with(['dificuldade', 'categorias'])->all();
     }
 
     // ------------------------------------
@@ -50,7 +50,7 @@ class JogodefaultController extends ActiveController
     {
         $model = JogosDefault::find()
             ->where(['id' => $id])
-            ->with(['dificuldade', 'tempo', 'categorias'])
+            ->with(['dificuldade', 'categorias'])
             ->one();
 
         if (!$model) {

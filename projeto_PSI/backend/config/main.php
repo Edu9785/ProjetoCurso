@@ -120,7 +120,6 @@ return [
                     'pluralize' => false,
                     'extraPatterns' => [
                         'GET nomes' => 'nomes',
-                        'GET count' => 'count',
                         'GET {id}/jogosdefault' => 'jogosdefault',
                     ],
                     'tokens' => [
