@@ -38,10 +38,6 @@ $this->params['breadcrumbs'][] = $model->titulo;
                     <?= Html::encode($model->dificuldade->dificuldade ?? '-') ?>
                 </li>
 
-                <li class="list-group-item"><strong>Tempo:</strong>
-                    <?= Html::encode($model->tempo->quantidadetempo ?? '-') ?> seg
-                </li>
-
                 <li class="list-group-item"><strong>Total Pontos:</strong>
                     <?= Html::encode($model->totalpontosjogo) ?>
                 </li>

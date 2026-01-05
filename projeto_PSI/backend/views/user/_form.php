@@ -11,18 +11,30 @@ use yii\widgets\ActiveForm;
 <div class="user-form">
 
     <?php $form = ActiveForm::begin(); ?>
-    <?= $form->field($model, 'username')->textInput() ?>
+
+    <!-- Nome de Utilizador -->
+    <?= $form->field($model, 'username')
+            ->textInput()
+            ->label('Nome de Utilizador') ?>
 
     <?php if ($model->isNewRecord): ?>
+
+        <!-- Palavra-passe -->
         <?= $form->field($model, 'password')->passwordInput([
-                'placeholder' => 'Escolha uma password (mínimo 6 caracteres)'
-        ]) ?>
+                'placeholder' => 'Escolha uma palavra-passe (mínimo 6 caracteres)'
+        ])->label('Palavra-passe') ?>
+
     <?php else: ?>
+
+        <!-- Palavra-passe -->
         <?= $form->field($model, 'password')->passwordInput([
                 'value' => '',
-                'placeholder' => 'Preencha para alterar a password (deixe vazio para manter a atual)'
-        ]) ?>
+                'placeholder' => 'Preencha para alterar a palavra-passe (deixe vazio para manter a atual)'
+        ])->label('Palavra-passe') ?>
+
     <?php endif; ?>
+
+    <!-- Email -->
     <?= $form->field($model, 'email')->textInput() ?>
 
     <div class="form-group">

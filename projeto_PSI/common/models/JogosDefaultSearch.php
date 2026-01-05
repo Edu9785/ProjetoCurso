@@ -14,7 +14,7 @@ class JogosDefaultSearch extends JogosDefault
     public function rules()
     {
         return [
-            [['id', 'id_tempo', 'totalpontosjogo'], 'integer'],
+            [['id','totalpontosjogo'], 'integer'],
             [['titulo', 'descricao', 'imagem'], 'safe'],
 
             // NOVO

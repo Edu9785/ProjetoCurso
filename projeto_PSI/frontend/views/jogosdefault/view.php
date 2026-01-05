@@ -53,9 +53,6 @@ $imagem = $model->imagem
             <p class="fw-semi-bold text-dark mb-1">Total de Pontos</p>
             <p class="mb-3"><?= Html::encode($model->totalpontosjogo) ?></p>
 
-            <p class="fw-semi-bold text-dark mb-1">Tempo</p>
-            <p class="mb-3"><?= $model->tempo->quantidadetempo ?? '-' ?> segundos</p>
-
             <p class="mt-4 text-dark" style="max-width: 500px;">
                 <?= Html::encode($model->descricao) ?>
             </p>

@@ -43,14 +43,13 @@ class JogosDefault extends \yii\db\ActiveRecord
     {
         return [
             [['id_dificuldade', 'titulo', 'descricao', 'totalpontosjogo', 'imagem'], 'required'],
-            [['id_dificuldade', 'id_tempo', 'totalpontosjogo'], 'integer'],
+            [['id_dificuldade', 'totalpontosjogo'], 'integer'],
             [['titulo', 'imagem'], 'string', 'max' => 45],
             [['descricao'], 'string', 'max' => 500],
 
             [['imageFile'], 'file', 'skipOnEmpty' => true, 'extensions' => 'png, jpg, jpeg'],
 
             [['id_dificuldade'], 'exist', 'skipOnError' => true, 'targetClass' => Dificuldade::class, 'targetAttribute' => ['id_dificuldade' => 'id']],
-            [['id_tempo'], 'exist', 'skipOnError' => true, 'targetClass' => Tempo::class, 'targetAttribute' => ['id_tempo' => 'id']],
         ];
     }
 
@@ -64,7 +63,6 @@ class JogosDefault extends \yii\db\ActiveRecord
             'id_dificuldade' => 'Id Dificuldade',
             'titulo' => 'Titulo',
             'descricao' => 'Descricao',
-            'id_tempo' => 'Id Tempo',
             'totalpontosjogo' => 'Totalpontosjogo',
             'imagem' => 'Imagem',
             'imageFile' => 'Upload da Imagem',
@@ -137,10 +135,6 @@ class JogosDefault extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getTempo()
-    {
-        return $this->hasOne(Tempo::class, ['id' => 'id_tempo']);
-    }
 
     /**
      * Messaging MQTT — notifica quando um jogo é criado

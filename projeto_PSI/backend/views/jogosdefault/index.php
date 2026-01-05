@@ -17,14 +17,15 @@ $this->params['breadcrumbs'][] = $this->title;
         <?php foreach ($dataProvider->getModels() as $model): ?>
             <div class="col-md-4 mb-4">
                 <div class="card h-100 shadow-sm">
+
                     <?php if ($model->imagem): ?>
                         <img src="<?= Yii::getAlias('@frontendUrl') . '/uploads/' . $model->imagem ?>"
-                             class="card-img-top jogo-img"
-                             alt="<?= Html::encode($model->titulo) ?>">
+                             alt="<?= Html::encode($model->titulo) ?>"
+                             style="width: 100%; height: 200px; object-fit: cover; border-top-left-radius: .25rem; border-top-right-radius: .25rem;">
                     <?php else: ?>
                         <img src="https://via.placeholder.com/400x200?text=Sem+Imagem"
-                             class="card-img-top jogo-img"
-                             alt="Sem Imagem">
+                             alt="Sem Imagem"
+                             style="width: 100%; height: 200px; object-fit: cover; border-top-left-radius: .25rem; border-top-right-radius: .25rem;">
                     <?php endif; ?>
 
                     <div class="card-body">
@@ -36,13 +37,15 @@ $this->params['breadcrumbs'][] = $this->title;
                             <strong>Descrição:</strong> <?= Html::encode($model->descricao) ?>
                         </p>
 
-
-
                         <ul class="list-group list-group-flush mb-3">
-                            <li class="list-group-item"><strong>Dificuldade:</strong> <?= Html::encode($model->dificuldade->dificuldade ?? '-') ?></li>
-                            <li class="list-group-item"><strong>Tempo:</strong> <?= Html::encode($model->tempo->quantidadetempo ?? '-') ?> seg</li>
-                            <li class="list-group-item"><strong>Total Pontos:</strong> <?= Html::encode($model->totalpontosjogo) ?></li>
-                            <li class="list-group-item"><strong>Categorias:</strong>
+                            <li class="list-group-item">
+                                <strong>Dificuldade:</strong> <?= Html::encode($model->dificuldade->dificuldade ?? '-') ?>
+                            </li>
+                            <li class="list-group-item">
+                                <strong>Total Pontos:</strong> <?= Html::encode($model->totalpontosjogo) ?>
+                            </li>
+                            <li class="list-group-item">
+                                <strong>Categorias:</strong>
                                 <?php
                                 $nomesCategorias = [];
                                 foreach ($model->categorias as $categoria) {
@@ -57,11 +60,12 @@ $this->params['breadcrumbs'][] = $this->title;
                             <?= Html::a('<i class="fas fa-eye"></i> Ver', ['view', 'id' => $model->id], ['class' => 'btn btn-sm btn-outline-info']) ?>
                             <?= Html::a('<i class="fas fa-edit"></i> Editar', ['update', 'id' => $model->id], ['class' => 'btn btn-sm btn-outline-warning']) ?>
                             <?= Html::a('<i class="fas fa-trash"></i> Apagar', ['delete', 'id' => $model->id], [
-                                'class' => 'btn btn-sm btn-outline-danger',
-                                'data-confirm' => 'Tem certeza que deseja apagar este jogo?',
-                                'data-method' => 'post',
+                                    'class' => 'btn btn-sm btn-outline-danger',
+                                    'data-confirm' => 'Tem certeza que deseja apagar este jogo?',
+                                    'data-method' => 'post',
                             ]) ?>
                         </div>
+
                     </div>
                 </div>
             </div>

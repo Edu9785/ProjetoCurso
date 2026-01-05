@@ -33,7 +33,7 @@ $premiums = $dataProvider->getModels();
                                 <img class="img-fluid"
                                      src="<?= Yii::getAlias('@web/uploads/' . $premium->imagem) ?>"
                                      alt="<?= Html::encode($premium->nome) ?>"
-                                     style="height: 220px; object-fit: cover; width: 100%;">
+                                     style="width: 100%; height: auto; object-fit: contain;">
                             </div>
                         <?php endif; ?>
 
@@ -45,10 +45,6 @@ $premiums = $dataProvider->getModels();
                             <h5 class="mb-3">
                                 <?= Html::encode($premium->nome) ?>
                             </h5>
-
-                            <p class="card-text">
-                                Descrição do plano premium pode ser adicionada aqui.
-                            </p>
 
                             <a href="<?= \yii\helpers\Url::to(['premium/comprar', 'id' => $premium->id]) ?>"
                                class="btn btn-buy px-4 py-2">

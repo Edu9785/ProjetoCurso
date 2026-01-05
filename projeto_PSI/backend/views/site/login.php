@@ -42,7 +42,7 @@ $this->registerCss("
 
             <?= $form->field($model,'username', [
                     'options' => ['class' => 'form-group has-feedback mb-4'],
-            ])->label(false)->textInput(['placeholder' => $model->getAttributeLabel('username')]) ?>
+            ])->label(false)->textInput(['placeholder' => $model->getAttributeLabel('Nome de Utilizador')]) ?>
 
             <?= $form->field($model, 'password', [
                     'options' => ['class' => 'form-group has-feedback mb-4'],
