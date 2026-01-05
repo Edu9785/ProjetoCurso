@@ -167,7 +167,7 @@ class JogadorController extends Controller
 
         $user = $model->user;
 
-        $user->status = User::STATUS_INACTIVE;
+        $user->status = User::STATUS_DELETED;
 
         $user->save(false);
 

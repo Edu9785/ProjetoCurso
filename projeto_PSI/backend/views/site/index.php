@@ -45,8 +45,24 @@ $this->registerCss("
     }
 ");
 
+$jogos = (new Query())
+        ->select([
+                'j.id',
+                'j.titulo',
+                'd.dificuldade',
+                't.quantidadetempo AS tempo',
+                "GROUP_CONCAT(c.categoria SEPARATOR ', ') AS categorias"
+        ])
+        ->from(['j' => 'jogosdefault'])
+        ->leftJoin(['d' => 'dificuldade'], 'd.id = j.id_dificuldade')
+        ->leftJoin(['t' => 'tempo'], 't.id = j.id_tempo')
+        ->leftJoin(['jc' => 'jogosdefault_categoria'], 'jc.id_jogo = j.id')
+        ->leftJoin(['c' => 'categoria'], 'c.id = jc.id_categoria')
+        ->groupBy('j.id')
+        ->orderBy(['j.id' => SORT_DESC])
+        ->limit(5)
+        ->all();
 ?>
-
 <div class="container-fluid">
     <div class="row">
 
@@ -83,15 +99,18 @@ $this->registerCss("
             ]) ?>
         </div>
 
-        <div class="row mt-4">
-            <div class="col-12">
-                <div class="card">
+        <div class="row dashboard-section">
+            <div class="col-12 col-lg-6">
+                <div class="card card-outline card-primary">
                     <div class="card-header">
-                        <h3 class="card-title">Últimos Utilizadores</h3>
+                        <h3 class="card-title">
+                            <i class="fas fa-user-clock mr-1"></i>
+                            Últimos Utilizadores
+                        </h3>
                     </div>
 
-                    <div class="card-body p-0">
-                        <table class="table table-striped">
+                    <div class="card-body table-responsive p-0">
+                        <table class="table table-hover">
                             <thead>
                             <tr>
                                 <th>Username</th>
@@ -112,8 +131,53 @@ $this->registerCss("
                     </div>
                 </div>
             </div>
+            <div class="col-12 col-lg-6">
+                <div class="card card-outline card-success">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-gamepad mr-1"></i>
+                            Jogos Default
+                        </h3>
+                    </div>
+
+                    <div class="card-body table-responsive p-0">
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th>Jogo</th>
+                                <th>Dificuldade</th>
+                                <th>Tempo</th>
+                                <th>Categorias</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <?php foreach ($jogos as $jogo): ?>
+                                <tr>
+                                    <td><strong><?= $jogo['titulo'] ?></strong></td>
+
+                                    <td>
+                                        <?php
+                                        $badge = match ($jogo['dificuldade']) {
+                                            'Fácil' => 'success',
+                                            'Médio' => 'warning',
+                                            'Difícil' => 'danger',
+                                            default => 'secondary',
+                                        };
+                                        ?>
+                                        <span class="badge badge-<?= $badge ?> badge-difficulty">
+                                    <?= $jogo['dificuldade'] ?? '-' ?>
+                                </span>
+                                    </td>
+
+                                    <td><?= $jogo['tempo'] ?? '-' ?> min</td>
+                                    <td><?= $jogo['categorias'] ?? '-' ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
-
-
     </div>
 </div>
