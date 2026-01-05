@@ -23,10 +23,10 @@ class JogadorTest extends \Codeception\Test\Unit
         $jogadorModel ->id_premium = "rgaagsf";
         $this -> assertFalse($jogadorModel->validate(['id_premium']));
 
-        $jogadorModel -> id_premium = 5;
+        $jogadorModel -> id_premium = 1;
         $this -> assertFalse($jogadorModel -> validate(['id_premium']));
 
-        $jogadorModel -> id_user = 20;
+        $jogadorModel -> id_user = 30;
         $this -> assertFalse($jogadorModel -> validate(['id_user']));
 
         $jogadorModel ->id_user = "ubfub";

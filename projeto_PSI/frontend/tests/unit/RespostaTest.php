@@ -47,7 +47,7 @@ class RespostaTest extends \Codeception\Test\Unit
         $respostaModel = new Resposta();
 
         $respostaModel -> correta = 1;
-        $respostaModel -> id_pergunta = 1;
+        $respostaModel -> id_pergunta = 22;
         $respostaModel -> resposta = "resposta1";
         $respostaModel -> save();
         $resModel = Resposta::findOne(['resposta' => 'resposta1']);

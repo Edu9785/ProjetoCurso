@@ -27,7 +27,7 @@ class CategoriaTest extends \Codeception\Test\Unit
         $categoriaModel -> categoria = null;
         $this -> assertFalse($categoriaModel->validate(['categoria']));
 
-        $categoriaModel -> id_gestor = 11;
+        $categoriaModel -> id_gestor = 2;
         $this -> assertFalse($categoriaModel -> validate(['id_gestor']));
 
         $categoriaModel ->id_gestor = "ubfub";
@@ -42,7 +42,7 @@ class CategoriaTest extends \Codeception\Test\Unit
         $categoriaModel = new Categoria();
 
         $categoriaModel -> categoria = "categoria1";
-        $categoriaModel -> id_gestor = 3 ;
+        $categoriaModel -> id_gestor = 3;
         $categoriaModel -> save();
         $catModel = Categoria::findOne(['categoria' => 'categoria1']);
         $this->assertNotNull($catModel);
