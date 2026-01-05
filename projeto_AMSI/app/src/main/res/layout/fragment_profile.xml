@@ -107,13 +107,48 @@
                 android:layout_marginStart="12dp"/>
         </LinearLayout>
 
-        <!-- Botão guardar -->
-        <Button
-            android:id="@+id/btnSaveProfile"
+        <!-- Zona de ações do perfil -->
+        <FrameLayout
+            android:id="@+id/containerProfileActions"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Guardar alterações"
-            android:layout_marginTop="32dp"/>
+            android:layout_marginTop="32dp">
+
+            <!-- Botão Editar Perfil -->
+            <Button
+                android:id="@+id/btnEditProfile"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Editar perfil"/>
+
+            <!-- Botões Guardar / Cancelar -->
+            <LinearLayout
+                android:id="@+id/layoutEditActions"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <Button
+                    android:id="@+id/btnSaveProfile"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Guardar"
+                    android:layout_marginEnd="8dp"/>
+
+                <Button
+                    android:id="@+id/btnCancelEdit"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Cancelar"
+                    android:layout_marginStart="8dp"
+                    android:backgroundTint="#D32F2F"
+                    android:textColor="@android:color/white"/>
+            </LinearLayout>
+
+        </FrameLayout>
 
         <!-- Botão eliminar conta -->
         <Button

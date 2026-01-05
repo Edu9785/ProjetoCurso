@@ -1,64 +1,127 @@
 package pt.ipleiria.estg.dei.amsi;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.Spinner;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link JogosFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import androidx.annotation.NonNull;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+
+import java.util.Arrays;
+import java.util.List;
+
 public class JogosFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private DrawerLayout drawerLayout;
+    private LinearLayout containerCategorias;
+    private Spinner spinnerDificuldade;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    // Exemplo de categorias (depois vens buscar à API)
+    private final List<String> categorias = Arrays.asList(
+            "Todas",
+            "História",
+            "Ciência",
+            "Geografia",
+            "Desporto",
+            "Tecnologia"
+    );
 
-    public JogosFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment JogosFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static JogosFragment newInstance(String param1, String param2) {
-        JogosFragment fragment = new JogosFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    // Exemplo de dificuldades
+    private final List<String> dificuldades = Arrays.asList(
+            "Todas",
+            "Fácil",
+            "Médio",
+            "Difícil"
+    );
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+    public View onCreateView(
+            @NonNull LayoutInflater inflater,
+            ViewGroup container,
+            Bundle savedInstanceState
+    ) {
+
+        View view = inflater.inflate(R.layout.fragment_jogos, container, false);
+
+        drawerLayout = view.findViewById(R.id.drawerLayout);
+        ImageButton btnOpenFilters = view.findViewById(R.id.btnOpenFilters);
+        Button btnApplyFilters = view.findViewById(R.id.btnAplicarFiltros);
+        Button btnAddCategoria = view.findViewById(R.id.btnAddCategoria);
+        containerCategorias = view.findViewById(R.id.containerCategorias);
+        spinnerDificuldade = view.findViewById(R.id.spinnerDificuldade);
+
+        // ☰ Abrir sidebar
+        btnOpenFilters.setOnClickListener(v ->
+                drawerLayout.openDrawer(GravityCompat.END)
+        );
+
+        // ✔ Aplicar filtros (por agora só fecha)
+        btnApplyFilters.setOnClickListener(v ->
+                drawerLayout.closeDrawer(GravityCompat.END)
+        );
+
+        // ➕ Adicionar categoria
+        btnAddCategoria.setOnClickListener(v ->
+                adicionarSpinnerCategoria()
+        );
+
+
+        ArrayAdapter<String> adapterDificuldade = new ArrayAdapter<>(
+                requireContext(),
+                R.layout.spinner_item,
+                dificuldades
+        );
+        adapterDificuldade.setDropDownViewResource(R.layout.spinner_dropdown_item);
+        spinnerDificuldade.setAdapter(adapterDificuldade);
+
+
+        if (containerCategorias.getChildCount() > 0) {
+            View firstSpinnerView = containerCategorias.getChildAt(0);
+            if (firstSpinnerView instanceof Spinner) {
+                Spinner firstSpinner = (Spinner) firstSpinnerView;
+                ArrayAdapter<String> adapterCategoria = new ArrayAdapter<>(
+                        requireContext(),
+                        R.layout.spinner_item,
+                        categorias
+                );
+                adapterCategoria.setDropDownViewResource(R.layout.spinner_dropdown_item);
+                firstSpinner.setAdapter(adapterCategoria);
+            }
         }
+
+
+        return view;
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_jogos, container, false);
+    // 🔹 Método para criar um Spinner dinamicamente
+    private void adicionarSpinnerCategoria() {
+        Spinner spinner = new Spinner(requireContext());
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                requireContext(),
+                R.layout.spinner_item,
+                categorias
+        );
+        adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+
+        LinearLayout.LayoutParams params =
+                new LinearLayout.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT
+                );
+
+        params.topMargin = 16;
+        spinner.setLayoutParams(params);
+
+        containerCategorias.addView(spinner);
     }
 }
