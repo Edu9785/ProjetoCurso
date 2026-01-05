@@ -50,12 +50,10 @@ $jogos = (new Query())
                 'j.id',
                 'j.titulo',
                 'd.dificuldade',
-                't.quantidadetempo AS tempo',
                 "GROUP_CONCAT(c.categoria SEPARATOR ', ') AS categorias"
         ])
         ->from(['j' => 'jogosdefault'])
         ->leftJoin(['d' => 'dificuldade'], 'd.id = j.id_dificuldade')
-        ->leftJoin(['t' => 'tempo'], 't.id = j.id_tempo')
         ->leftJoin(['jc' => 'jogosdefault_categoria'], 'jc.id_jogo = j.id')
         ->leftJoin(['c' => 'categoria'], 'c.id = jc.id_categoria')
         ->groupBy('j.id')
@@ -146,7 +144,6 @@ $jogos = (new Query())
                             <tr>
                                 <th>Jogo</th>
                                 <th>Dificuldade</th>
-                                <th>Tempo</th>
                                 <th>Categorias</th>
                             </tr>
                             </thead>
@@ -168,8 +165,6 @@ $jogos = (new Query())
                                     <?= $jogo['dificuldade'] ?? '-' ?>
                                 </span>
                                     </td>
-
-                                    <td><?= $jogo['tempo'] ?? '-' ?> min</td>
                                     <td><?= $jogo['categorias'] ?? '-' ?></td>
                                 </tr>
                             <?php endforeach; ?>
