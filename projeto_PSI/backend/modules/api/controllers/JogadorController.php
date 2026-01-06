@@ -122,10 +122,11 @@ class JogadorController extends ActiveController
             throw new \yii\web\NotFoundHttpException('User associado não encontrado');
         }
 
-            $user->save(false); // sem validação
+        $transaction = Yii::$app->db->beginTransaction();
 
-            // NÃO apaga o jogador da tabela
-            // $jogador->delete(); ← não faça isso!
+        try {
+            $user->status = 0;
+            $user->save(false);
 
             $transaction->commit();
 
