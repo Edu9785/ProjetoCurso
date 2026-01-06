@@ -2,7 +2,9 @@
 
 namespace backend\modules\api\controllers;
 
+use common\models\JogosDefault;
 use yii\rest\ActiveController;
+use yii\web\NotFoundHttpException;
 use yii\web\Response;
 use Yii;
 use common\models\Dificuldade;
@@ -31,12 +33,21 @@ class DificuldadeController extends ActiveController
     }
 
     // ----------------------------
-    // GET /api/dificuldades/count
-    // ----------------------------
-    public function actionCount()
+// GET /api/dificuldade/{id}/jogosdefault
+// MASTER / DETAIL
+// ----------------------------
+    public function actionJogosdefault($id)
     {
-        return [
-            'total' => Dificuldade::find()->count()
-        ];
+        // Buscar a dificuldade
+        $dificuldade = Dificuldade::findOne($id);
+
+        if (!$dificuldade) {
+            throw new NotFoundHttpException('Dificuldade não encontrada');
+        }
+
+        // Buscar todos os jogos que tenham esta dificuldade
+        return JogosDefault::find()
+            ->where(['id_dificuldade' => $id])
+            ->all();
     }
 }

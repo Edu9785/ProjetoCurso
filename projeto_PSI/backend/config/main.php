@@ -85,8 +85,6 @@ return [
                     'extraPatterns' => [
                         // 🔹 Buscar jogos pelo título
                         'GET {titulo}' => 'by-titulo',
-
-                        'GET {id}/perguntas' => 'perguntas',
                     ],
                     'tokens' => [
                         '{id}' => '<id:\\d+>',
@@ -112,8 +110,9 @@ return [
                     'controller' => ['api/dificuldade'],
                     'pluralize' => false,
                     'extraPatterns' => [
-                        'GET count' => 'count',
                         'GET nomes' => 'nomes',
+
+                        'GET {id}/jogosdefault' => 'jogosdefault',
                     ],
                 ],
 
