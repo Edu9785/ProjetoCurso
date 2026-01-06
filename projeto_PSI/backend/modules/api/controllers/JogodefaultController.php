@@ -59,4 +59,20 @@ class JogodefaultController extends ActiveController
 
         return $model;
     }
+
+    public function actionByTitulo($titulo)
+    {
+        $jogos = JogosDefault::find()
+            ->where(['like', 'titulo', $titulo])
+            ->with(['dificuldade', 'categorias'])
+            ->all();
+
+        if (empty($jogos)) {
+            throw new NotFoundHttpException('Nenhum jogo encontrado com esse título');
+        }
+
+        return [
+            'data' => $jogos
+        ];
+    }
 }

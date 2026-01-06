@@ -83,14 +83,18 @@ return [
                     'controller' => ['api/jogodefault'],
                     'pluralize' => false,
                     'extraPatterns' => [
+                        // 🔹 Buscar jogos pelo título
+                        'GET {titulo}' => 'by-titulo',
+
                         'GET {id}/perguntas' => 'perguntas',
                     ],
                     'tokens' => [
                         '{id}' => '<id:\\d+>',
+                        '{titulo}' => '<titulo:[^/]+>',
                     ],
                 ],
 
-                // 🔹 AuthController — tem regra própria
+                // 🔹 Auth — tem regra própria
                 [
                     'class' => 'yii\rest\UrlRule',
                     'controller' => ['api/auth'],
