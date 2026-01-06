@@ -63,6 +63,7 @@ return [
                         'GET {id}' => 'view',
                         'PUT {id}' => 'update',
                         'PATCH {id}' => 'update',
+                        'DELETE {id}' => 'delete',
 
                         'PUT updatejogador/{id}' => 'update-jogador',
 

@@ -20,8 +20,6 @@ use Yii;
  */
 class Jogador extends \yii\db\ActiveRecord
 {
-
-
     /**
      * {@inheritdoc}
      */

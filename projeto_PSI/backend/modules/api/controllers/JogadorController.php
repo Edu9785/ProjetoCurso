@@ -109,7 +109,41 @@ class JogadorController extends ActiveController
         }
     }
 
+    // DELETE /api/jogador/{id}
+    public function actionDelete($id)
+    {
+        // Buscar jogador
+        $jogador = $this->findModel($id);
 
+        // Buscar usuário associado
+        $user = $jogador->user;
+
+        if (!$user) {
+            throw new \yii\web\NotFoundHttpException('User associado não encontrado');
+        }
+
+            $user->save(false); // sem validação
+
+            // NÃO apaga o jogador da tabela
+            // $jogador->delete(); ← não faça isso!
+
+            $transaction->commit();
+
+            return [
+                'success' => true,
+                'message' => 'User associado marcado como deleted com sucesso',
+                'jogador_id' => $jogador->id,
+                'user_id' => $user->id,
+                'user_status' => $user->status,
+            ];
+        } catch (\Exception $e) {
+            $transaction->rollBack();
+            return [
+                'success' => false,
+                'error' => $e->getMessage(),
+            ];
+        }
+    }
 
     protected function findModel($id)
     {
