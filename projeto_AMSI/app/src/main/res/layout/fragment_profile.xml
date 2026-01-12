@@ -22,15 +22,18 @@
             />
 
         <!-- Username -->
-        <TextView
-            android:id="@+id/txtUsername"
+        <EditText
+            android:id="@+id/edtUsername"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Username"
             android:textSize="20sp"
             android:textStyle="bold"
+            android:enabled="false"
+            android:background="@null"
             android:layout_gravity="center"
             android:layout_marginTop="16dp"/>
+
 
         <!-- Divider -->
         <View

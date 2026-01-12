@@ -1,24 +1,23 @@
 package pt.ipleiria.estg.dei.amsi;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
-import android.content.SharedPreferences;
-import android.content.Intent;
-
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
-
-    private BottomNavigationView bottomNavigation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // 🔐 Verificar sessão REAL
         SharedPreferences prefs = getSharedPreferences("user_session", MODE_PRIVATE);
+
         if (!prefs.getBoolean("logged", false)) {
             startActivity(new Intent(this, LoginActivity.class));
             finish();
@@ -27,26 +26,25 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
 
-        bottomNavigation = findViewById(R.id.bottomNavigation);
+        BottomNavigationView bottomNav = findViewById(R.id.bottomNavigation);
 
-        // Fragment inicial
         if (savedInstanceState == null) {
             loadFragment(new HomeFragment());
         }
 
-        bottomNavigation.setOnItemSelectedListener(item -> {
-            Fragment selectedFragment = null;
+        bottomNav.setOnItemSelectedListener(item -> {
+            Fragment fragment = null;
 
             if (item.getItemId() == R.id.nav_home) {
-                selectedFragment = new HomeFragment();
+                fragment = new HomeFragment();
             } else if (item.getItemId() == R.id.nav_games) {
-                selectedFragment = new JogosFragment();
+                fragment = new JogosFragment();
             } else if (item.getItemId() == R.id.nav_profile) {
-                selectedFragment = new ProfileFragment();
+                fragment = new ProfileFragment();
             }
 
-            if (selectedFragment != null) {
-                loadFragment(selectedFragment);
+            if (fragment != null) {
+                loadFragment(fragment);
                 return true;
             }
             return false;
