@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import com.android.volley.Request;
@@ -27,13 +28,13 @@ import pt.ipleiria.estg.dei.amsi.api.ApiConfig;
 public class ProfileFragment extends Fragment {
 
     private EditText edtUsername, edtName, edtAge, edtEmail;
-    private Button btnEditProfile, btnSaveProfile, btnCancelEdit, btnLogout;
+    private Button btnEditProfile, btnSaveProfile, btnCancelEdit, btnLogout, btnDeleteAccount;
     private View layoutEditActions;
 
     private int jogadorId;
     private String token;
 
-    // valores originais (para cancelar)
+    // Valores originais (para cancelar edição)
     private String originalUsername, originalNome, originalEmail;
     private int originalIdade;
 
@@ -57,6 +58,7 @@ public class ProfileFragment extends Fragment {
         btnSaveProfile = view.findViewById(R.id.btnSaveProfile);
         btnCancelEdit = view.findViewById(R.id.btnCancelEdit);
         btnLogout = view.findViewById(R.id.btnLogout);
+        btnDeleteAccount = view.findViewById(R.id.btnDeleteAccount);
         layoutEditActions = view.findViewById(R.id.layoutEditActions);
 
         // Sessão
@@ -88,17 +90,16 @@ public class ProfileFragment extends Fragment {
         });
 
         // 🚪 Logout
-        btnLogout.setOnClickListener(v -> {
-            prefs.edit().clear().apply();
-            startActivity(new Intent(getActivity(), WelcomeActivity.class));
-            requireActivity().finish();
-        });
+        btnLogout.setOnClickListener(v -> logoutApi());
+
+        // 🗑 Eliminar conta
+        btnDeleteAccount.setOnClickListener(v -> confirmDeleteAccount());
 
         return view;
     }
 
     // =========================
-    // 🔹 GET PERFIL
+    // GET PERFIL
     // =========================
     private void loadProfile() {
 
@@ -138,7 +139,7 @@ public class ProfileFragment extends Fragment {
     }
 
     // =========================
-    // 🔹 PUT PERFIL
+    // PUT PERFIL
     // =========================
     private void saveProfile() {
 
@@ -194,6 +195,83 @@ public class ProfileFragment extends Fragment {
     }
 
     // =========================
+    // ELIMINAR CONTA
+    // =========================
+    private void confirmDeleteAccount() {
+
+        new AlertDialog.Builder(requireContext())
+                .setTitle("Eliminar conta")
+                .setMessage("Tens a certeza que queres eliminar a tua conta? Esta ação é irreversível.")
+                .setPositiveButton("Eliminar", (dialog, which) -> deleteAccountApi())
+                .setNegativeButton("Cancelar", null)
+                .show();
+    }
+
+    private void deleteAccountApi() {
+
+        String url = ApiConfig.BASE_URL + "jogador/" + jogadorId;
+
+        JsonObjectRequest request = new JsonObjectRequest(
+                Request.Method.DELETE,
+                url,
+                null,
+                response -> {
+                    SharedPreferences prefs =
+                            requireActivity().getSharedPreferences("user_session", getActivity().MODE_PRIVATE);
+
+                    prefs.edit().clear().apply();
+
+                    Toast.makeText(getContext(), "Conta eliminada com sucesso", Toast.LENGTH_SHORT).show();
+
+                    startActivity(new Intent(getActivity(), WelcomeActivity.class));
+                    requireActivity().finish();
+                },
+                error -> Toast.makeText(getContext(), "Erro ao eliminar conta", Toast.LENGTH_SHORT).show()
+        ) {
+            @Override
+            public java.util.Map<String, String> getHeaders() {
+                java.util.Map<String, String> headers = new java.util.HashMap<>();
+                headers.put("Authorization", token);
+                return headers;
+            }
+        };
+
+        Volley.newRequestQueue(requireContext()).add(request);
+    }
+
+    // =========================
+    // LOGOUT
+    // =========================
+    private void logoutApi() {
+
+        String url = ApiConfig.BASE_URL + "auth/logout";
+
+        JsonObjectRequest request = new JsonObjectRequest(
+                Request.Method.POST,
+                url,
+                null,
+                response -> {
+                    SharedPreferences prefs =
+                            requireActivity().getSharedPreferences("user_session", getActivity().MODE_PRIVATE);
+
+                    prefs.edit().clear().apply();
+
+                    startActivity(new Intent(getActivity(), WelcomeActivity.class));
+                    requireActivity().finish();
+                },
+                error -> Toast.makeText(getContext(), "Erro ao efetuar logout", Toast.LENGTH_SHORT).show()
+        ) {
+            @Override
+            public java.util.Map<String, String> getHeaders() {
+                java.util.Map<String, String> headers = new java.util.HashMap<>();
+                headers.put("Authorization", token);
+                return headers;
+            }
+        };
+
+        Volley.newRequestQueue(requireContext()).add(request);
+    }
+
     private void restoreOriginalValues() {
         edtUsername.setText(originalUsername);
         edtName.setText(originalNome);
