@@ -15,7 +15,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // 🔐 Verificar sessão REAL
+        // Verificar sessão REAL
         SharedPreferences prefs = getSharedPreferences("user_session", MODE_PRIVATE);
 
         if (!prefs.getBoolean("logged", false)) {
