@@ -8,7 +8,7 @@ public class Jogador {
     private int id_premium;
 
     // dados vindos do User
-    private String username;
+    private int id_user;
     private String email;
 
     // 🔹 Getters
@@ -28,8 +28,8 @@ public class Jogador {
         return id_premium;
     }
 
-    public String getUsername() {
-        return username;
+    public int getId_user() {
+        return id_user;
     }
 
     public String getEmail() {
