@@ -3,6 +3,8 @@ package pt.ipleiria.estg.dei.amsi.api;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -352,8 +354,8 @@ public class SingletonAPI {
 
 
     // =========================
-// JOGOS
-// =========================
+    // JOGOS
+    // =========================
     public void getJogosAPI(final Context context, Integer dificuldadeId, String search) {
 
         final DBHelper dbHelper = new DBHelper(context);
@@ -373,16 +375,22 @@ public class SingletonAPI {
         }
 
         // ONLINE
-        String url = baseUrl(context);
+        String url = baseUrl(context) + "jogodefault";
+        boolean hasQuery = false;
+
+        //filtro por dificuldade
         if (dificuldadeId != null && dificuldadeId > 0) {
-            url += "dificuldade/" + dificuldadeId + "/jogosdefault";
-        } else {
-            url += "jogodefault";
+            url += "?dificuldade=" + dificuldadeId;
+            hasQuery = true;
         }
 
+        // pesquisa por título
         if (search != null && !search.isEmpty()) {
-            url += "?search=" + search;
+            url += (hasQuery ? "&" : "?") + "search=" + Uri.encode(search);
         }
+
+        // DEBUG (opcional, mas recomendado)
+        Log.d("API_JOGOS_URL", url);
 
         JsonArrayRequest reqJogos = new JsonArrayRequest(
                 Request.Method.GET,

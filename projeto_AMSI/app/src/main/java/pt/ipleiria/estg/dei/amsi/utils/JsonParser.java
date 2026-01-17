@@ -74,7 +74,7 @@ public class JsonParser {
                 String descricao = jsonJogo.getString("descricao");
                 String imagem = jsonJogo.optString("imagem", "");
 
-                // ✅ TOTAL DE PONTOS
+                // TOTAL DE PONTOS
                 int totalPontos = jsonJogo.optInt("totalpontosjogo", 0);
 
                 // ---------- DIFICULDADE ----------
