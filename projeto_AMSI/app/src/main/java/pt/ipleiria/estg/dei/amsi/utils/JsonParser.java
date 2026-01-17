@@ -30,46 +30,42 @@ public class JsonParser {
     public static int parseLoginId(String response) {
         try {
             JSONObject json = new JSONObject(response);
-            return json.getInt("jogador_id"); // Ajusta se necessário
+            return json.getInt("jogador_id");
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
     }
 
-    // Parser Jogador (mesmo padrão sem setters)
+    // ✅ PARSER Jogador (bate com: id, nome, idade, id_premium, username, email)
     public static Jogador parseJogador(String response) {
-        Jogador jogador = null;
         try {
             JSONObject json = new JSONObject(response);
 
             int id = json.getInt("id");
-            String nome = json.getString("nome");
-            int idade = json.getInt("idade");
+            String nome = json.optString("nome", "");
+            int idade = json.optInt("idade", 0);
             int id_premium = json.optInt("id_premium", 0);
 
-            // Dados user
-            int id_user = json.getInt("id_user");
-            String email = json.getString("email");
+            String username = json.optString("username", "");
+            String email = json.optString("email", "");
 
-            jogador = new JogadorWrapper(id, nome, idade, id_premium, id_user, email).toJogador();
+            return new JogadorWrapper(id, nome, idade, id_premium, username, email).toJogador();
 
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
-        return jogador;
     }
 
-    // Wrapper para setar campos privados via reflection (pois modelo só tem getters)
     private static class JogadorWrapper {
-        int id, idade, id_premium, id_user;
-        String nome, email;
+        int id, idade, id_premium;
+        String nome, username, email;
 
-        JogadorWrapper(int id, String nome, int idade, int id_premium, int id_user, String email) {
+        JogadorWrapper(int id, String nome, int idade, int id_premium, String username, String email) {
             this.id = id;
             this.nome = nome;
             this.idade = idade;
             this.id_premium = id_premium;
-            this.id_user = id_user;
+            this.username = username;
             this.email = email;
         }
 
@@ -94,9 +90,9 @@ public class JsonParser {
                 f.setAccessible(true);
                 f.setInt(j, id_premium);
 
-                f = Jogador.class.getDeclaredField("id_user");
+                f = Jogador.class.getDeclaredField("username");
                 f.setAccessible(true);
-                f.setInt(j, id_user);
+                f.set(j, username);
 
                 f = Jogador.class.getDeclaredField("email");
                 f.setAccessible(true);
@@ -124,7 +120,6 @@ public class JsonParser {
                 String descricao = jsonJogo.getString("descricao");
                 String imagem = jsonJogo.optString("imagem", "");
 
-                // Dificuldade (objeto)
                 Dificuldade dificuldade = null;
                 if (jsonJogo.has("dificuldade") && !jsonJogo.isNull("dificuldade")) {
                     JSONObject jsonDificuldade = jsonJogo.getJSONObject("dificuldade");
@@ -134,7 +129,6 @@ public class JsonParser {
                     dificuldade = new DificuldadeWrapper(difId, difNome).toDificuldade();
                 }
 
-                // Categorias (array)
                 List<Categoria> categorias = new ArrayList<>();
                 if (jsonJogo.has("categorias") && !jsonJogo.isNull("categorias")) {
                     JSONArray jsonCategorias = jsonJogo.getJSONArray("categorias");
@@ -146,9 +140,7 @@ public class JsonParser {
                     }
                 }
 
-                // Montar JogoDefault (sem setters, usando wrapper/reflection)
                 JogoDefault jogo = new JogoDefaultWrapper(id, titulo, descricao, imagem, dificuldade, categorias).toJogoDefault();
-
                 jogos.add(jogo);
 
             } catch (JSONException e) {
@@ -159,7 +151,6 @@ public class JsonParser {
         return jogos;
     }
 
-    // Wrappers para preencher campos privados
     private static class DificuldadeWrapper {
         int id;
         String dificuldade;
@@ -271,7 +262,6 @@ public class JsonParser {
         }
     }
 
-    // Verifica conexão
     public static boolean isConnectionInternet(Context context) {
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo ni = cm.getActiveNetworkInfo();
