@@ -17,24 +17,29 @@ import java.util.List;
 
 import pt.ipleiria.estg.dei.amsi.JogoDetalhesFragment;
 import pt.ipleiria.estg.dei.amsi.JogoJogarActivity;
-import pt.ipleiria.estg.dei.amsi.MainActivity;
 import pt.ipleiria.estg.dei.amsi.R;
 import pt.ipleiria.estg.dei.amsi.api.models.JogoDefault;
 
 public class JogosAdapter extends RecyclerView.Adapter<JogosAdapter.ViewHolder> {
 
-    private final List<JogoDefault> jogos;
+    private List<JogoDefault> jogos;
     private final OnJogoClickListener listener;
 
     public interface OnJogoClickListener {
         void onDetalhes(JogoDefault jogo);
-
         void onJogar(JogoDefault jogo);
     }
 
     public JogosAdapter(List<JogoDefault> jogos, OnJogoClickListener listener) {
         this.jogos = jogos;
         this.listener = listener;
+    }
+
+    // 🔥 MÉTODO FUNDAMENTAL
+    public void updateData(List<JogoDefault> novosJogos) {
+        jogos.clear();
+        jogos.addAll(novosJogos);
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -62,25 +67,9 @@ public class JogosAdapter extends RecyclerView.Adapter<JogosAdapter.ViewHolder> 
             holder.imgJogo.setImageResource(R.drawable.verde);
         }
 
-        // Botão Detalhes
-        holder.btnDetalhes.setOnClickListener(v -> {
-            JogoDetalhesFragment fragment = JogoDetalhesFragment.newInstance(jogo.getId());
-            FragmentActivity activity = (FragmentActivity) holder.itemView.getContext();
-            activity.getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.homeFragmentContainer, fragment)
-                    .addToBackStack(null)
-                    .commit();
-        });
-
-        // Botão Jogar → abre JogoJogarActivity
-        holder.btnIniciar.setOnClickListener(v -> {
-            Intent intent = new Intent(holder.itemView.getContext(), JogoJogarActivity.class);
-            intent.putExtra("id_jogo", jogo.getId());
-            holder.itemView.getContext().startActivity(intent);
-        });
+        holder.btnDetalhes.setOnClickListener(v -> listener.onDetalhes(jogo));
+        holder.btnIniciar.setOnClickListener(v -> listener.onJogar(jogo));
     }
-
 
     @Override
     public int getItemCount() {

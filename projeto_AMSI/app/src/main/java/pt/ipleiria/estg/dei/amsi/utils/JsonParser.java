@@ -127,6 +127,62 @@ public class JsonParser {
         return jogos;
     }
 
+
+    // ======================
+    // CATEGORIAS (LISTA COMPLETA)
+    // ======================
+    public static ArrayList<Categoria> parseCategorias(JSONArray response) {
+
+        ArrayList<Categoria> categorias = new ArrayList<>();
+
+        for (int i = 0; i < response.length(); i++) {
+            try {
+                JSONObject json = response.getJSONObject(i);
+
+                categorias.add(
+                        new CategoriaWrapper(
+                                json.getInt("id"),
+                                json.getString("categoria")
+                        ).toCategoria()
+                );
+
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        return categorias;
+    }
+
+
+    // ======================
+    // DIFICULDADES (LISTA COMPLETA)
+    // ======================
+    public static ArrayList<Dificuldade> parseDificuldades(JSONArray response) {
+
+        ArrayList<Dificuldade> dificuldades = new ArrayList<>();
+
+        for (int i = 0; i < response.length(); i++) {
+            try {
+                JSONObject json = response.getJSONObject(i);
+
+                dificuldades.add(
+                        new DificuldadeWrapper(
+                                json.getInt("id"),
+                                json.getString("dificuldade")
+                        ).toDificuldade()
+                );
+
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        return dificuldades;
+    }
+
+
+
     // ======================
     // WRAPPERS
     // ======================

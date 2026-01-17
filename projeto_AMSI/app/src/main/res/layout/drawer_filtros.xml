@@ -46,18 +46,13 @@
             android:textColor="@android:color/white"
             android:layout_marginBottom="12dp"/>
 
-        <!-- Container para os dropdowns -->
+        <!-- Container para as linhas (Spinner + X) -->
         <LinearLayout
             android:id="@+id/containerCategorias"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginBottom="16dp">
-
-            <Spinner
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-        </LinearLayout>
+            android:layout_marginBottom="16dp" />
 
         <Button
             android:id="@+id/btnAddCategoria"
@@ -66,7 +61,7 @@
             android:text="Adicionar +"
             android:layout_marginBottom="32dp"
             android:backgroundTint="@color/purple_dark"
-            android:textColor="@android:color/white"    />
+            android:textColor="@android:color/white" />
 
         <Button
             android:id="@+id/btnAplicarFiltros"

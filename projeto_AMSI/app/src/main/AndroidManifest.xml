@@ -15,38 +15,42 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Projeto_AMSI"
         android:usesCleartextTraffic="true"
-        android:networkSecurityConfig="@xml/network_security_config"
-        >
+        android:networkSecurityConfig="@xml/network_security_config">
 
-    <!-- WELCOME = LAUNCHER -->
-    <activity
-        android:name=".WelcomeActivity"
-        android:exported="true">
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
-    </activity>
+        <!-- WELCOME = LAUNCHER -->
+        <activity
+            android:name=".WelcomeActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
 
-    <activity
-        android:name=".LoginActivity"
-        android:exported="false" />
+        <activity
+            android:name=".ApiConfigActivity"
+            android:exported="false" />
 
-    <activity
-        android:name=".SignupActivity"
-        android:exported="false" />
+        <activity
+            android:name=".LoginActivity"
+            android:exported="false" />
 
-    <activity
-        android:name=".MainActivity"
-        android:exported="false" />
+        <activity
+            android:name=".SignupActivity"
+            android:exported="false" />
 
-    <activity
-        android:name=".JogoJogarActivity"
-        android:exported="false" />
+        <activity
+            android:name=".MainActivity"
+            android:exported="false" />
 
-    <activity
-        android:name=".JogoResultadoActivity"
-        android:exported="false" />
-</application>
+        <activity
+            android:name=".JogoJogarActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".JogoResultadoActivity"
+            android:exported="false" />
+
+    </application>
 
 </manifest>

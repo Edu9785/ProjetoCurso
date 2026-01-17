@@ -6,8 +6,6 @@ import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
@@ -21,8 +19,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import pt.ipleiria.estg.dei.amsi.api.models.Categoria;
+import pt.ipleiria.estg.dei.amsi.api.models.Dificuldade;
 import pt.ipleiria.estg.dei.amsi.api.models.JogoDefault;
 import pt.ipleiria.estg.dei.amsi.api.models.Jogador;
+import pt.ipleiria.estg.dei.amsi.listeners.CategoriasListener;
+import pt.ipleiria.estg.dei.amsi.listeners.DificuldadesListener;
 import pt.ipleiria.estg.dei.amsi.listeners.EditProfileListener;
 import pt.ipleiria.estg.dei.amsi.listeners.JogosListener;
 import pt.ipleiria.estg.dei.amsi.listeners.LoginListener;
@@ -40,17 +42,18 @@ public class SingletonAPI {
     private ProfileListener profileListener;
     private EditProfileListener editProfileListener;
     private JogosListener jogosListener;
+    private CategoriasListener categoriasListener;
+    private DificuldadesListener dificuldadesListener;
 
     private static final String PREF_NAME = "LOGIN_PREFS";
     private static final String KEY_TOKEN = "TOKEN";
-
     private static final String SESSION_PREF = "user_session";
 
     private int jogadorId;
 
     private SingletonAPI(Context context) {
-        // ✅ carrega o jogadorId guardado (evita /jogador/0)
-        SharedPreferences prefs = context.getSharedPreferences(SESSION_PREF, Context.MODE_PRIVATE);
+        SharedPreferences prefs =
+                context.getSharedPreferences(SESSION_PREF, Context.MODE_PRIVATE);
         this.jogadorId = prefs.getInt("jogador_id", 0);
     }
 
@@ -63,37 +66,70 @@ public class SingletonAPI {
         return instance;
     }
 
-    private static final String BASE_URL = ApiConfig.BASE_URL;
+    // =========================
+    // URL HELPERS (DINÂMICOS)
+    // =========================
+    private String baseUrl(Context context) {
+        return ApiConfig.getBaseUrl(context);
+    }
 
-    public String getLoginUrl() { return BASE_URL + "auth/login"; }
-    public String getSignupUrl() { return BASE_URL + "auth/signup"; }
-    public String getJogadorUrl() { return BASE_URL + "jogador"; }
-    public String getJogosUrl() { return BASE_URL + "jogodefault"; }
+    public String getLoginUrl(Context context) {
+        return baseUrl(context) + "auth/login";
+    }
 
+    public String getSignupUrl(Context context) {
+        return baseUrl(context) + "auth/signup";
+    }
+
+    public String getJogadorUrl(Context context) {
+        return baseUrl(context) + "jogador";
+    }
+
+    public String getJogosUrl(Context context) {
+        return baseUrl(context) + "jogodefault";
+    }
+
+    // =========================
+    // TOKEN
+    // =========================
     public static String getToken(Context context) {
-        SharedPreferences sp = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        SharedPreferences sp =
+                context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         return sp.getString(KEY_TOKEN, null);
     }
 
     public static void saveToken(Context context, String token) {
-        SharedPreferences sp = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        SharedPreferences sp =
+                context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         if (token == null) sp.edit().remove(KEY_TOKEN).apply();
         else sp.edit().putString(KEY_TOKEN, token).apply();
     }
 
-    public void setLoginListener(LoginListener loginListener) { this.loginListener = loginListener; }
-    public void setSignupListener(SignupListener signupListener) { this.signupListener = signupListener; }
-    public void setProfileListener(ProfileListener profileListener) { this.profileListener = profileListener; }
-    public void setEditProfileListener(EditProfileListener editProfileListener) { this.editProfileListener = editProfileListener; }
-    public void setJogosListener(JogosListener jogosListener) { this.jogosListener = jogosListener; }
+    // =========================
+    // LISTENERS
+    // =========================
+    public void setLoginListener(LoginListener l) { loginListener = l; }
+    public void setSignupListener(SignupListener l) { signupListener = l; }
+    public void setProfileListener(ProfileListener l) { profileListener = l; }
+    public void setEditProfileListener(EditProfileListener l) { editProfileListener = l; }
+    public void setJogosListener(JogosListener l) { jogosListener = l; }
+    public void setCategoriasListener(CategoriasListener l) { categoriasListener = l; }
+    public void setDificuldadesListener(DificuldadesListener l) { dificuldadesListener = l; }
 
     public int getJogadorId() { return jogadorId; }
 
-    private void saveFullSession(Context context, boolean logged, int userId, int jogadorId, String token) {
-        if (token != null) saveToken(context, token);
+    // =========================
+    // SESSION
+    // =========================
+    private void saveFullSession(Context context, boolean logged,
+                                 int userId, int jogadorId, String token) {
 
-        SharedPreferences prefs = context.getSharedPreferences(SESSION_PREF, Context.MODE_PRIVATE);
-        prefs.edit()
+        saveToken(context, token);
+
+        SharedPreferences sp =
+                context.getSharedPreferences(SESSION_PREF, Context.MODE_PRIVATE);
+
+        sp.edit()
                 .putBoolean("logged", logged)
                 .putInt("user_id", userId)
                 .putInt("jogador_id", jogadorId)
@@ -103,186 +139,152 @@ public class SingletonAPI {
         this.jogadorId = jogadorId;
     }
 
+    public void clearSession(Context context) {
+        context.getSharedPreferences(SESSION_PREF, Context.MODE_PRIVATE)
+                .edit().clear().apply();
+        saveToken(context, null);
+        jogadorId = 0;
+    }
+
     // =========================
     // LOGIN
     // =========================
-    public void loginAPI(final String username, final String password, final Context context) {
+    public void loginAPI(String username, String password, Context context) {
 
         if (!JsonParser.isConnectionInternet(context)) {
             Toast.makeText(context, "Sem ligação à Internet", Toast.LENGTH_LONG).show();
             return;
         }
 
-        StringRequest reqLogin = new StringRequest(
+        StringRequest request = new StringRequest(
                 Request.Method.POST,
-                getLoginUrl(),
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        try {
-                            JSONObject json = new JSONObject(response);
+                getLoginUrl(context),
+                response -> {
+                    try {
+                        JSONObject json = new JSONObject(response);
 
-                            if (!json.optBoolean("success", false)) {
-                                if (loginListener != null) loginListener.onLoginError();
-                                return;
-                            }
-
-                            String token = JsonParser.parseLoginToken(response);
-                            int jogadorId = JsonParser.parseLoginId(response);
-                            int userId = json.optInt("user_id", -1);
-
-                            saveFullSession(context, true, userId, jogadorId, token);
-
-                            if (loginListener != null) loginListener.onLoginSuccess();
-
-                        } catch (JSONException e) {
+                        if (!json.optBoolean("success", false)) {
                             if (loginListener != null) loginListener.onLoginError();
+                            return;
                         }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
+
+                        String token = JsonParser.parseLoginToken(response);
+                        int jogadorId = JsonParser.parseLoginId(response);
+                        int userId = json.optInt("user_id", -1);
+
+                        saveFullSession(context, true, userId, jogadorId, token);
+
+                        if (loginListener != null) loginListener.onLoginSuccess();
+
+                    } catch (JSONException e) {
                         if (loginListener != null) loginListener.onLoginError();
                     }
+                },
+                error -> {
+                    if (loginListener != null) loginListener.onLoginError();
                 }
         ) {
             @Override
             protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<>();
-                params.put("username", username);
-                params.put("password", password);
-                return params;
+                Map<String, String> p = new HashMap<>();
+                p.put("username", username);
+                p.put("password", password);
+                return p;
             }
         };
 
-        volleyQueue.add(reqLogin);
+        volleyQueue.add(request);
     }
 
     // =========================
     // SIGNUP
     // =========================
-    public void signupAPI(final String username,
-                          final String nome,
-                          final String idade,
-                          final String email,
-                          final String password,
-                          final Context context) {
+    public void signupAPI(String username, String nome, String idade,
+                          String email, String password, Context context) {
 
         if (!JsonParser.isConnectionInternet(context)) {
             Toast.makeText(context, "Sem ligação à Internet", Toast.LENGTH_LONG).show();
             return;
         }
 
-        StringRequest reqSignup = new StringRequest(
+        StringRequest request = new StringRequest(
                 Request.Method.POST,
-                getSignupUrl(),
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        try {
-                            JSONObject json = new JSONObject(response);
+                getSignupUrl(context),
+                response -> {
+                    try {
+                        JSONObject json = new JSONObject(response);
 
-                            if (!json.optBoolean("success", false)) {
-                                String msg = json.optString("error", "Erro ao criar conta");
-                                if (signupListener != null) signupListener.onSignupError(msg);
-                                return;
-                            }
-
-                            String token = JsonParser.parseLoginToken(response);
-                            int jogadorId = JsonParser.parseLoginId(response);
-                            int userId = json.optInt("user_id", -1);
-
-                            saveFullSession(context, true, userId, jogadorId, token);
-
-                            if (signupListener != null) signupListener.onSignupSuccess();
-
-                        } catch (JSONException e) {
-                            if (signupListener != null) signupListener.onSignupError("Erro ao processar resposta");
+                        if (!json.optBoolean("success", false)) {
+                            if (signupListener != null)
+                                signupListener.onSignupError(
+                                        json.optString("error", "Erro"));
+                            return;
                         }
+
+                        String token = JsonParser.parseLoginToken(response);
+                        int jogadorId = JsonParser.parseLoginId(response);
+                        int userId = json.optInt("user_id", -1);
+
+                        saveFullSession(context, true, userId, jogadorId, token);
+
+                        if (signupListener != null)
+                            signupListener.onSignupSuccess();
+
+                    } catch (JSONException e) {
+                        if (signupListener != null)
+                            signupListener.onSignupError("Erro JSON");
                     }
                 },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        String msg = "Erro de ligação ao servidor";
-                        if (error != null && error.getMessage() != null && !error.getMessage().isEmpty()) {
-                            msg = error.getMessage();
-                        }
-                        if (signupListener != null) signupListener.onSignupError(msg);
-                    }
+                error -> {
+                    if (signupListener != null)
+                        signupListener.onSignupError("Erro servidor");
                 }
         ) {
             @Override
             protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<>();
-                params.put("username", username);
-                params.put("nome", nome);
-                params.put("idade", idade);
-                params.put("email", email);
-                params.put("password", password);
-                return params;
+                Map<String, String> p = new HashMap<>();
+                p.put("username", username);
+                p.put("nome", nome);
+                p.put("idade", idade);
+                p.put("email", email);
+                p.put("password", password);
+                return p;
             }
         };
 
-        volleyQueue.add(reqSignup);
+        volleyQueue.add(request);
     }
 
     // =========================
-    // GET PERFIL
+    // PERFIL
     // =========================
-    public void getProfileAPI(final Context context) {
+    public void getProfileAPI(Context context) {
 
         if (!JsonParser.isConnectionInternet(context)) {
             Toast.makeText(context, "Sem ligação à Internet", Toast.LENGTH_LONG).show();
             return;
         }
 
-        // ✅ garante que usa o jogadorId guardado
         if (jogadorId <= 0) {
-            SharedPreferences prefs = context.getSharedPreferences(SESSION_PREF, Context.MODE_PRIVATE);
+            SharedPreferences prefs =
+                    context.getSharedPreferences(SESSION_PREF, Context.MODE_PRIVATE);
             jogadorId = prefs.getInt("jogador_id", 0);
         }
 
-        if (jogadorId <= 0) {
-            Toast.makeText(context, "Sessão inválida (jogador_id em falta). Faz login novamente.", Toast.LENGTH_LONG).show();
-            return;
-        }
-
-        StringRequest reqProfile = new StringRequest(
+        StringRequest request = new StringRequest(
                 Request.Method.GET,
-                getJogadorUrl() + "/" + jogadorId,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Jogador jogador = JsonParser.parseJogador(response);
-                        if (profileListener != null) profileListener.onLoadProfile(jogador);
-                    }
+                getJogadorUrl(context) + "/" + jogadorId,
+                response -> {
+                    Jogador jogador = JsonParser.parseJogador(response);
+                    if (profileListener != null)
+                        profileListener.onLoadProfile(jogador);
                 },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        String msg = "Erro ao carregar perfil";
-                        if (error != null && error.getMessage() != null && !error.getMessage().isEmpty()) {
-                            msg = error.getMessage();
-                        }
-                        Toast.makeText(context, msg, Toast.LENGTH_LONG).show();
-                    }
-                }
-        ) {
-            @Override
-            public Map<String, String> getHeaders() {
-                Map<String, String> headers = new HashMap<>();
-                String token = context.getSharedPreferences(SESSION_PREF, Context.MODE_PRIVATE)
-                        .getString("token", null);
-                if (token != null && !token.isEmpty()) {
-                    headers.put("Authorization", token);
-                }
-                return headers;
-            }
-        };
+                error -> Toast.makeText(context,
+                        "Erro ao carregar perfil",
+                        Toast.LENGTH_LONG).show()
+        );
 
-        volleyQueue.add(reqProfile);
+        volleyQueue.add(request);
     }
 
     // =========================
@@ -300,29 +302,29 @@ public class SingletonAPI {
         }
 
         if (jogadorId <= 0) {
-            SharedPreferences prefs = context.getSharedPreferences(SESSION_PREF, Context.MODE_PRIVATE);
+            SharedPreferences prefs =
+                    context.getSharedPreferences(SESSION_PREF, Context.MODE_PRIVATE);
             jogadorId = prefs.getInt("jogador_id", 0);
         }
 
-        StringRequest reqEdit = new StringRequest(
+        if (jogadorId <= 0) {
+            Toast.makeText(context,
+                    "Sessão inválida. Faz login novamente.",
+                    Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        StringRequest request = new StringRequest(
                 Request.Method.PUT,
-                getJogadorUrl() + "/updatejogador/" + jogadorId,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        if (editProfileListener != null) editProfileListener.editProfileSuccess();
-                    }
+                getJogadorUrl(context) + "/updatejogador/" + jogadorId,
+                response -> {
+                    if (editProfileListener != null)
+                        editProfileListener.editProfileSuccess();
                 },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        String msg = "Erro ao guardar dados";
-                        if (error != null && error.getMessage() != null && !error.getMessage().isEmpty()) {
-                            msg = error.getMessage();
-                        }
-                        Toast.makeText(context, msg, Toast.LENGTH_LONG).show();
-                    }
-                }
+                error -> Toast.makeText(
+                        context,
+                        "Erro ao guardar perfil",
+                        Toast.LENGTH_LONG).show()
         ) {
             @Override
             protected Map<String, String> getParams() {
@@ -333,75 +335,60 @@ public class SingletonAPI {
                 params.put("idade", idade);
                 return params;
             }
-
-            @Override
-            public Map<String, String> getHeaders() {
-                Map<String, String> headers = new HashMap<>();
-                String token = context.getSharedPreferences(SESSION_PREF, Context.MODE_PRIVATE)
-                        .getString("token", null);
-                if (token != null && !token.isEmpty()) {
-                    headers.put("Authorization", token);
-                }
-                return headers;
-            }
         };
 
-        volleyQueue.add(reqEdit);
+        volleyQueue.add(request);
     }
 
+
+
     // =========================
-    // GET JOGOS
+    // JOGOS
     // =========================
-    public void getJogosAPI(final Context context) {
+    public void getJogosAPI(Context context, Integer dificuldadeId, String search) {
 
         if (!JsonParser.isConnectionInternet(context)) {
             Toast.makeText(context, "Sem ligação à Internet", Toast.LENGTH_LONG).show();
             return;
         }
 
-        JsonArrayRequest reqJogos = new JsonArrayRequest(
+        String url;
+
+        if (dificuldadeId != null && dificuldadeId > 0) {
+            url = baseUrl(context)
+                    + "dificuldade/"
+                    + dificuldadeId
+                    + "/jogosdefault";
+        } else {
+            url = getJogosUrl(context);
+        }
+
+        JsonArrayRequest request = new JsonArrayRequest(
                 Request.Method.GET,
-                getJogosUrl(),
+                url,
                 null,
-                new Response.Listener<JSONArray>() {
-                    @Override
-                    public void onResponse(JSONArray response) {
-                        ArrayList<JogoDefault> jogos = JsonParser.parseJogo(response);
-                        if (jogosListener != null) jogosListener.onRefreshListaJogos(jogos);
-                    }
+                response -> {
+                    ArrayList<JogoDefault> jogos =
+                            JsonParser.parseJogo(response);
+                    if (jogosListener != null)
+                        jogosListener.onRefreshListaJogos(jogos);
                 },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        String msg = "Erro ao carregar jogos";
-                        if (error != null && error.getMessage() != null && !error.getMessage().isEmpty()) {
-                            msg = error.getMessage();
-                        }
-                        Toast.makeText(context, msg, Toast.LENGTH_LONG).show();
-                    }
-                }
+                error -> Toast.makeText(
+                        context,
+                        "Erro ao carregar jogos",
+                        Toast.LENGTH_LONG).show()
         );
 
-        volleyQueue.add(reqJogos);
+        volleyQueue.add(request);
     }
 
     // =========================
-    // LOGOUT LOCAL (para usares no ProfileFragment)
+    // DETALHES JOGO
     // =========================
-    public void clearSession(Context context) {
-        context.getSharedPreferences(SESSION_PREF, Context.MODE_PRIVATE).edit().clear().apply();
-        saveToken(context, null);
-        this.jogadorId = 0;
-    }
+    public void getJogoDetalhesAPI(int jogoId, Context context,
+                                   final JogoDetalhesListener listener) {
 
-    public void getJogoDetalhesAPI(int jogoId, Context context, final JogoDetalhesListener listener) {
-
-        if (!JsonParser.isConnectionInternet(context)) {
-            Toast.makeText(context, "Sem ligação à Internet", Toast.LENGTH_LONG).show();
-            return;
-        }
-
-        String url = getJogosUrl() + "/" + jogoId;
+        String url = getJogosUrl(context) + "/" + jogoId;
 
         JsonObjectRequest request = new JsonObjectRequest(
                 Request.Method.GET,
@@ -411,33 +398,95 @@ public class SingletonAPI {
                     if (listener != null) listener.onResponse(response);
                 },
                 error -> {
-                    error.printStackTrace();
-                    Toast.makeText(context, "Erro ao carregar detalhes do jogo", Toast.LENGTH_LONG).show();
+                    Toast.makeText(context,
+                            "Erro ao carregar detalhes do jogo",
+                            Toast.LENGTH_LONG).show();
                 }
         );
 
         volleyQueue.add(request);
     }
 
-    // Interface callback
     public interface JogoDetalhesListener {
         void onResponse(JSONObject response);
     }
 
-    public void getPerguntasJogoAPI(int jogoId, Context context, VolleyCallback callback) {
-        String url = "http://10.0.2.2/ProjetoCurso/projeto_PSI/backend/web/api/pergunta/jogar?id_jogo=" + jogoId;
+    // =========================
+    // PERGUNTAS
+    // =========================
+    public void getPerguntasJogoAPI(int jogoId, Context context,
+                                    VolleyCallback callback) {
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
+        String url =
+                baseUrl(context)
+                        + "pergunta/jogar?id_jogo="
+                        + jogoId;
+
+        JsonObjectRequest request = new JsonObjectRequest(
+                Request.Method.GET,
+                url,
+                null,
                 response -> callback.onResponse(response),
                 error -> {
-                    Toast.makeText(context, "Erro ao carregar perguntas", Toast.LENGTH_LONG).show();
+                    Toast.makeText(context,
+                            "Erro ao carregar perguntas",
+                            Toast.LENGTH_LONG).show();
                     callback.onResponse(null);
-                });
+                }
+        );
 
-        Volley.newRequestQueue(context).add(request);
+        volleyQueue.add(request);
     }
 
     public interface VolleyCallback {
         void onResponse(JSONObject result);
+    }
+
+    // =========================
+    // CATEGORIAS
+    // =========================
+    public void getCategoriasAPI(Context context) {
+
+        JsonArrayRequest request = new JsonArrayRequest(
+                Request.Method.GET,
+                baseUrl(context) + "categoria",
+                null,
+                response -> {
+                    ArrayList<Categoria> categorias =
+                            JsonParser.parseCategorias(response);
+                    if (categoriasListener != null)
+                        categoriasListener.onRefreshCategorias(categorias);
+                },
+                error -> Toast.makeText(
+                        context,
+                        "Erro ao carregar categorias",
+                        Toast.LENGTH_LONG).show()
+        );
+
+        volleyQueue.add(request);
+    }
+
+    // =========================
+    // DIFICULDADES
+    // =========================
+    public void getDificuldadesAPI(Context context) {
+
+        JsonArrayRequest request = new JsonArrayRequest(
+                Request.Method.GET,
+                baseUrl(context) + "dificuldade",
+                null,
+                response -> {
+                    ArrayList<Dificuldade> dificuldades =
+                            JsonParser.parseDificuldades(response);
+                    if (dificuldadesListener != null)
+                        dificuldadesListener.onRefreshDificuldades(dificuldades);
+                },
+                error -> Toast.makeText(
+                        context,
+                        "Erro ao carregar dificuldades",
+                        Toast.LENGTH_LONG).show()
+        );
+
+        volleyQueue.add(request);
     }
 }
