@@ -118,12 +118,23 @@ public class JogoJogarActivity extends AppCompatActivity {
 
     private void goToResultado() {
         ArrayList<String> perguntasAcertadasText = new ArrayList<>();
+
+        // percorre os IDs das perguntas acertadas
         for (int idPergunta : acertos) {
-            try {
-                JSONObject p = perguntas.get(currentIndex-1); // ou use mapa de id -> pergunta
-                perguntasAcertadasText.add(p.getString("pergunta"));
-            } catch (Exception e) {
-                e.printStackTrace();
+
+            // percorre o ArrayList de perguntas
+            for (int i = 0; i < perguntas.size(); i++) {
+                try {
+                    JSONObject p = perguntas.get(i);
+
+                    if (p.getInt("id") == idPergunta) {
+                        perguntasAcertadasText.add(p.getString("pergunta"));
+                        break; // já encontrou, sai do loop
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
 
@@ -133,4 +144,7 @@ public class JogoJogarActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
+
+
+
 }

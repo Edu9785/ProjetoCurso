@@ -8,14 +8,31 @@ public class JogoDefault {
     private String titulo;
     private String descricao;
     private String imagem;
-
     private int totalpontosjogo;
 
     // Relações vindas da API
     private Dificuldade dificuldade;
     private List<Categoria> categorias;
 
-    // 🔹 Getters (obrigatórios para Gson)
+    // =========================
+    // CONSTRUTORES
+    // =========================
+    public JogoDefault() {
+    }
+
+    public JogoDefault(int id, String titulo, String descricao, String imagem, int totalpontosjogo, Dificuldade dificuldade, List<Categoria> categorias) {
+        this.id = id;
+        this.titulo = titulo;
+        this.descricao = descricao;
+        this.imagem = imagem;
+        this.totalpontosjogo = totalpontosjogo;
+        this.dificuldade = dificuldade;
+        this.categorias = categorias;
+    }
+
+    // =========================
+    // GETTERS
+    // =========================
     public int getId() {
         return id;
     }
@@ -42,5 +59,36 @@ public class JogoDefault {
 
     public List<Categoria> getCategorias() {
         return categorias;
+    }
+
+    // =========================
+    // SETTERS
+    // =========================
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setTitulo(String titulo) {
+        this.titulo = titulo;
+    }
+
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
+    }
+
+    public void setImagem(String imagem) {
+        this.imagem = imagem;
+    }
+
+    public void setTotalpontosjogo(int totalpontosjogo) {
+        this.totalpontosjogo = totalpontosjogo;
+    }
+
+    public void setDificuldade(Dificuldade dificuldade) {
+        this.dificuldade = dificuldade;
+    }
+
+    public void setCategorias(List<Categoria> categorias) {
+        this.categorias = categorias;
     }
 }

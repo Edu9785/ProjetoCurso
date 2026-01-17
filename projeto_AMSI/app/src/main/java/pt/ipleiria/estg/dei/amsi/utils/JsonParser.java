@@ -315,4 +315,55 @@ public class JsonParser {
         NetworkInfo ni = cm.getActiveNetworkInfo();
         return ni != null && ni.isConnected();
     }
+
+    // ======================
+// PARSE JOGO DETALHES (JSONObject -> JogoDefault)
+// ======================
+    public static JogoDefault parseJogoDetalhes(JSONObject jsonJogo) {
+        try {
+            int id = jsonJogo.getInt("id");
+            String titulo = jsonJogo.optString("titulo", "");
+            String descricao = jsonJogo.optString("descricao", "");
+            String imagem = jsonJogo.optString("imagem", "");
+            int totalPontos = jsonJogo.optInt("totalpontosjogo", 0);
+
+            // Dificuldade
+            Dificuldade dificuldade = null;
+            if (jsonJogo.has("dificuldade") && !jsonJogo.isNull("dificuldade")) {
+                JSONObject d = jsonJogo.getJSONObject("dificuldade");
+                dificuldade = new Dificuldade();
+                dificuldade.setId(d.optInt("id", 0));
+                dificuldade.setDificuldade(d.optString("dificuldade", "Indefinida"));
+            }
+
+            // Categorias
+            List<Categoria> categorias = new ArrayList<>();
+            if (jsonJogo.has("categorias") && !jsonJogo.isNull("categorias")) {
+                JSONArray catArray = jsonJogo.getJSONArray("categorias");
+                for (int i = 0; i < catArray.length(); i++) {
+                    JSONObject c = catArray.getJSONObject(i);
+                    Categoria cat = new Categoria();
+                    cat.setId(c.optInt("id", 0));
+                    cat.setCategoria(c.optString("categoria", "Indefinida"));
+                    categorias.add(cat);
+                }
+            }
+
+            // Montar JogoDefault
+            JogoDefault jogo = new JogoDefault();
+            jogo.setId(id);
+            jogo.setTitulo(titulo);
+            jogo.setDescricao(descricao);
+            jogo.setImagem(imagem);
+            jogo.setTotalpontosjogo(totalPontos);
+            jogo.setDificuldade(dificuldade);
+            jogo.setCategorias(categorias);
+
+            return jogo;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 }

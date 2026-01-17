@@ -1,6 +1,7 @@
 package pt.ipleiria.estg.dei.amsi;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -34,7 +35,9 @@ public class JogoResultadoActivity extends AppCompatActivity {
 
         // Adiciona TextViews dinamicamente com LayoutParams
         if (perguntasAcertadas != null && !perguntasAcertadas.isEmpty()) {
-            for (String pergunta : perguntasAcertadas) {
+            Log.d("RESULTADO", "Perguntas acertadas: " + perguntasAcertadas);
+            for (int i = 0; i < perguntasAcertadas.size(); i++) {
+                String pergunta = perguntasAcertadas.get(i);
                 TextView tv = new TextView(this);
                 tv.setText("• " + pergunta);
                 tv.setTextSize(16f);

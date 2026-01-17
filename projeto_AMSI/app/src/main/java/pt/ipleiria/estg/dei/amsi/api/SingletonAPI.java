@@ -2,6 +2,7 @@ package pt.ipleiria.estg.dei.amsi.api;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -23,6 +24,8 @@ import pt.ipleiria.estg.dei.amsi.api.models.Categoria;
 import pt.ipleiria.estg.dei.amsi.api.models.Dificuldade;
 import pt.ipleiria.estg.dei.amsi.api.models.JogoDefault;
 import pt.ipleiria.estg.dei.amsi.api.models.Jogador;
+import pt.ipleiria.estg.dei.amsi.api.models.Pergunta;
+import pt.ipleiria.estg.dei.amsi.api.models.Resposta;
 import pt.ipleiria.estg.dei.amsi.listeners.CategoriasListener;
 import pt.ipleiria.estg.dei.amsi.listeners.DificuldadesListener;
 import pt.ipleiria.estg.dei.amsi.listeners.EditProfileListener;
@@ -49,12 +52,18 @@ public class SingletonAPI {
     private static final String KEY_TOKEN = "TOKEN";
     private static final String SESSION_PREF = "user_session";
 
+    private JogoDefault jogo;
+
     private int jogadorId;
+
+    private DBHelper dbHelper;
 
     private SingletonAPI(Context context) {
         SharedPreferences prefs =
                 context.getSharedPreferences(SESSION_PREF, Context.MODE_PRIVATE);
         this.jogadorId = prefs.getInt("jogador_id", 0);
+        dbHelper = new DBHelper(context);
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
     }
 
     public static synchronized SingletonAPI getInstance(Context context) {
@@ -343,68 +352,211 @@ public class SingletonAPI {
 
 
     // =========================
-    // JOGOS
-    // =========================
-    public void getJogosAPI(Context context, Integer dificuldadeId, String search) {
+// JOGOS
+// =========================
+    public void getJogosAPI(final Context context, Integer dificuldadeId, String search) {
 
+        final DBHelper dbHelper = new DBHelper(context);
+
+        // OFFLINE
         if (!JsonParser.isConnectionInternet(context)) {
-            Toast.makeText(context, "Sem ligação à Internet", Toast.LENGTH_LONG).show();
+            Toast.makeText(context,
+                    "Sem ligação à Internet. A mostrar jogos offline.",
+                    Toast.LENGTH_LONG).show();
+
+            ArrayList<JogoDefault> jogosOffline = dbHelper.mostrarJogos();
+
+            if (jogosListener != null)
+                jogosListener.onRefreshListaJogos(jogosOffline);
+
             return;
         }
 
-        String url;
-
+        // ONLINE
+        String url = baseUrl(context);
         if (dificuldadeId != null && dificuldadeId > 0) {
-            url = baseUrl(context)
-                    + "dificuldade/"
-                    + dificuldadeId
-                    + "/jogosdefault";
+            url += "dificuldade/" + dificuldadeId + "/jogosdefault";
         } else {
-            url = getJogosUrl(context);
+            url += "jogodefault";
         }
 
-        JsonArrayRequest request = new JsonArrayRequest(
+        if (search != null && !search.isEmpty()) {
+            url += "?search=" + search;
+        }
+
+        JsonArrayRequest reqJogos = new JsonArrayRequest(
                 Request.Method.GET,
                 url,
                 null,
                 response -> {
-                    ArrayList<JogoDefault> jogos =
-                            JsonParser.parseJogo(response);
+                    ArrayList<JogoDefault> jogos = JsonParser.parseJogo(response);
+
+                    for (final JogoDefault jogo : jogos) {
+
+                        // Inserir jogo se ainda não existe
+                        if (!dbHelper.jogoExiste(jogo.getId())) {
+                            dbHelper.inserirJogo(jogo);
+                        }
+
+                        // Inserir categorias do jogo e relacionamento
+                        if (jogo.getCategorias() != null) {
+                            for (Categoria c : jogo.getCategorias()) {
+                                dbHelper.inserirCategoria(c); // garante que a categoria existe
+                                dbHelper.inserirJogoCategoria(jogo.getId(), c.getId()); // relaciona jogo-categoria
+                            }
+                        }
+
+                        // Inserir jogo se ainda não existe
+                        if (!dbHelper.jogoExiste(jogo.getId())) {
+                            dbHelper.inserirJogo(jogo);
+                        }
+
+                        // Buscar e inserir perguntas e respostas sempre
+                        String urlPerguntas = baseUrl(context) + "pergunta/jogar?id_jogo=" + jogo.getId();
+
+                        JsonObjectRequest reqPerguntas = new JsonObjectRequest(
+                                Request.Method.GET,
+                                urlPerguntas,
+                                null,
+                                responsePerguntas -> {
+                                    try {
+                                        if (!responsePerguntas.has("perguntas")) return;
+
+                                        JSONArray perguntasArray = responsePerguntas.getJSONArray("perguntas");
+
+                                        for (int i = 0; i < perguntasArray.length(); i++) {
+                                            JSONObject pObj = perguntasArray.getJSONObject(i);
+                                            int perguntaId = pObj.getInt("id");
+
+                                            Pergunta p = new Pergunta(
+                                                    perguntaId,
+                                                    pObj.getString("pergunta"),
+                                                    pObj.getInt("valor")
+                                            );
+
+                                            if (!dbHelper.perguntaExiste(perguntaId)) {
+                                                dbHelper.inserirPergunta(p, jogo.getId());
+                                            }
+
+                                            JSONArray respostasArray = pObj.getJSONArray("respostas");
+
+                                            for (int j = 0; j < respostasArray.length(); j++) {
+                                                JSONObject rObj = respostasArray.getJSONObject(j);
+                                                int respostaId = rObj.getInt("id");
+
+                                                Resposta r = new Resposta(
+                                                        respostaId,
+                                                        rObj.getString("resposta"),
+                                                        rObj.getBoolean("correta")
+                                                );
+
+                                                if (!dbHelper.respostaExiste(respostaId)) {
+                                                    dbHelper.inserirResposta(r, perguntaId);
+                                                }
+                                            }
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                },
+                                error -> {
+                                    // Falha ao buscar perguntas
+                                }
+                        );
+
+                        volleyQueue.add(reqPerguntas);
+                    }
+
+                    // Retorna lista de jogos para o listener
                     if (jogosListener != null)
                         jogosListener.onRefreshListaJogos(jogos);
+
                 },
-                error -> Toast.makeText(
-                        context,
-                        "Erro ao carregar jogos",
-                        Toast.LENGTH_LONG).show()
+                error -> {
+                    Toast.makeText(context, "Erro ao carregar jogos", Toast.LENGTH_LONG).show();
+                }
         );
 
-        volleyQueue.add(request);
+        volleyQueue.add(reqJogos);
     }
+
+
 
     // =========================
     // DETALHES JOGO
     // =========================
-    public void getJogoDetalhesAPI(int jogoId, Context context,
+    public void getJogoDetalhesAPI(final int jogoId,
+                                   final Context context,
                                    final JogoDetalhesListener listener) {
 
-        String url = getJogosUrl(context) + "/" + jogoId;
+        if (!JsonParser.isConnectionInternet(context)) {
+            Toast.makeText(context,
+                    "Sem ligação à Internet",
+                    Toast.LENGTH_LONG).show();
 
-        JsonObjectRequest request = new JsonObjectRequest(
-                Request.Method.GET,
-                url,
-                null,
-                response -> {
-                    if (listener != null) listener.onResponse(response);
-                },
-                error -> {
-                    Toast.makeText(context,
-                            "Erro ao carregar detalhes do jogo",
-                            Toast.LENGTH_LONG).show();
+            jogo=dbHelper.verJogo(jogoId);
+
+            try {
+                JSONObject jogoObj = new JSONObject();
+                jogoObj.put("id", jogo.getId());
+                jogoObj.put("titulo", jogo.getTitulo());
+                jogoObj.put("descricao", jogo.getDescricao());
+                jogoObj.put("imagem", jogo.getImagem());
+                jogoObj.put("totalpontosjogo", jogo.getTotalpontosjogo());
+
+                // Dificuldade
+                if (jogo.getDificuldade() != null) {
+                    JSONObject difObj = new JSONObject();
+                    difObj.put("id", jogo.getDificuldade().getId());
+                    difObj.put("dificuldade", jogo.getDificuldade().getDificuldade());
+                    jogoObj.put("dificuldade", difObj);
                 }
-        );
 
-        volleyQueue.add(request);
+                // Categorias
+                JSONArray catArray = new JSONArray();
+                if (jogo.getCategorias() != null) {
+                    for (Categoria c : jogo.getCategorias()) {
+                        JSONObject cObj = new JSONObject();
+                        cObj.put("id", c.getId());
+                        cObj.put("categoria", c.getCategoria());
+                        catArray.put(cObj);
+                    }
+                }
+                jogoObj.put("categorias", catArray);
+
+                if (listener != null)
+                    listener.onResponse(jogoObj);
+
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+
+            String url = getJogosUrl(context) + "/" + jogoId;
+
+            JsonObjectRequest reqDetalhes = new JsonObjectRequest(
+                    Request.Method.GET,
+                    url,
+                    null,
+                    new com.android.volley.Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            if (listener != null)
+                                listener.onResponse(response);
+                        }
+                    },
+                    new com.android.volley.Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(com.android.volley.VolleyError error) {
+                            Toast.makeText(context,
+                                    "Erro ao carregar detalhes do jogo",
+                                    Toast.LENGTH_LONG).show();
+                        }
+                    }
+            );
+
+            volleyQueue.add(reqDetalhes);
+        }
     }
 
     public interface JogoDetalhesListener {
@@ -414,79 +566,131 @@ public class SingletonAPI {
     // =========================
     // PERGUNTAS
     // =========================
-    public void getPerguntasJogoAPI(int jogoId, Context context,
-                                    VolleyCallback callback) {
+    public void getPerguntasJogoAPI(final int jogoId,
+                                    final Context context,
+                                    final VolleyCallback callback) {
 
-        String url =
-                baseUrl(context)
-                        + "pergunta/jogar?id_jogo="
-                        + jogoId;
+        if (!JsonParser.isConnectionInternet(context)) {
+            Toast.makeText(context,
+                    "Sem ligação à Internet",
+                    Toast.LENGTH_LONG).show();
 
-        JsonObjectRequest request = new JsonObjectRequest(
-                Request.Method.GET,
-                url,
-                null,
-                response -> callback.onResponse(response),
-                error -> {
-                    Toast.makeText(context,
-                            "Erro ao carregar perguntas",
-                            Toast.LENGTH_LONG).show();
-                    callback.onResponse(null);
+            // 🔹 Usar método jogarJogo() do DBHelper
+            ArrayList<Pergunta> perguntas = dbHelper.jogarJogo(jogoId);
+            JSONArray perguntasArray = new JSONArray();
+
+            try {
+                for (Pergunta p : perguntas) {
+                    JSONObject pObj = new JSONObject();
+                    pObj.put("id", p.getId());
+                    pObj.put("pergunta", p.getPergunta());
+                    pObj.put("valor", p.getValor());
+
+                    JSONArray respostasArray = new JSONArray();
+                    for (Resposta r : p.getRespostas()) { // já está carregado no jogarJogo
+                        JSONObject rObj = new JSONObject();
+                        rObj.put("id", r.getId());
+                        rObj.put("resposta", r.getResposta());
+                        rObj.put("correta", r.isCorreta());
+                        respostasArray.put(rObj);
+                    }
+
+                    pObj.put("respostas", respostasArray);
+                    perguntasArray.put(pObj);
                 }
-        );
 
-        volleyQueue.add(request);
+                JSONObject result = new JSONObject();
+                result.put("perguntas", perguntasArray);
+
+                callback.onResponse(result);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                Toast.makeText(context, "Erro ao carregar perguntas offline", Toast.LENGTH_LONG).show();
+                callback.onResponse(null);
+            }
+
+        } else {
+            // 🔹 Online (API)
+            String url = baseUrl(context) + "pergunta/jogar?id_jogo=" + jogoId;
+
+            JsonObjectRequest reqPerguntas = new JsonObjectRequest(
+                    Request.Method.GET,
+                    url,
+                    null,
+                    response -> {
+                        // opcional: salvar offline aqui
+                        callback.onResponse(response);
+                    },
+                    error -> {
+                        Toast.makeText(context,
+                                "Erro ao carregar perguntas",
+                                Toast.LENGTH_LONG).show();
+                        callback.onResponse(null);
+                    }
+            );
+
+            volleyQueue.add(reqPerguntas);
+        }
     }
+
+
 
     public interface VolleyCallback {
         void onResponse(JSONObject result);
     }
 
     // =========================
-    // CATEGORIAS
+    // CATEGORIAS OFFLINE/ONLINE
     // =========================
-    public void getCategoriasAPI(Context context) {
+    public void getCategoriasAPI(final Context context) {
+        if (!JsonParser.isConnectionInternet(context)) {
+            ArrayList<Categoria> categorias = dbHelper.mostrarCategorias(); // Implementar método em DBHelper
+            if (categoriasListener != null) categoriasListener.onRefreshCategorias(categorias);
+            return;
+        }
 
-        JsonArrayRequest request = new JsonArrayRequest(
-                Request.Method.GET,
-                baseUrl(context) + "categoria",
-                null,
+        JsonArrayRequest reqCategorias = new JsonArrayRequest(Request.Method.GET, baseUrl(context) + "categoria", null,
                 response -> {
-                    ArrayList<Categoria> categorias =
-                            JsonParser.parseCategorias(response);
-                    if (categoriasListener != null)
-                        categoriasListener.onRefreshCategorias(categorias);
+                    ArrayList<Categoria> categorias = JsonParser.parseCategorias(response);
+
+                    // SALVAR OFFLINE
+                    for (Categoria c : categorias) {
+                        dbHelper.inserirCategoria(c);
+                    }
+
+                    if (categoriasListener != null) categoriasListener.onRefreshCategorias(categorias);
                 },
-                error -> Toast.makeText(
-                        context,
-                        "Erro ao carregar categorias",
-                        Toast.LENGTH_LONG).show()
+                error -> Toast.makeText(context, "Erro ao carregar categorias", Toast.LENGTH_LONG).show()
         );
 
-        volleyQueue.add(request);
+        volleyQueue.add(reqCategorias);
     }
 
     // =========================
-    // DIFICULDADES
+    // DIFICULDADES OFFLINE/ONLINE
     // =========================
-    public void getDificuldadesAPI(Context context) {
+    public void getDificuldadesAPI(final Context context) {
+        if (!JsonParser.isConnectionInternet(context)) {
+            ArrayList<Dificuldade> dificuldades = dbHelper.mostrarDificuldades(); // Implementar método em DBHelper
+            if (dificuldadesListener != null) dificuldadesListener.onRefreshDificuldades(dificuldades);
+            return;
+        }
 
-        JsonArrayRequest request = new JsonArrayRequest(
-                Request.Method.GET,
-                baseUrl(context) + "dificuldade",
-                null,
+        JsonArrayRequest reqDificuldades = new JsonArrayRequest(Request.Method.GET, baseUrl(context) + "dificuldade", null,
                 response -> {
-                    ArrayList<Dificuldade> dificuldades =
-                            JsonParser.parseDificuldades(response);
-                    if (dificuldadesListener != null)
-                        dificuldadesListener.onRefreshDificuldades(dificuldades);
+                    ArrayList<Dificuldade> dificuldades = JsonParser.parseDificuldades(response);
+
+                    // SALVAR OFFLINE
+                    for (Dificuldade d : dificuldades) {
+                        dbHelper.inserirDificuldade(d);
+                    }
+
+                    if (dificuldadesListener != null) dificuldadesListener.onRefreshDificuldades(dificuldades);
                 },
-                error -> Toast.makeText(
-                        context,
-                        "Erro ao carregar dificuldades",
-                        Toast.LENGTH_LONG).show()
+                error -> Toast.makeText(context, "Erro ao carregar dificuldades", Toast.LENGTH_LONG).show()
         );
 
-        volleyQueue.add(request);
+        volleyQueue.add(reqDificuldades);
     }
 }

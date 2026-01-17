@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import pt.ipleiria.estg.dei.amsi.adapters.JogosAdapter;
+import pt.ipleiria.estg.dei.amsi.api.DBHelper;
 import pt.ipleiria.estg.dei.amsi.api.SingletonAPI;
 import pt.ipleiria.estg.dei.amsi.api.models.Categoria;
 import pt.ipleiria.estg.dei.amsi.api.models.Dificuldade;
