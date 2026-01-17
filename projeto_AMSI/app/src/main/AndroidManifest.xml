@@ -44,6 +44,9 @@
         android:name=".JogoJogarActivity"
         android:exported="false" />
 
+    <activity
+        android:name=".JogoResultadoActivity"
+        android:exported="false" />
 </application>
 
 </manifest>

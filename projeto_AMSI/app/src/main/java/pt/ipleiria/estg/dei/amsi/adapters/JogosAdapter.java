@@ -1,5 +1,6 @@
 package pt.ipleiria.estg.dei.amsi.adapters;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import com.bumptech.glide.Glide;
 import java.util.List;
 
 import pt.ipleiria.estg.dei.amsi.JogoDetalhesFragment;
+import pt.ipleiria.estg.dei.amsi.JogoJogarActivity;
 import pt.ipleiria.estg.dei.amsi.MainActivity;
 import pt.ipleiria.estg.dei.amsi.R;
 import pt.ipleiria.estg.dei.amsi.api.models.JogoDefault;
@@ -71,9 +73,14 @@ public class JogosAdapter extends RecyclerView.Adapter<JogosAdapter.ViewHolder> 
                     .commit();
         });
 
-        // Botão Jogar
-        holder.btnIniciar.setOnClickListener(v -> listener.onJogar(jogo));
+        // Botão Jogar → abre JogoJogarActivity
+        holder.btnIniciar.setOnClickListener(v -> {
+            Intent intent = new Intent(holder.itemView.getContext(), JogoJogarActivity.class);
+            intent.putExtra("id_jogo", jogo.getId());
+            holder.itemView.getContext().startActivity(intent);
+        });
     }
+
 
     @Override
     public int getItemCount() {

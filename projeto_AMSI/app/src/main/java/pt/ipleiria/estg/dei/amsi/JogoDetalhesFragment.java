@@ -1,5 +1,6 @@
 package pt.ipleiria.estg.dei.amsi;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -125,14 +126,12 @@ public class JogoDetalhesFragment extends Fragment {
                         imgGame.setImageResource(R.drawable.verde);
                     }
 
-                    // 🔹 BOTÃO JOGAR
-                    btnPlay.setOnClickListener(v ->
-                            Toast.makeText(
-                                    requireContext(),
-                                    "Jogar: " + txtGameTitle.getText(),
-                                    Toast.LENGTH_SHORT
-                            ).show()
-                    );
+                    // 🔹 BOTÃO JOGAR → abre JogoJogarActivity
+                    btnPlay.setOnClickListener(v -> {
+                        Intent intent = new Intent(requireContext(), JogoJogarActivity.class);
+                        intent.putExtra("id_jogo", jogoId);
+                        startActivity(intent);
+                    });
                 });
     }
 }

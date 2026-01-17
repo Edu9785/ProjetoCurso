@@ -423,4 +423,21 @@ public class SingletonAPI {
     public interface JogoDetalhesListener {
         void onResponse(JSONObject response);
     }
+
+    public void getPerguntasJogoAPI(int jogoId, Context context, VolleyCallback callback) {
+        String url = "http://10.0.2.2/ProjetoCurso/projeto_PSI/backend/web/api/pergunta/jogar?id_jogo=" + jogoId;
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
+                response -> callback.onResponse(response),
+                error -> {
+                    Toast.makeText(context, "Erro ao carregar perguntas", Toast.LENGTH_LONG).show();
+                    callback.onResponse(null);
+                });
+
+        Volley.newRequestQueue(context).add(request);
+    }
+
+    public interface VolleyCallback {
+        void onResponse(JSONObject result);
+    }
 }
