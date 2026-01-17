@@ -18,10 +18,12 @@ import pt.ipleiria.estg.dei.amsi.api.models.Jogador;
 
 public class JsonParser {
 
+    // ======================
+    // LOGIN
+    // ======================
     public static String parseLoginToken(String response) {
         try {
-            JSONObject json = new JSONObject(response);
-            return json.getString("token");
+            return new JSONObject(response).getString("token");
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
@@ -29,33 +31,105 @@ public class JsonParser {
 
     public static int parseLoginId(String response) {
         try {
-            JSONObject json = new JSONObject(response);
-            return json.getInt("jogador_id");
+            return new JSONObject(response).getInt("jogador_id");
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
     }
 
-    // ✅ PARSER Jogador (bate com: id, nome, idade, id_premium, username, email)
+    // ======================
+    // JOGADOR
+    // ======================
     public static Jogador parseJogador(String response) {
         try {
             JSONObject json = new JSONObject(response);
 
-            int id = json.getInt("id");
-            String nome = json.optString("nome", "");
-            int idade = json.optInt("idade", 0);
-            int id_premium = json.optInt("id_premium", 0);
-
-            String username = json.optString("username", "");
-            String email = json.optString("email", "");
-
-            return new JogadorWrapper(id, nome, idade, id_premium, username, email).toJogador();
+            return new JogadorWrapper(
+                    json.getInt("id"),
+                    json.optString("nome"),
+                    json.optInt("idade"),
+                    json.optInt("id_premium"),
+                    json.optString("username"),
+                    json.optString("email")
+            ).toJogador();
 
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
     }
 
+    // ======================
+    // JOGOS
+    // ======================
+    public static ArrayList<JogoDefault> parseJogo(JSONArray response) {
+
+        ArrayList<JogoDefault> jogos = new ArrayList<>();
+
+        for (int i = 0; i < response.length(); i++) {
+            try {
+                JSONObject jsonJogo = response.getJSONObject(i);
+
+                int id = jsonJogo.getInt("id");
+                String titulo = jsonJogo.getString("titulo");
+                String descricao = jsonJogo.getString("descricao");
+                String imagem = jsonJogo.optString("imagem", "");
+
+                // ✅ TOTAL DE PONTOS
+                int totalPontos = jsonJogo.optInt("totalpontosjogo", 0);
+
+                // ---------- DIFICULDADE ----------
+                Dificuldade dificuldade = null;
+                if (jsonJogo.has("dificuldade") && !jsonJogo.isNull("dificuldade")) {
+
+                    JSONObject d = jsonJogo.getJSONObject("dificuldade");
+
+                    dificuldade = new DificuldadeWrapper(
+                            d.optInt("id", 0),
+                            d.optString("nome", "Indefinida")
+                    ).toDificuldade();
+                }
+
+                // ---------- CATEGORIAS ----------
+                List<Categoria> categorias = new ArrayList<>();
+                if (jsonJogo.has("categorias") && !jsonJogo.isNull("categorias")) {
+
+                    JSONArray jsonCategorias = jsonJogo.getJSONArray("categorias");
+
+                    for (int j = 0; j < jsonCategorias.length(); j++) {
+                        JSONObject c = jsonCategorias.getJSONObject(j);
+
+                        categorias.add(
+                                new CategoriaWrapper(
+                                        c.optInt("id", 0),
+                                        c.optString("nome", "Indefinida")
+                                ).toCategoria()
+                        );
+                    }
+                }
+
+                jogos.add(
+                        new JogoDefaultWrapper(
+                                id,
+                                titulo,
+                                descricao,
+                                imagem,
+                                totalPontos,
+                                dificuldade,
+                                categorias
+                        ).toJogoDefault()
+                );
+
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        return jogos;
+    }
+
+    // ======================
+    // WRAPPERS
+    // ======================
     private static class JogadorWrapper {
         int id, idade, id_premium;
         String nome, username, email;
@@ -72,83 +146,17 @@ public class JsonParser {
         Jogador toJogador() {
             Jogador j = new Jogador();
             try {
-                java.lang.reflect.Field f;
-
-                f = Jogador.class.getDeclaredField("id");
-                f.setAccessible(true);
-                f.setInt(j, id);
-
-                f = Jogador.class.getDeclaredField("nome");
-                f.setAccessible(true);
-                f.set(j, nome);
-
-                f = Jogador.class.getDeclaredField("idade");
-                f.setAccessible(true);
-                f.setInt(j, idade);
-
-                f = Jogador.class.getDeclaredField("id_premium");
-                f.setAccessible(true);
-                f.setInt(j, id_premium);
-
-                f = Jogador.class.getDeclaredField("username");
-                f.setAccessible(true);
-                f.set(j, username);
-
-                f = Jogador.class.getDeclaredField("email");
-                f.setAccessible(true);
-                f.set(j, email);
-
-            } catch (NoSuchFieldException | IllegalAccessException e) {
+                set(j, "id", id);
+                set(j, "nome", nome);
+                set(j, "idade", idade);
+                set(j, "id_premium", id_premium);
+                set(j, "username", username);
+                set(j, "email", email);
+            } catch (Exception e) {
                 throw new RuntimeException(e);
             }
             return j;
         }
-    }
-
-    // ======================
-    // PARSER JOGOS
-    // ======================
-    public static ArrayList<JogoDefault> parseJogo(JSONArray response) {
-        ArrayList<JogoDefault> jogos = new ArrayList<>();
-
-        for (int i = 0; i < response.length(); i++) {
-            try {
-                JSONObject jsonJogo = response.getJSONObject(i);
-
-                int id = jsonJogo.getInt("id");
-                String titulo = jsonJogo.getString("titulo");
-                String descricao = jsonJogo.getString("descricao");
-                String imagem = jsonJogo.optString("imagem", "");
-
-                Dificuldade dificuldade = null;
-                if (jsonJogo.has("dificuldade") && !jsonJogo.isNull("dificuldade")) {
-                    JSONObject jsonDificuldade = jsonJogo.getJSONObject("dificuldade");
-                    int difId = jsonDificuldade.getInt("id");
-                    String difNome = jsonDificuldade.getString("dificuldade");
-
-                    dificuldade = new DificuldadeWrapper(difId, difNome).toDificuldade();
-                }
-
-                List<Categoria> categorias = new ArrayList<>();
-                if (jsonJogo.has("categorias") && !jsonJogo.isNull("categorias")) {
-                    JSONArray jsonCategorias = jsonJogo.getJSONArray("categorias");
-                    for (int j = 0; j < jsonCategorias.length(); j++) {
-                        JSONObject jsonCategoria = jsonCategorias.getJSONObject(j);
-                        int catId = jsonCategoria.getInt("id");
-                        String catNome = jsonCategoria.getString("categoria");
-                        categorias.add(new CategoriaWrapper(catId, catNome).toCategoria());
-                    }
-                }
-
-                JogoDefault jogo = new JogoDefaultWrapper(id, titulo, descricao, imagem, dificuldade, categorias).toJogoDefault();
-                jogos.add(jogo);
-
-            } catch (JSONException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-        return jogos;
     }
 
     private static class DificuldadeWrapper {
@@ -163,17 +171,9 @@ public class JsonParser {
         Dificuldade toDificuldade() {
             Dificuldade d = new Dificuldade();
             try {
-                java.lang.reflect.Field f;
-
-                f = Dificuldade.class.getDeclaredField("id");
-                f.setAccessible(true);
-                f.setInt(d, id);
-
-                f = Dificuldade.class.getDeclaredField("dificuldade");
-                f.setAccessible(true);
-                f.set(d, dificuldade);
-
-            } catch (NoSuchFieldException | IllegalAccessException e) {
+                set(d, "id", id);
+                set(d, "dificuldade", dificuldade);
+            } catch (Exception e) {
                 throw new RuntimeException(e);
             }
             return d;
@@ -192,17 +192,9 @@ public class JsonParser {
         Categoria toCategoria() {
             Categoria c = new Categoria();
             try {
-                java.lang.reflect.Field f;
-
-                f = Categoria.class.getDeclaredField("id");
-                f.setAccessible(true);
-                f.setInt(c, id);
-
-                f = Categoria.class.getDeclaredField("categoria");
-                f.setAccessible(true);
-                f.set(c, categoria);
-
-            } catch (NoSuchFieldException | IllegalAccessException e) {
+                set(c, "id", id);
+                set(c, "categoria", categoria);
+            } catch (Exception e) {
                 throw new RuntimeException(e);
             }
             return c;
@@ -211,17 +203,21 @@ public class JsonParser {
 
     private static class JogoDefaultWrapper {
         int id;
-        String titulo;
-        String descricao;
-        String imagem;
+        String titulo, descricao, imagem;
+        int totalpontosjogo;
         Dificuldade dificuldade;
         List<Categoria> categorias;
 
-        JogoDefaultWrapper(int id, String titulo, String descricao, String imagem, Dificuldade dificuldade, List<Categoria> categorias) {
+        JogoDefaultWrapper(int id, String titulo, String descricao, String imagem,
+                           int totalpontosjogo,
+                           Dificuldade dificuldade,
+                           List<Categoria> categorias) {
+
             this.id = id;
             this.titulo = titulo;
             this.descricao = descricao;
             this.imagem = imagem;
+            this.totalpontosjogo = totalpontosjogo;
             this.dificuldade = dificuldade;
             this.categorias = categorias;
         }
@@ -229,41 +225,37 @@ public class JsonParser {
         JogoDefault toJogoDefault() {
             JogoDefault j = new JogoDefault();
             try {
-                java.lang.reflect.Field f;
-
-                f = JogoDefault.class.getDeclaredField("id");
-                f.setAccessible(true);
-                f.setInt(j, id);
-
-                f = JogoDefault.class.getDeclaredField("titulo");
-                f.setAccessible(true);
-                f.set(j, titulo);
-
-                f = JogoDefault.class.getDeclaredField("descricao");
-                f.setAccessible(true);
-                f.set(j, descricao);
-
-                f = JogoDefault.class.getDeclaredField("imagem");
-                f.setAccessible(true);
-                f.set(j, imagem);
-
-                f = JogoDefault.class.getDeclaredField("dificuldade");
-                f.setAccessible(true);
-                f.set(j, dificuldade);
-
-                f = JogoDefault.class.getDeclaredField("categorias");
-                f.setAccessible(true);
-                f.set(j, categorias);
-
-            } catch (NoSuchFieldException | IllegalAccessException e) {
+                set(j, "id", id);
+                set(j, "titulo", titulo);
+                set(j, "descricao", descricao);
+                set(j, "imagem", imagem);
+                set(j, "totalpontosjogo", totalpontosjogo);
+                set(j, "dificuldade", dificuldade);
+                set(j, "categorias", categorias);
+            } catch (Exception e) {
                 throw new RuntimeException(e);
             }
             return j;
         }
     }
 
+    // ======================
+    // REFLECTION HELPER
+    // ======================
+    private static void set(Object o, String field, Object value)
+            throws NoSuchFieldException, IllegalAccessException {
+
+        java.lang.reflect.Field f = o.getClass().getDeclaredField(field);
+        f.setAccessible(true);
+        f.set(o, value);
+    }
+
+    // ======================
+    // INTERNET
+    // ======================
     public static boolean isConnectionInternet(Context context) {
-        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager cm =
+                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo ni = cm.getActiveNetworkInfo();
         return ni != null && ni.isConnected();
     }

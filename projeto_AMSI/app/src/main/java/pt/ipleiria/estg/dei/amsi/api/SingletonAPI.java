@@ -9,6 +9,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
@@ -67,7 +68,7 @@ public class SingletonAPI {
     public String getLoginUrl() { return BASE_URL + "auth/login"; }
     public String getSignupUrl() { return BASE_URL + "auth/signup"; }
     public String getJogadorUrl() { return BASE_URL + "jogador"; }
-    public String getJogosUrl() { return BASE_URL + "jogodefault"; } // ✅
+    public String getJogosUrl() { return BASE_URL + "jogodefault"; }
 
     public static String getToken(Context context) {
         SharedPreferences sp = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
@@ -391,5 +392,35 @@ public class SingletonAPI {
         context.getSharedPreferences(SESSION_PREF, Context.MODE_PRIVATE).edit().clear().apply();
         saveToken(context, null);
         this.jogadorId = 0;
+    }
+
+    public void getJogoDetalhesAPI(int jogoId, Context context, final JogoDetalhesListener listener) {
+
+        if (!JsonParser.isConnectionInternet(context)) {
+            Toast.makeText(context, "Sem ligação à Internet", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        String url = getJogosUrl() + "/" + jogoId;
+
+        JsonObjectRequest request = new JsonObjectRequest(
+                Request.Method.GET,
+                url,
+                null,
+                response -> {
+                    if (listener != null) listener.onResponse(response);
+                },
+                error -> {
+                    error.printStackTrace();
+                    Toast.makeText(context, "Erro ao carregar detalhes do jogo", Toast.LENGTH_LONG).show();
+                }
+        );
+
+        volleyQueue.add(request);
+    }
+
+    // Interface callback
+    public interface JogoDetalhesListener {
+        void onResponse(JSONObject response);
     }
 }

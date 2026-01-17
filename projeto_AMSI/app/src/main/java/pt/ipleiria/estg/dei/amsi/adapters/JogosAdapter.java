@@ -7,12 +7,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 
 import java.util.List;
 
+import pt.ipleiria.estg.dei.amsi.JogoDetalhesFragment;
+import pt.ipleiria.estg.dei.amsi.MainActivity;
 import pt.ipleiria.estg.dei.amsi.R;
 import pt.ipleiria.estg.dei.amsi.api.models.JogoDefault;
 
@@ -23,6 +26,7 @@ public class JogosAdapter extends RecyclerView.Adapter<JogosAdapter.ViewHolder> 
 
     public interface OnJogoClickListener {
         void onDetalhes(JogoDefault jogo);
+
         void onJogar(JogoDefault jogo);
     }
 
@@ -34,28 +38,19 @@ public class JogosAdapter extends RecyclerView.Adapter<JogosAdapter.ViewHolder> 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_jogo, parent, false);
-
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-
         JogoDefault jogo = jogos.get(position);
 
-        // 🔹 Título
         holder.txtNome.setText(jogo.getTitulo());
 
-        // 🔹 IMAGEM (SEM ApiConfig)
         if (jogo.getImagem() != null && !jogo.getImagem().isEmpty()) {
-
-            String imageUrl =
-                    "http://10.0.2.2/ProjetoCurso/projeto_PSI/frontend/web/uploads/"
-                            + jogo.getImagem();
-
+            String imageUrl = "http://10.0.2.2/ProjetoCurso/projeto_PSI/frontend/web/uploads/" + jogo.getImagem();
             Glide.with(holder.itemView.getContext())
                     .load(imageUrl)
                     .placeholder(R.drawable.verde)
@@ -65,8 +60,18 @@ public class JogosAdapter extends RecyclerView.Adapter<JogosAdapter.ViewHolder> 
             holder.imgJogo.setImageResource(R.drawable.verde);
         }
 
-        // 🔹 Botões
-        holder.btnDetalhes.setOnClickListener(v -> listener.onDetalhes(jogo));
+        // Botão Detalhes
+        holder.btnDetalhes.setOnClickListener(v -> {
+            JogoDetalhesFragment fragment = JogoDetalhesFragment.newInstance(jogo.getId());
+            FragmentActivity activity = (FragmentActivity) holder.itemView.getContext();
+            activity.getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.homeFragmentContainer, fragment)
+                    .addToBackStack(null)
+                    .commit();
+        });
+
+        // Botão Jogar
         holder.btnIniciar.setOnClickListener(v -> listener.onJogar(jogo));
     }
 
@@ -76,7 +81,6 @@ public class JogosAdapter extends RecyclerView.Adapter<JogosAdapter.ViewHolder> 
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-
         ImageView imgJogo;
         TextView txtNome;
         TextView btnIniciar;

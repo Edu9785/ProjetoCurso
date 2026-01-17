@@ -101,9 +101,10 @@ return [
                     'controller' => ['api/jogodefault'],
                     'pluralize' => false,
                     'extraPatterns' => [
-                        'GET {titulo}' => 'by-titulo',
+                        'GET titulo/{titulo}' => 'by-titulo',
                     ],
                     'tokens' => [
+                        '{id}' => '<id:\d+>',
                         '{titulo}' => '<titulo:[^/]+>',
                     ],
                 ],

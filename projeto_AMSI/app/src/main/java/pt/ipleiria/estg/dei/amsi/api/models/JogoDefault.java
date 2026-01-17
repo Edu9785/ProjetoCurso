@@ -9,6 +9,8 @@ public class JogoDefault {
     private String descricao;
     private String imagem;
 
+    private int totalpontosjogo;
+
     // Relações vindas da API
     private Dificuldade dificuldade;
     private List<Categoria> categorias;
@@ -28,6 +30,10 @@ public class JogoDefault {
 
     public String getImagem() {
         return imagem;
+    }
+
+    public int getTotalpontosjogo() {
+        return totalpontosjogo;
     }
 
     public Dificuldade getDificuldade() {

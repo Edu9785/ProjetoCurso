@@ -44,7 +44,7 @@ class JogodefaultController extends ActiveController
     }
 
     // ------------------------------------
-    // GET /api/jogosdefault/{id}
+    // GET /api/jogodefault/{id}
     // ------------------------------------
     public function actionView($id)
     {
