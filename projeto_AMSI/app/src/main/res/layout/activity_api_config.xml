@@ -68,7 +68,8 @@
                 android:id="@+id/edtApiUrl"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="number"
+                android:inputType="text"
+                android:maxLines="1"
                 android:hint="10.0.2.2"
                 android:layout_marginBottom="32dp"/>
 
