@@ -130,11 +130,34 @@ class PerguntaController extends Controller
         $jogo = $session->get('jogo');
 
         $idResposta = Yii::$app->request->post('id_resposta');
-        $resposta = Resposta::findOne($idResposta);
+        $respostaEscolhida = Resposta::findOne($idResposta);
 
-        if ($resposta && $resposta->correta) {
-            $jogo['pontos'] += $resposta->pergunta->valor;
-            $jogo['acertos'][] = $resposta->pergunta->id;
+        if (!$respostaEscolhida) {
+            return $this->redirect([
+                'pergunta/view',
+                'id_jogo' => $jogo['id_jogo']
+            ]);
+        }
+
+        $pergunta = $respostaEscolhida->pergunta;
+
+        $respostaCorreta = null;
+        foreach ($pergunta->respostas as $r) {
+            if ($r->correta) {
+                $respostaCorreta = $r;
+                break;
+            }
+        }
+
+        if ($respostaEscolhida->correta) {
+            $jogo['pontos'] += $pergunta->valor;
+            $jogo['acertos'][] = $pergunta->id;
+        } else {
+            $jogo['erros'][] = [
+                'pergunta_id' => $pergunta->id,
+                'resposta_escolhida' => $respostaEscolhida->resposta,
+                'resposta_correta' => $respostaCorreta ? $respostaCorreta->resposta : '—'
+            ];
         }
 
         $jogo['contador']++;
@@ -147,6 +170,8 @@ class PerguntaController extends Controller
         ]);
     }
 
+
+
     public function actionResultado()
     {
         $session = Yii::$app->session;
@@ -157,12 +182,20 @@ class PerguntaController extends Controller
 
         $jogo = $session->get('jogo');
 
+
+        $totalPontos = 0;
+        foreach ($jogo['perguntas'] as $pergunta) {
+            $totalPontos += $pergunta['valor'];
+        }
+
         $session->remove('jogo');
 
         return $this->render('resultado', [
-            'jogo' => $jogo
+            'jogo'         => $jogo,
+            'totalPontos'  => $totalPontos,
         ]);
     }
+
 
     /**
      * Creates a new Pergunta model.
