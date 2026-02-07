@@ -7,6 +7,8 @@ import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import pt.ipleiria.estg.dei.amsi.ApiConfigActivity;
+
 public class WelcomeActivity extends AppCompatActivity {
 
     @Override
@@ -25,6 +27,7 @@ public class WelcomeActivity extends AppCompatActivity {
 
         Button btnLogin = findViewById(R.id.btnLogin);
         Button btnSignup = findViewById(R.id.btnSignup);
+        Button btnConfigApi = findViewById(R.id.btnConfigApi);
 
         btnLogin.setOnClickListener(v ->
                 startActivity(new Intent(this, LoginActivity.class))
@@ -32,6 +35,11 @@ public class WelcomeActivity extends AppCompatActivity {
 
         btnSignup.setOnClickListener(v ->
                 startActivity(new Intent(this, SignupActivity.class))
+        );
+
+        // 🔥 NOVO BOTÃO
+        btnConfigApi.setOnClickListener(v ->
+                startActivity(new Intent(this, ApiConfigActivity.class))
         );
     }
 }

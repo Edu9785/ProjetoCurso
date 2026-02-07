@@ -38,7 +38,7 @@ class AuthController extends Controller
         $password = Yii::$app->request->post('password');
 
         if (!$username || !$password) {
-            return ['success' => false, 'errorerror' => 'Username e password são obrigatórios'];
+            return ['success' => false, 'error' => 'Username e password são obrigatórios'];
         }
 
         $user = User::findByUsername($username);
@@ -52,9 +52,20 @@ class AuthController extends Controller
             $user->save(false);
         }
 
+
+        $jogador = $user->jogador;
+
+        if (!$jogador) {
+            return [
+                'success' => false,
+                'error' => 'Perfil de jogador não encontrado'
+            ];
+        }
+
         return [
             'success' => true,
             'user_id' => $user->id,
+            'jogador_id' => $user->jogador->id,
             'token' => $user->auth_key,
         ];
     }

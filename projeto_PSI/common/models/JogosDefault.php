@@ -173,5 +173,31 @@ class JogosDefault extends \yii\db\ActiveRecord
         }
     }
 
+    public function fields()
+    {
+        $fields = parent::fields();
 
+        // dificuldade como OBJETO
+        $fields['dificuldade'] = function () {
+            if ($this->dificuldade) {
+                return [
+                    'id' => $this->dificuldade->id,
+                    'nome' => $this->dificuldade->dificuldade,
+                ];
+            }
+            return null;
+        };
+
+        // categorias como ARRAY DE OBJETOS
+        $fields['categorias'] = function () {
+            return array_map(function ($categoria) {
+                return [
+                    'id' => $categoria->id,
+                    'nome' => $categoria->categoria,
+                ];
+            }, $this->categorias);
+        };
+
+        return $fields;
+    }
 }

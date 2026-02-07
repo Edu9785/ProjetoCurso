@@ -9,21 +9,13 @@ use yii\filters\auth\HttpBearerAuth;
 
 class PremiumController extends ActiveController
 {
-    public function behaviors()
-    {
-        $behaviors = parent::behaviors();
-        $behaviors['authenticator'] = [
-            'class' => HttpBearerAuth::class,
-        ];
-        return $behaviors;
-    }
-
+    public $modelClass = 'common\models\Premium';
 
     // 1) GET /api/premium
     public function actionIndex()
     {
         return Premium::find()
-            ->select(['id', 'nome', 'preco', 'duracao'])
+            ->select(['id', 'nome', 'preco', 'imagem'])
             ->asArray()
             ->all();
     }

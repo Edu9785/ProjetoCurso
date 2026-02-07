@@ -1,17 +1,20 @@
 package pt.ipleiria.estg.dei.amsi;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-
 import androidx.appcompat.app.AppCompatActivity;
 
-public class LoginActivity extends AppCompatActivity {
+import pt.ipleiria.estg.dei.amsi.api.SingletonAPI;
+import pt.ipleiria.estg.dei.amsi.listeners.LoginListener;
+
+public class LoginActivity extends AppCompatActivity implements LoginListener {
+
+    private EditText edtUsername, edtPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,18 +22,16 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         ImageButton btnBack = findViewById(R.id.btnBack);
+        edtUsername = findViewById(R.id.edtUsername);
+        edtPassword = findViewById(R.id.edtPassword);
+        Button btnLogin = findViewById(R.id.btnLogin);
 
         btnBack.setOnClickListener(v -> {
             startActivity(new Intent(this, WelcomeActivity.class));
             finish();
         });
 
-        EditText edtUsername = findViewById(R.id.edtUsername);
-        EditText edtPassword = findViewById(R.id.edtPassword);
-        Button btnLogin = findViewById(R.id.btnLogin);
-
         btnLogin.setOnClickListener(v -> {
-
             String username = edtUsername.getText().toString().trim();
             String password = edtPassword.getText().toString().trim();
 
@@ -39,15 +40,20 @@ public class LoginActivity extends AppCompatActivity {
                 return;
             }
 
-            // LOGIN FAKE (por agora)
-            SharedPreferences prefs = getSharedPreferences("user_session", MODE_PRIVATE);
-            prefs.edit()
-                    .putBoolean("logged", true)
-                    .putString("username", username)
-                    .apply();
-
-            startActivity(new Intent(this, MainActivity.class));
-            finish();
+            SingletonAPI.getInstance(getApplicationContext()).setLoginListener(this);
+            SingletonAPI.getInstance(getApplicationContext()).loginAPI(username, password, this);
         });
+    }
+
+    @Override
+    public void onLoginSuccess() {
+        // ✅ Login ok -> ir para a app
+        startActivity(new Intent(this, MainActivity.class));
+        finish();
+    }
+
+    @Override
+    public void onLoginError() {
+        Toast.makeText(this, "Credenciais inválidas", Toast.LENGTH_SHORT).show();
     }
 }

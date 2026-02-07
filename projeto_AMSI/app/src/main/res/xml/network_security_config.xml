@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+
+    <!-- Permitir HTTP apenas para o emulador -->
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">10.0.2.2</domain>
+    </domain-config>
+
+    <!-- Servidor -->
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">172.22.21.224</domain>
+    </domain-config>
+
+</network-security-config>

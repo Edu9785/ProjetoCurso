@@ -4,7 +4,7 @@ namespace backend\modules\api\controllers;
 
 use yii\rest\ActiveController;
 use yii\web\NotFoundHttpException;
-use yii\web\ForbiddenHttpException;
+use yii\web\Response;
 use Yii;
 use common\models\Jogador;
 use common\models\User;
@@ -13,109 +13,108 @@ class JogadorController extends ActiveController
 {
     public $modelClass = 'common\models\Jogador';
 
-    // GET /api/jogador
-    public function actionIndex()
+    public function behaviors()
     {
-        return Jogador::find()
-            ->with('user')
-            ->all();
+        $behaviors = parent::behaviors();
+
+        $behaviors['contentNegotiator']['formats']['application/json'] =
+            Response::FORMAT_JSON;
+
+        return $behaviors;
     }
 
-    // GET /api/jogador/{id}
     public function actionView($id)
     {
-        $jogador = Jogador::find()
-            ->with('user')
-            ->where(['id' => $id])
-            ->one();
+        $user = $this->getUserFromToken();
 
-        if (!$jogador) {
-            throw new NotFoundHttpException('Jogador não encontrado');
+        $jogador = Jogador::findOne($id);
+
+        if (!$jogador || $jogador->id_user !== $user->id) {
+            throw new NotFoundHttpException('Jogador não encontrado ou acesso negado');
         }
 
-        return $jogador;
+        return [
+            'id' => $jogador->id,
+            'nome' => $jogador->nome,
+            'idade' => $jogador->idade,
+            'username' => $user->username,
+            'email' => $user->email,
+        ];
     }
 
-    // PUT / PATCH /api/jogador/updatejogador/{id}
     public function actionUpdateJogador($id)
     {
+        $user = $this->getUserFromToken();
         $data = Yii::$app->request->bodyParams;
 
-        // 🔹 Buscar Jogador primeiro
         $jogador = Jogador::findOne($id);
-        if (!$jogador) {
-            throw new NotFoundHttpException('Jogador não encontrado');
-        }
-
-        // 🔹 Buscar User associado
-        $user = User::findOne($jogador->id_user);
-        if (!$user) {
-            throw new NotFoundHttpException('User não encontrado');
+        if (!$jogador || $jogador->id_user !== $user->id) {
+            throw new NotFoundHttpException('Jogador não encontrado ou acesso negado');
         }
 
         $transaction = Yii::$app->db->beginTransaction();
 
         try {
-            // ====== UPDATE USER ======
-            if (isset($data['email'])) {
-                $user->email = $data['email'];
-            }
+            $user->username = $data['username'];
+            $user->email = $data['email'];
+            $user->save();
 
-            if (isset($data['username'])) {
-                $user->username = $data['username'];
-            }
-
-            if (!$user->save()) {
-                throw new \Exception(json_encode($user->errors));
-            }
-
-            // ====== UPDATE JOGADOR ======
-            if (isset($data['nome'])) {
-                $jogador->nome = $data['nome'];
-            }
-
-            if (isset($data['idade'])) {
-                $jogador->idade = $data['idade'];
-            }
-
-            if (!$jogador->save()) {
-                throw new \Exception(json_encode($jogador->errors));
-            }
+            $jogador->nome = $data['nome'];
+            $jogador->idade = (int)$data['idade'];
+            $jogador->save();
 
             $transaction->commit();
 
-            return [
-                'success' => true,
-                'message' => 'Dados atualizados com sucesso',
-                'user' => [
-                    'id' => $user->id,
-                    'email' => $user->email,
-                    'username' => $user->username,
-                ],
-                'jogador' => [
-                    'id' => $jogador->id,
-                    'nome' => $jogador->nome,
-                    'idade' => $jogador->idade,
-                ],
-            ];
+            return ['success' => true];
 
         } catch (\Exception $e) {
             $transaction->rollBack();
-
-            return [
-                'success' => false,
-                'error' => $e->getMessage(),
-            ];
+            return ['success' => false];
         }
     }
 
-
-
-    protected function findModel($id)
+    public function actionDelete($id)
     {
-        if (($model = Jogador::findOne($id)) !== null) {
-            return $model;
+        // validar token
+        $user = $this->getUserFromToken();
+
+        // confirmar jogador pertence ao user
+        $jogador = Jogador::findOne($id);
+
+        if (!$jogador || $jogador->id_user !== $user->id) {
+            throw new NotFoundHttpException('Jogador não encontrado ou acesso negado');
         }
-        throw new NotFoundHttpException('Jogador não encontrado');
+
+        // SOFT DELETE → desativar conta
+        $user->status = 0;
+
+        if ($user->save(false)) {
+            return [
+                'success' => true,
+                'message' => 'Conta desativada com sucesso'
+            ];
+        }
+
+        return [
+            'success' => false,
+            'message' => 'Erro ao desativar conta'
+        ];
+    }
+
+
+    private function getUserFromToken()
+    {
+        $token = Yii::$app->request->headers->get('Authorization');
+        return User::findOne(['auth_key' => $token]);
+    }
+
+    public function actions()
+    {
+        $actions = parent::actions();
+
+        // desligar delete default do ActiveController
+        unset($actions['delete']);
+
+        return $actions;
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 $params = array_merge(
     require __DIR__ . '/../../common/config/params.php',
     require __DIR__ . '/../../common/config/params-local.php',
@@ -13,27 +14,39 @@ return [
     'basePath' => dirname(__DIR__),
     'controllerNamespace' => 'backend\controllers',
     'bootstrap' => ['log'],
+
     'modules' => [
         'api' => [
             'class' => 'backend\modules\api\ModuleAPI',
         ],
     ],
+
     'components' => [
+
+        // 🔹 Request (JSON)
         'request' => [
             'csrfParam' => '_csrf-backend',
             'parsers' => [
                 'application/json' => 'yii\web\JsonParser',
             ],
         ],
+
+        // 🔹 User
         'user' => [
             'identityClass' => 'common\models\User',
             'enableAutoLogin' => true,
-            'identityCookie' => ['name' => '_identity-backend', 'httpOnly' => true],
+            'identityCookie' => [
+                'name' => '_identity-backend',
+                'httpOnly' => true,
+            ],
         ],
+
+        // 🔹 Session
         'session' => [
-            // this is the name of the session cookie used for login on the backend
             'name' => 'advanced-backend',
         ],
+
+        // 🔹 Log
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
             'targets' => [
@@ -43,54 +56,60 @@ return [
                 ],
             ],
         ],
+
+        // 🔹 Error handler
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
+
+        // URL MANAGER (API REST)
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
 
-                // 🔹 Jogador
+                // 🔹 JOGADOR
                 [
                     'class' => 'yii\rest\UrlRule',
                     'controller' => ['api/jogador'],
                     'pluralize' => false,
-
                     'extraPatterns' => [
-                        'GET nomes' => 'nomes',
 
+                        // Perfil
                         'GET {id}' => 'view',
-                        'PUT {id}' => 'update',
-                        'PATCH {id}' => 'update',
 
+                        // Atualizar perfil (custom)
                         'PUT updatejogador/{id}' => 'update-jogador',
 
+                        // Eliminar conta
+                        'DELETE {id}' => 'delete',
+
+                        // Premium (mantido do zip/enunciado)
                         'GET {id}/premium' => 'premium',
                         'PUT {id}/comprar-premium/{id_premium}' => 'ativarpremium',
                         'PUT {id}/remover-premium' => 'removerpremium',
                     ],
-
                     'tokens' => [
                         '{id}' => '<id:\d+>',
                         '{id_premium}' => '<id_premium:\d+>',
                     ],
                 ],
 
-                // 🔹 Jogos Default
+                // 🔹 JOGOS DEFAULT
                 [
                     'class' => 'yii\rest\UrlRule',
                     'controller' => ['api/jogodefault'],
                     'pluralize' => false,
                     'extraPatterns' => [
-                        'GET {id}/perguntas' => 'perguntas',
+                        'GET titulo/{titulo}' => 'by-titulo',
                     ],
                     'tokens' => [
-                        '{id}' => '<id:\\d+>',
+                        '{id}' => '<id:\d+>',
+                        '{titulo}' => '<titulo:[^/]+>',
                     ],
                 ],
 
-                // 🔹 AuthController — tem regra própria
+                // 🔹 AUTH
                 [
                     'class' => 'yii\rest\UrlRule',
                     'controller' => ['api/auth'],
@@ -98,37 +117,39 @@ return [
                     'extraPatterns' => [
                         'POST login' => 'login',
                         'POST signup' => 'signup',
-                        'Post logout' => 'logout',
+                        'POST logout' => 'logout',
                     ],
                 ],
 
-                // 🔹 Dificuldades
+                // 🔹 DIFICULDADES
                 [
                     'class' => 'yii\rest\UrlRule',
                     'controller' => ['api/dificuldade'],
                     'pluralize' => false,
                     'extraPatterns' => [
-                        'GET count' => 'count',
                         'GET nomes' => 'nomes',
+                        'GET {id}/jogosdefault' => 'jogosdefault',
+                    ],
+                    'tokens' => [
+                        '{id}' => '<id:\d+>',
                     ],
                 ],
 
-                // 🔹 Categorias
+                // 🔹 CATEGORIAS
                 [
                     'class' => 'yii\rest\UrlRule',
                     'controller' => ['api/categoria'],
                     'pluralize' => false,
                     'extraPatterns' => [
                         'GET nomes' => 'nomes',
-                        'GET count' => 'count',
                         'GET {id}/jogosdefault' => 'jogosdefault',
                     ],
                     'tokens' => [
-                        '{id}' => '<id:\\d+>',
+                        '{id}' => '<id:\d+>',
                     ],
                 ],
 
-                // 🔹 Perguntas
+                // 🔹 PERGUNTAS
                 [
                     'class' => 'yii\rest\UrlRule',
                     'controller' => ['api/pergunta'],
@@ -141,7 +162,7 @@ return [
                     ],
                 ],
 
-                // 🔹 Premium
+                // 🔹 PREMIUM
                 [
                     'class' => 'yii\rest\UrlRule',
                     'controller' => ['api/premium'],
@@ -149,14 +170,10 @@ return [
                     'extraPatterns' => [
                         'GET nomes' => 'nomes',
                     ],
-                    'tokens' => [
-                        '{id}' => '<id:\\d+>',
-                    ],
                 ],
             ],
         ],
-
-
     ],
+
     'params' => $params,
 ];

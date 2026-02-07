@@ -40,17 +40,17 @@ class JogodefaultController extends ActiveController
             $query->andWhere(['like', 'titulo', $search]);
         }
 
-        return $query->with(['dificuldade', 'tempo', 'categorias'])->all();
+        return $query->with(['dificuldade', 'categorias'])->all();
     }
 
     // ------------------------------------
-    // GET /api/jogosdefault/{id}
+    // GET /api/jogodefault/{id}
     // ------------------------------------
     public function actionView($id)
     {
         $model = JogosDefault::find()
             ->where(['id' => $id])
-            ->with(['dificuldade', 'tempo', 'categorias'])
+            ->with(['dificuldade', 'categorias'])
             ->one();
 
         if (!$model) {
@@ -58,5 +58,21 @@ class JogodefaultController extends ActiveController
         }
 
         return $model;
+    }
+
+    public function actionByTitulo($titulo)
+    {
+        $jogos = JogosDefault::find()
+            ->where(['like', 'titulo', $titulo])
+            ->with(['dificuldade', 'categorias'])
+            ->all();
+
+        if (empty($jogos)) {
+            throw new NotFoundHttpException('Nenhum jogo encontrado com esse título');
+        }
+
+        return [
+            'data' => $jogos
+        ];
     }
 }

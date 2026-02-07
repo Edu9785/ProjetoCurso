@@ -50,19 +50,9 @@ class CategoriaController extends ActiveController
     public function actionNomes()
     {
         return Categoria::find()
-            ->select(['id', 'nome'])
+            ->select(['categoria'])
             ->asArray()
             ->all();
-    }
-
-    // --------------------------
-    // GET /api/categoria/count
-    // --------------------------
-    public function actionCount()
-    {
-        return [
-            'total' => Categoria::find()->count()
-        ];
     }
 
     // --------------------------
