@@ -21,7 +21,7 @@ $this->title = 'Login';
         <?= $form->field($model, 'username')
                 ->textInput([
                         'autofocus' => true,
-                        'placeholder' => 'Nome de usuário',
+                        'placeholder' => 'Nome de utilizador',
                         'class' => 'form-control custom-input',
                         'style' => '
                         font-size: 1.3rem;
@@ -30,7 +30,7 @@ $this->title = 'Login';
                         border-radius: 10px;
                     '
                 ])
-                ->label('Nome de usuário', [
+                ->label('Nome de utilizador', [
                         'class' => 'fw-semibold mb-2',
                         'style' => 'font-size: 1.3rem;'
                 ]) ?>
