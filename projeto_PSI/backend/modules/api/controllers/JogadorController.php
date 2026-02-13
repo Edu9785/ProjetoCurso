@@ -45,6 +45,11 @@ class JogadorController extends ActiveController
     public function actionUpdateJogador($id)
     {
         $user = $this->getUserFromToken();
+
+        if ($user === null) {
+            return ['erro' => 'USER NULL'];
+        }
+
         $data = Yii::$app->request->bodyParams;
 
         $jogador = Jogador::findOne($id);
@@ -104,7 +109,15 @@ class JogadorController extends ActiveController
 
     private function getUserFromToken()
     {
-        $token = Yii::$app->request->headers->get('Authorization');
+        $authHeader = Yii::$app->request->headers->get('Authorization');
+
+        if (!$authHeader) {
+            return null;
+        }
+
+        // Remove "Bearer " do início
+        $token = str_replace('Bearer ', '', $authHeader);
+
         return User::findOne(['auth_key' => $token]);
     }
 

@@ -312,45 +312,68 @@ public class SingletonAPI {
             return;
         }
 
-        if (jogadorId <= 0) {
-            SharedPreferences prefs =
-                    context.getSharedPreferences(SESSION_PREF, Context.MODE_PRIVATE);
-            jogadorId = prefs.getInt("jogador_id", 0);
-        }
+        SharedPreferences prefs =
+                context.getSharedPreferences(SESSION_PREF, Context.MODE_PRIVATE);
 
-        if (jogadorId <= 0) {
+        jogadorId = prefs.getInt("jogador_id", 0);
+        String token = prefs.getString("token", "");
+
+        Log.d("TOKEN_ANDROID", token);
+
+        if (jogadorId <= 0 || token.isEmpty()) {
             Toast.makeText(context,
                     "Sessão inválida. Faz login novamente.",
                     Toast.LENGTH_LONG).show();
             return;
         }
 
-        StringRequest request = new StringRequest(
+        String url = getJogadorUrl(context) + "/updatejogador/" + jogadorId;
+
+        JSONObject jsonBody = new JSONObject();
+        try {
+            jsonBody.put("username", username);
+            jsonBody.put("email", email);
+            jsonBody.put("nome", nome);
+            jsonBody.put("idade", idade);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        JsonObjectRequest request = new JsonObjectRequest(
                 Request.Method.PUT,
-                getJogadorUrl(context) + "/updatejogador/" + jogadorId,
+                url,
+                jsonBody,
                 response -> {
-                    if (editProfileListener != null)
+                    if (editProfileListener != null) {
                         editProfileListener.editProfileSuccess();
+                    }
                 },
-                error -> Toast.makeText(
-                        context,
-                        "Erro ao guardar perfil",
-                        Toast.LENGTH_LONG).show()
+                error -> {
+
+                    if (error.networkResponse != null && error.networkResponse.data != null) {
+                        String responseBody = new String(error.networkResponse.data);
+                        Log.e("VOLLEY_ERROR", responseBody);
+                    }
+
+                    error.printStackTrace();
+
+                    Toast.makeText(context,
+                            "Erro ao guardar perfil",
+                            Toast.LENGTH_LONG).show();
+                }
         ) {
             @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<>();
-                params.put("username", username);
-                params.put("email", email);
-                params.put("nome", nome);
-                params.put("idade", idade);
-                return params;
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Content-Type", "application/json; charset=utf-8");
+                headers.put("Authorization", "Bearer " + token);
+                return headers;
             }
         };
 
         volleyQueue.add(request);
     }
-
 
 
     // =========================
