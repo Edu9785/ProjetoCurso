@@ -10,7 +10,7 @@ public class ApiConfig {
 
     // valor default (localhost)
     private static final String DEFAULT_URL =
-            "http://172.22.21.224/ProjetoCurso/projeto_PSI/backend/web/api/";
+            "http://10.0.2.2/ProjetoCurso/projeto_PSI/backend/web/api/";
 
     public static String getBaseUrl(Context context) {
         SharedPreferences sp =

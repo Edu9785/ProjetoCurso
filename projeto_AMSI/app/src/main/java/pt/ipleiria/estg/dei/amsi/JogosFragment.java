@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import pt.ipleiria.estg.dei.amsi.adapters.JogosAdapter;
-import pt.ipleiria.estg.dei.amsi.api.DBHelper;
 import pt.ipleiria.estg.dei.amsi.api.SingletonAPI;
 import pt.ipleiria.estg.dei.amsi.api.models.Categoria;
 import pt.ipleiria.estg.dei.amsi.api.models.Dificuldade;
@@ -39,7 +38,6 @@ import pt.ipleiria.estg.dei.amsi.listeners.JogosListener;
 public class JogosFragment extends Fragment
         implements JogosListener, CategoriasListener, DificuldadesListener {
 
-    // UI
     private DrawerLayout drawerLayout;
     private RecyclerView recyclerJogos;
     private EditText edtSearch;
@@ -49,7 +47,6 @@ public class JogosFragment extends Fragment
     private LinearLayout containerCategorias;
     private Button btnAddCategoria, btnAplicarFiltros;
 
-    // Dados
     private ArrayList<JogoDefault> jogosBase = new ArrayList<>();
     private final ArrayList<Integer> selectedCategoriaIds = new ArrayList<>();
 
@@ -67,7 +64,6 @@ public class JogosFragment extends Fragment
     ) {
         View view = inflater.inflate(R.layout.fragment_jogos, container, false);
 
-        // Bind UI
         drawerLayout = view.findViewById(R.id.drawerLayout);
         recyclerJogos = view.findViewById(R.id.recyclerJogos);
         edtSearch = view.findViewById(R.id.edtSearch);
@@ -85,34 +81,25 @@ public class JogosFragment extends Fragment
         api.setCategoriasListener(this);
         api.setDificuldadesListener(this);
 
-        // Carregar dados iniciais
         api.getCategoriasAPI(requireContext());
         api.getDificuldadesAPI(requireContext());
         api.getJogosAPI(requireContext(), null, null);
 
-        // Abrir filtros
         btnOpenFilters.setOnClickListener(v ->
                 drawerLayout.openDrawer(GravityCompat.END)
         );
 
-        // Adicionar categoria
         btnAddCategoria.setOnClickListener(v -> addCategoriaRow());
 
-        // Aplicar filtros
         btnAplicarFiltros.setOnClickListener(v -> {
             selectedDificuldadeId = getSelectedDificuldadeId();
             readSelectedCategoriasFromUI();
 
-            api.getJogosAPI(
-                    requireContext(),
-                    selectedDificuldadeId,
-                    currentSearch
-            );
+            applyAllFilters();
 
             drawerLayout.closeDrawer(GravityCompat.END);
         });
 
-        // Pesquisa por nome
         edtSearch.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s,int a,int b,int c){}
             @Override public void onTextChanged(CharSequence s,int a,int b,int c){}
@@ -120,12 +107,7 @@ public class JogosFragment extends Fragment
             @Override
             public void afterTextChanged(Editable s) {
                 currentSearch = s.toString().trim();
-
-                api.getJogosAPI(
-                        requireContext(),
-                        selectedDificuldadeId,
-                        currentSearch
-                );
+                applyAllFilters();
             }
         });
 
@@ -137,15 +119,80 @@ public class JogosFragment extends Fragment
     // =========================
     @Override
     public void onRefreshListaJogos(ArrayList<JogoDefault> jogos) {
-
         jogosBase = jogos;
+        applyAllFilters();
+    }
 
-        ArrayList<JogoDefault> resultado;
+    // =========================
+    // FILTRO GLOBAL
+    // =========================
+    private void applyAllFilters() {
 
-        if (selectedCategoriaIds.isEmpty() || allCategoriasSelecionadasSaoZero()) {
-            resultado = jogosBase;
-        } else {
-            resultado = applyCategoriasFilterLocal(jogosBase);
+        ArrayList<JogoDefault> resultado = new ArrayList<>(jogosBase);
+
+        // 🔹 FILTRO DIFICULDADE
+        if (selectedDificuldadeId != null && selectedDificuldadeId > 0) {
+            ArrayList<JogoDefault> temp = new ArrayList<>();
+            for (JogoDefault j : resultado) {
+                if (j.getDificuldade() != null &&
+                        j.getDificuldade().getId() == selectedDificuldadeId) {
+                    temp.add(j);
+                }
+            }
+            resultado = temp;
+        }
+
+        // 🔹 FILTRO CATEGORIAS
+        if (!selectedCategoriaIds.isEmpty() && !allCategoriasSelecionadasSaoZero()) {
+            ArrayList<JogoDefault> temp = new ArrayList<>();
+
+            for (JogoDefault jogo : resultado) {
+                List<Categoria> cats = jogo.getCategorias();
+                if (cats == null) continue;
+
+                boolean ok = true;
+
+                for (int wanted : selectedCategoriaIds) {
+                    if (wanted <= 0) continue;
+
+                    boolean found = false;
+                    for (Categoria c : cats) {
+                        if (c.getId() == wanted) {
+                            found = true;
+                            break;
+                        }
+                    }
+
+                    if (!found) {
+                        ok = false;
+                        break;
+                    }
+                }
+
+                if (ok) temp.add(jogo);
+            }
+
+            resultado = temp;
+        }
+
+        // 🔹 FILTRO PESQUISA
+        if (currentSearch != null && !currentSearch.isEmpty()) {
+            ArrayList<JogoDefault> temp = new ArrayList<>();
+            for (JogoDefault j : resultado) {
+                if (j.getTitulo().toLowerCase()
+                        .contains(currentSearch.toLowerCase())) {
+                    temp.add(j);
+                }
+            }
+            resultado = temp;
+        }
+
+        if (resultado.isEmpty()) {
+            Toast.makeText(
+                    requireContext(),
+                    "Nenhum jogo encontrado",
+                    Toast.LENGTH_SHORT
+            ).show();
         }
 
         recyclerJogos.setAdapter(new JogosAdapter(
@@ -176,7 +223,7 @@ public class JogosFragment extends Fragment
     }
 
     // =========================
-    // CALLBACKS SPINNERS
+    // CATEGORIAS / DIFICULDADES
     // =========================
     @Override
     public void onRefreshCategorias(ArrayList<Categoria> lista) {
@@ -184,10 +231,7 @@ public class JogosFragment extends Fragment
         categorias.add(new CategoriaItem(0, "Todas"));
 
         for (Categoria c : lista) {
-            categorias.add(new CategoriaItem(
-                    c.getId(),
-                    c.getCategoria()
-            ));
+            categorias.add(new CategoriaItem(c.getId(), c.getCategoria()));
         }
 
         ensureAtLeastOneCategoriaRow();
@@ -200,27 +244,18 @@ public class JogosFragment extends Fragment
         dificuldades.add(new DificuldadeItem(0, "Todas"));
 
         for (Dificuldade d : lista) {
-            dificuldades.add(new DificuldadeItem(
-                    d.getId(),
-                    d.getDificuldade()
-            ));
+            dificuldades.add(new DificuldadeItem(d.getId(), d.getDificuldade()));
         }
 
         ArrayAdapter<DificuldadeItem> adapter =
-                new ArrayAdapter<>(
-                        requireContext(),
-                        R.layout.spinner_item,
-                        dificuldades
-                );
+                new ArrayAdapter<>(requireContext(),
+                        R.layout.spinner_item, dificuldades);
 
         adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
         spinnerDificuldade.setAdapter(adapter);
         spinnerDificuldade.setSelection(0);
     }
 
-    // =========================
-    // FILTROS
-    // =========================
     private Integer getSelectedDificuldadeId() {
         Object sel = spinnerDificuldade.getSelectedItem();
         if (sel instanceof DificuldadeItem) {
@@ -240,9 +275,7 @@ public class JogosFragment extends Fragment
 
             Object sel = sp.getSelectedItem();
             if (sel instanceof CategoriaItem) {
-                selectedCategoriaIds.add(
-                        ((CategoriaItem) sel).id
-                );
+                selectedCategoriaIds.add(((CategoriaItem) sel).id);
             }
         }
     }
@@ -254,50 +287,8 @@ public class JogosFragment extends Fragment
         return true;
     }
 
-    private ArrayList<JogoDefault> applyCategoriasFilterLocal(
-            ArrayList<JogoDefault> base) {
-
-        ArrayList<JogoDefault> out = new ArrayList<>();
-
-        for (JogoDefault jogo : base) {
-            List<Categoria> cats = jogo.getCategorias();
-            if (cats == null) continue;
-
-            boolean ok = true;
-
-            for (int wanted : selectedCategoriaIds) {
-                if (wanted <= 0) continue;
-
-                boolean found = false;
-                for (Categoria c : cats) {
-                    if (c.getId() == wanted) {
-                        found = true;
-                        break;
-                    }
-                }
-
-                if (!found) {
-                    ok = false;
-                    break;
-                }
-            }
-
-            if (ok) out.add(jogo);
-        }
-
-        if (out.isEmpty()) {
-            Toast.makeText(
-                    requireContext(),
-                    "Nenhum jogo encontrado",
-                    Toast.LENGTH_SHORT
-            ).show();
-        }
-
-        return out;
-    }
-
     // =========================
-    // UI CATEGORIAS
+    // UI AUX
     // =========================
     private void addCategoriaRow() {
         View row = LayoutInflater.from(requireContext())
@@ -308,11 +299,8 @@ public class JogosFragment extends Fragment
         ImageView btnRemove = row.findViewById(R.id.btnRemover);
 
         ArrayAdapter<CategoriaItem> adapter =
-                new ArrayAdapter<>(
-                        requireContext(),
-                        R.layout.spinner_item,
-                        categorias
-                );
+                new ArrayAdapter<>(requireContext(),
+                        R.layout.spinner_item, categorias);
 
         adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
         sp.setAdapter(adapter);
@@ -340,15 +328,10 @@ public class JogosFragment extends Fragment
                     .findViewById(R.id.spinnerCategoria);
 
             ArrayAdapter<CategoriaItem> adapter =
-                    new ArrayAdapter<>(
-                            requireContext(),
-                            R.layout.spinner_item,
-                            categorias
-                    );
+                    new ArrayAdapter<>(requireContext(),
+                            R.layout.spinner_item, categorias);
 
-            adapter.setDropDownViewResource(
-                    R.layout.spinner_dropdown_item);
-
+            adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
             sp.setAdapter(adapter);
         }
     }
